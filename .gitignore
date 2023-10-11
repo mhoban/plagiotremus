@@ -2,6 +2,8 @@
 .Rhistory
 .Rapp.history
 
+.DS_Store
+
 # Session Data files
 .RData
 
@@ -37,3 +39,13 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+output/
+
+*.old
+resources/pandoc-crossref
+resources/import
+
+paolo/
+old/
+data/images
