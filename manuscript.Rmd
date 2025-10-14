@@ -21,7 +21,18 @@ institute:
   - pmnm: Papahānaumokuākea Marine National Monument, National Oceanic and Atmospheric Administration
 bibliography: references/citations.json
 csl: references/style.csl
-output: word_document
+output:
+  word_document:
+    pandoc_args:
+      - "--filter=resources/pandoc-crossref"
+      - "--citeproc"
+      - "--toc-depth=2"
+      - "--lua-filter=resources/scholarly-metadata.lua"
+      - "--lua-filter=resources/author-info-blocks.lua"
+      - "--lua-filter=resources/abstract-section.lua"
+      - "--reference-doc=resources/ref.docx"
+      - "--lua-filter=resources/multirefs.lua"
+    keep_md: true
 link-citations: true
 linkReferences: true
 tblPrefix: Table
@@ -70,6 +81,9 @@ library(Biostrings)
 library(msa)
 library(fs)
 library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(ggnewscale)
 source('spp.R')
 ```
 
@@ -81,6 +95,7 @@ spp <- Taxa$new('Plagiotremus')
 
 
 all_samples <- read_csv(here("data","samples.csv"))
+original_samples <- all_samples
 markers <- c("coi","cytb")
 
 # stolen from insect: join two DNAbins together
@@ -233,7 +248,7 @@ To resolve the taxonomy of *Plagiotremus* fishes at various levels, this study c
 
 ## Specimen collection {-}
 
-We collected 360 samples of *Plagiotremus* spp. from Hawai&#x02BB;i and abroad. Specimens were collected by pole spear and hand net and a portion of the caudal fin was preserved in salt-saturated DMSO solution [@seutinPreservationAvianBlood2011] for subsequent molecular analysis. We collected 43 specimens of *P. rhinorhynchos* and 88 specimens of *P. tapeinosoma* across their ranges in the Indo-Pacific, from the Red sea to the Marquesas Islands. Additionally, we collected 42 *P. ewaensis* and 62 *P. goslinei* specimens from 13 different locations in the main (MHI) and northwest Hawaiian Islands (NWHI). All specimens from the Northwest Hawaiian Islands were collected under permits PMNM-2007-032, PMNM-2008-046, PMNM-2009-032L, PMNM-2009-044, PMNM-2011-025, and PMNM-2012-045, issued by the National Oceanic and Atmospheric Administration, the U.S. Fish and Wildlife Service, and the State of Hawaii Division of Aquatic Resources to BWB at the Hawai&#x02BB;i Institute of Marine Biology. Fish sampling protocols were approved by the University of Hawai&#x02BB;i at Manoa Institutional Animal Care & Use Committee under approval nos. 09-753 and 15-2271.
+We collected 360 samples of *Plagiotremus* (*P. tapeinosoma*, *P. rhinorhynchos*, *P. goslinei*, and *P. ewaensis*) from Hawai&#x02BB;i and abroad ([@fig:fig_map]). Specimens were collected by pole spear and hand net and a portion of the caudal fin was preserved in salt-saturated DMSO solution [@seutinPreservationAvianBlood2011] for subsequent molecular analysis. We collected 43 specimens of *P. rhinorhynchos* and 88 specimens of *P. tapeinosoma* across their ranges in the Indo-Pacific, from the Red sea to the Marquesas Islands. Additionally, we collected 42 *P. ewaensis* and 62 *P. goslinei* specimens from 13 different locations in the main (MHI) and northwest Hawaiian Islands (NWHI). All specimens from the Northwest Hawaiian Islands were collected under permits PMNM-2007-032, PMNM-2008-046, PMNM-2009-032L, PMNM-2009-044, PMNM-2011-025, and PMNM-2012-045, issued by the National Oceanic and Atmospheric Administration, the U.S. Fish and Wildlife Service, and the State of Hawaii Division of Aquatic Resources to BWB at the Hawai&#x02BB;i Institute of Marine Biology. Fish sampling protocols were approved by the University of Hawai&#x02BB;i at Manoa Institutional Animal Care & Use Committee under approval nos. 09-753 and 15-2271.
 
 ## DNA extraction and sequencing {-}
 
@@ -246,7 +261,7 @@ We downloaded all available COI sequence data in the Barcode of Life Database (B
 
 ## Sequence analysis {-}
 
-### Phylogenetic analyses
+### Phylogenetic analyses {-}
 
 Initial filtering was performed using R 3.6.0 [@rcoreteamLanguageEnvironmentStatistical2019]. A total of 327 COI sequences (234 de novo, 93 downloaded from BoLD) were used to infer molecular phylogenies. <!--Annotated R scripts used to perform all analyses in this paper can be found on GitHub (https://github.com) in the repository cajwalsh/plagio_project. The script used to perform the filtering described in this section is called "1_initial_filtering.R".-->Sequence data was loaded into R using the packages `Biostrings` [@aboyounBiostringsEfficientManipulation2017] and `ape` [@paradisApeEnvironmentModern2019]. The sequences were aligned using the Clustal Omega algorithm [@sieversFastScalableGeneration2011] implemented in the R package `msa` [@bodenhoferMsaPackageMultiple2015]. Since the sequences analyzed here are from various sources, many have different lengths or include loci that are missing in the final alignment. To compare the effects of missing data on tree node support, three versions of the sequence alignment were used: one that excluded loci that were missing in more than one individual (hereafter referred to as the 99% coverage dataset), one that only included loci that were sequenced in >50% of individuals (>50% coverage dataset), and one in which all loci in the alignment were kept (the full dataset). After filtering, identical sequences were merged and taxonomic as well as geographic spread of merged sequences were recorded.<!-- The script used to perform this filtering in the cajwalsh/plagio_project repository is titled: "2_1_tree_alignment_filtering.R".-->
 
@@ -291,6 +306,104 @@ Regarding the second argument of Hawaiian endemics being the most distinct in th
 Although *P. azaleus* (in the Eastern Pacific) is considerably diverged from all other "*tapeinosoma* species group" lineages, the initial description of *P. goslinei* [@strasburgNotesBlennioidFishes1956] suggested that it may be a geographical intermediate of *P. azaleus* and *P. tapeinosoma*. The placement of *P. azaleus* as the sister group to *P. tapeinosoma* and *P. goslinei* in this study was not well supported, and other trees nested it within mixed groups of *P. tapeinosoma* and *P. goslinei*. Furthermore, although *P. azaleus* was closest to a *P. tapeinosoma* haplotype in the network, only one to two more steps separated it from multiple *P. goslinei* clusters—which is very few relative to its 43 steps from the rest of the network. Therefore, further genetic study of these lineages could determine whether *P. azaleus* originally colonized the Eastern Pacific through Hawai&#x02BB;i (sharing an ancestor with *P. goslinei* there as well) and contribute to the growing literature about whether isolated islands with high levels of endemism export biodiversity to other regions [@bowenOriginsTropicalMarine2013]. On the other hand, both the *P. azaleus* and Marquesan *P. tapeinosoma* haplotypes were linked to the rest of *P. tapeinosoma* through Indian Ocean haplotypes (rather than those from the Pacific which are much closer). This may indicate that the divergence of these lineages dates back to the closure of the Tethys Sea (that divided the tropical Atlantic and Indo-Pacific realms) as observed in many other reef fish groups [@floeterAtlanticReefFish2008].
 
 The taxonomy and phylogeography of fangblennies was elucidated in this study by including more species than ever before in a molecular phylogeny of *Plagiotremus*. Although only one of the Hawaiian lineages seems to merit full species status, further study of the phenotypic and genetic variation within the "*tapeinosoma*" sub-group could lead to the description of distinct species in other regions, as well as provide further insight into how endemic marine species evolve in some of the world's most isolated archipelagos.
+
+# Figures and Tables {-}
+
+```{r fig-map, fig.cap='Map of *Plagiotremus* collection sites across the Indo-Pacific.', results="asis", fig.width=12, fig.height=5.3, dependson="init"}
+expand_bbox <- function(bbox, X, Y, X2 = X, Y2 = Y, crs_out = 4326) {
+  bbox <- bbox %>%
+    st_as_sfc() %>%
+    sf::st_transform(crs = 4326) %>%
+    st_shift_longitude() %>%
+    st_bbox()
+
+
+  # x1_offs <- (X / 6370000) * (180 / pi) / cos(bbox["xmin"] * pi / 180)
+  # x2_offs <- (X2 / 6370000) * (180 / pi) / cos(bbox["xmax"] * pi / 180)
+
+  bbox["xmin"] <- bbox["xmin"] - ((180*X)/(6370000*pi))
+  bbox["xmax"] <- bbox["xmax"] + ((180*X2)/(6370000*pi))
+  bbox["ymin"] <- bbox["ymin"] - (Y / 6370000) * (180 / pi)
+  bbox["ymax"] <- bbox["ymax"] + (Y2 / 6370000) * (180 / pi)
+
+  bbox %>%
+    st_as_sfc() %>%
+    sf::st_transform(crs = crs_out) %>%
+    st_bbox()
+}
+
+lon_center <- 165
+
+target_crs <- st_crs(str_glue("+proj=moll +x_0=0 +y_0=0 +lat_0=0 +lon_0={lon_center}"))
+
+
+worldrn <- ne_countries(scale = "medium", returnclass = "sf") %>%
+  st_make_valid()
+
+
+# define a long & slim polygon that overlaps the meridian line & set its CRS to match
+# that of world
+
+offset <- 180 - lon_center
+
+
+polygon <- st_polygon(x = list(rbind(
+  c(-0.0001 - offset, 90),
+  c(0 - offset, 90),
+  c(0 - offset, -90),
+  c(-0.0001 - offset, -90),
+  c(-0.0001 - offset, 90)
+))) %>%
+  st_sfc() %>%
+  st_set_crs(4326)
+
+
+# modify world dataset to remove overlapping portions with world's polygons
+world2 <- worldrn %>% st_difference(polygon)
+#> Warning: attribute variables are assumed to be spatially constant throughout all
+#> geometries
+
+blennies <- original_samples %>%
+  filter(!is.na(lat) & !is.na(lon),str_detect(species,'Plagiotremus')) %>%
+  st_as_sf(coords=c('lon','lat'),remove=FALSE,crs=4326) %>%
+  st_transform(target_crs)
+
+regions <- st_read(here("data","gis","ecoregions","meow_ecos.shp"),quiet = TRUE) %>%
+  filter(str_detect(REALM,fixed("pacific",ignore_case = TRUE)) & !str_detect(REALM,fixed("temperate",ignore_case = TRUE)))
+
+# Convert to polygon geometries, correct geometry errors, project to PCS,
+# snap vertices, merge polygons by REALM, project back to original CRS
+sf_poly <- regions %>%
+  st_cast("POLYGON") %>%
+  st_make_valid() %>%
+  st_transform(target_crs) %>%
+  st_snap(x = ., y = ., tolerance = 165) %>%
+  summarise(geometry = st_union(geometry), .by = REALM) %>%
+  st_transform(4326) %>%
+  st_shift_longitude() %>%
+  st_transform(target_crs)
+
+# Transform
+world3 <- world2 %>% st_transform(crs = target_crs)
+
+# expand bounding box
+bbox <- blennies %>%
+  st_bbox() %>%
+  expand_bbox(X=2500L*1000L,X2=5000L*1000L,Y=500L*1000L,crs_out=target_crs)
+
+# plot it
+ggplot() +
+  geom_sf(data = world3, aes(group = admin), fill="darkgrey") +
+  geom_sf(data = sf_poly, aes(fill = REALM),show.legend = FALSE, alpha = 0.3, color="grey77") +
+  new_scale_fill() +
+  geom_sf(data = st_jitter(blennies), aes(fill=species, shape=species), size=2, color="black") +
+  scale_shape_manual(values=c(21:24)) +
+  coord_sf(xlim = bbox[c(1,3)], ylim=bbox[c(2,4)],crs = target_crs) +
+  theme_bw() +
+  theme(legend.position = "bottom", legend.key = element_blank()) +
+  labs(fill="Species",shape="Species")
+cat("{#fig:fig_map}")
+```
 
 # References {-}
 
