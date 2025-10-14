@@ -226,10 +226,6 @@ alignments <- markers %>%
   })
 ```
 
-```{r gis, dependson="alignment", include=FALSE}
-
-```
-
 # Abstract {-}
 
 The Hawaiian archipelago is an endemism hotspot. Up to twenty-five percent of Hawaiian reef fish species are endemic, a higher proportion than anywhere else in the world. However, unlike terrestrial species where high endemism often arises through adaptive radiation (e.g. honeycreepers, fruit flies, silverswords, etc.)—marine endemism in Hawai&#x02BB;i is more evenly- distributed across taxa. Among reef fishes in Hawai&#x02BB;i, sister taxa rarely co-occur, and when they do, they exhibit a higher degree of range size asymmetry than co-occurring sister species elsewhere in the Indo-Pacific. In other words, the sister species of (small range size) Hawaiian endemics are typically widespread in the Indo-Pacific (large range size).
