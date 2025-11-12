@@ -46,6 +46,7 @@ output/
 resources/pandoc-crossref
 resources/import
 
-paolo/
+code/
+tmp/
 old/
 data/images

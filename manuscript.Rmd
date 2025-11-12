@@ -6,7 +6,7 @@ author:
         - himb
       equal_contributor: yes
       correspondence: yes
-      email: "mh@myklehoban.com"
+      email: "mhoban@hawaii.edu"
   - Cameron A.J. Walsh:
       institute:
         - himb
@@ -84,6 +84,13 @@ library(sf)
 library(rnaturalearth)
 library(rnaturalearthdata)
 library(ggnewscale)
+library(pander)
+library(paletteer)
+library(patchwork)
+library(ggfun)
+library(phytools)
+library(ggtree)
+library(treeio)
 source('spp.R')
 ```
 
@@ -97,6 +104,22 @@ spp <- Taxa$new('Plagiotremus')
 all_samples <- read_csv(here("data","samples.csv"))
 original_samples <- all_samples
 markers <- c("coi","cytb")
+
+# load marine ecoregions
+# TODO: figure out whether shifting longitudes here breaks anything in the map plot
+regions <- st_read(here("data","gis","ecoregions","meow_ecos.shp"),quiet = TRUE) %>%
+  st_shift_longitude() %>%
+  group_by(ECOREGION) %>%
+  # mutate(middle = st_coordinates(st_centroid(st_combine(geometry)))[,'X'] )  %>%
+  mutate(middle = max(st_coordinates(st_shift_longitude(st_combine(geometry)))[,'X']) )  %>%
+  ungroup()
+
+scounts <- original_samples %>%
+  separate_wider_delim(cols = "species",delim = " ",names=c("genus","species")) %>%
+  mutate(id = str_glue("{str_sub(genus,1,1)}{str_sub(species,1,2)}")) %>%
+  count(id) %>%
+  deframe()
+
 
 # stolen from insect: join two DNAbins together
 join_seq <- function(...){
@@ -128,10 +151,82 @@ join_seq <- function(...){
   class(res) <- "DNAbin"
   return(res)
 }
+
+# format percents and numbers
+pc <- function(x,a=0.01) scales::percent_format(accuracy = a)(x)
+num <- function(x,a=0.01) scales::label_comma(accuracy=a)(x)
+
+
+# format a markdown grid table from a data frame or file
+print_table <- function(tbl,id="",caption="",hdr_case="sentence",hide=character(0),accuracy = 0.01,format_numbers=TRUE, cell_width = Inf) {
+  if (!grepl("^: ",caption)) {
+    caption <- paste0(": ",caption)
+  }
+
+  if (inherits(tbl,"character")) {
+    if (id == "") {
+      id <- sub(pattern = "(.*?)\\..*$", replacement = "\\1", basename(file))
+    }
+    tbl <- read.csv(tbl,check.names=FALSE,stringsAsFactors=FALSE)
+  } else if (inherits(tbl,"data.frame")) {
+    if (id == "") stop("please specify table id")
+  } else {
+    stop("'tbl' must be a character or a data frame")
+  }
+
+  tbl <- tbl %>%
+    select(-any_of(hide)) %>%
+    mutate(
+      across(
+        where(~format_numbers & is.numeric(.x)),
+        ~num(.x,accuracy)
+      )
+    )
+
+
+  # can also use rename_with(str_to_sentence)
+  names(tbl) <- switch(
+    str_to_lower(hdr_case),
+    sentence = str_to_sentence(names(tbl)),
+    title = str_to_title(names(tbl)),
+    upper = str_to_upper(names(tbl)),
+    lower = str_to_lower(names(tbl)),
+    names(tbl)
+  )
+
+  caption <- sprintf("%s {#tbl:%s}",caption,id)
+
+  table_str <- pandoc.table.return(
+    tbl,
+    keep.line.breaks=TRUE,
+    caption=NULL,
+    style="multiline",
+    split.cells=cell_width,
+    split.tables=Inf,
+    justify='left',
+    missing=''
+  )
+  table_str <- table_str[table_str != ""]
+  cat(paste0(table_str,collapse="\n"),"\n\n",caption,"\n\n",sep="")
+}
+
+# little list of our sister species pairs, used for filtering datasets
+species_pairs <- list(pgt=c('goslinei','tapeinosoma'),per=c('ewaensis','rhinorhynchos'))
+
+# map of various ecoregion realms to color palettes
+palette_map <- c(
+  'Temperate Southern Africa' = 'beyonce::X59',
+  'Western Indo-Pacific' = 'RColorBrewer::OrRd',
+  'Central Indo-Pacific' = 'RColorBrewer::Greens',
+  'Hawaii' = 'ggsci::purple_material',
+  'Marquesas' = 'Redmonder::dPBIYlBu',
+  'Eastern Indo-Pacific' = 'RColorBrewer::Blues'
+)
 ```
 
 ```{r bold-seqs, dependson="init", include=FALSE}
 library(bold)
+# remove: Pbr-GBMTG324-16, Pbr-GBMNA15372-19
 bold_seqs_raw <- bold_seqspec(taxon=c("Plagiotremus","Xiphasia","Meiacanthus","Omobranchus anolius"))
 
 bold_tbl <- bold_seqs_raw %>%
@@ -139,7 +234,8 @@ bold_tbl <- bold_seqs_raw %>%
   filter(
     nucleotides != "",
     species_name != "",
-    !str_detect(species_name,"(sp|cf)\\.")
+    !str_detect(species_name,"(sp|cf)\\."),
+    !str_detect(processid,'FUT225') # this is a typo, it's a damselfish with the same specific epithet
   ) %>%
   separate_wider_delim(species_name,delim=" ",names=c(NA,"spp"),cols_remove = FALSE) %>%
   mutate(
@@ -154,6 +250,7 @@ bold_tbl <- bold_seqs_raw %>%
     sequenced_coi=1,
     sequenced_cytb=0
   ) %>%
+  distinct(id,.keep_all = TRUE) %>%
   filter(str_detect(markercode,'COI')) %>%
   select(id,species=species_name,basin,country,region,locality=exactsite,province,sequenced_coi,sequenced_cytb,lon,lat,source,nucleotides)
 
@@ -172,19 +269,20 @@ bold_seqs <- list(
 )
 
 all_samples <- all_samples %>%
-  bind_rows(bold_tbl %>% select(-nucleotides))
+  bind_rows(bold_tbl %>% select(-nucleotides)) %>%
+  separate_wider_delim(species,delim=' ',names=c('genus','species'),cols_remove = FALSE)
 ```
 
 ```{r local-seqs, dependson="init", include=FALSE}
 local_seqs <- markers %>%
   set_names() %>%
-  map( \(marker) {
+  purrr::map( \(marker) {
     seqs <- read_fasta(here("data",str_glue("plagiotremus-{marker}.fasta")),aligned=FALSE)
     # seqs <- seqs[labels(seqs) %in% all_samples$id,]
 
     # filter metadata to match seqs
     samples <- all_samples %>%
-      filter(id %in% labels(seqs)) %>%
+      dplyr::filter(id %in% labels(seqs)) %>%
       arrange(id)
 
     # order sequences the same as the sample metadata
@@ -196,7 +294,7 @@ local_seqs <- markers %>%
 ```{r alignment, dependson=c("bold-seqs","local-seqs"), include=FALSE}
 alignments <- markers %>%
   set_names() %>%
-  map(\(marker) {
+  purrr::map(\(marker) {
     ss <- local_seqs %>%
       pluck(marker,'sequences')
     if (exists(marker,where=bold_seqs)) {
@@ -211,19 +309,40 @@ alignments <- markers %>%
       # map_chr(~str_c(marker,collapse="")) %>%
       unlist() %>%
       DNAStringSet() %>%
-      msa(method="ClustalOmega") %>%
+      msa(.,method="ClustalOmega",gapOpening = 2000,gapExtension = 1000) %>%
       as.DNAbin()
 
     write_fasta(al,here("cache",str_glue("{marker}_aligned.fasta")))
 
     covg <- apply(al,2,\(x) (sum(x != 4) / length(x)))
-    ss <- list(c50 = 0.5, c80 = 0.8, c00 = 0) %>%
+    list(c50 = 0.5, c99 = 0.99, c00 = 0) %>%
       imap(\(cov,idx) {
         p1 <- min(which(covg >= cov))
         p2 <- max(which(covg >= cov))
-        al[,p1:p2]
+        ll <- al[,p1:p2]
+        write_fasta(ll,here('output','alignments',str_glue('{marker}_{idx}.fasta')))
+        return(ll)
       })
   })
+
+sample_data <- markers %>%
+  set_names() %>%
+  purrr::map(\(marker) {
+    all_samples %>%
+      filter(id %in% labels(alignments %>% pluck(marker,'c00')))
+  })
+
+# cytb_samples <- all_samples %>% filter(id %in% labels(alignments$cytb$c00))
+cycount <- sample_data$cytb %>%
+  count(source) %>%
+  deframe()
+
+cocount <- sample_data$coi%>%
+  count(source) %>%
+  deframe()
+
+coi_len <- purrr::map(alignments$coi,ncol)
+cytb_len <- purrr::map(alignments$cytb,ncol)
 ```
 
 # Abstract {-}
@@ -232,7 +351,7 @@ The Hawaiian archipelago is an endemism hotspot. Up to twenty-five percent of Ha
 
 # Introduction {-}
 
-The Hawaiian archipelago is an endemism hotspot: up to twenty-five percent of its reef fish species are endemic, a higher proportion than anywhere else in the world [@randallReefShoreFishes2007]. However, unlike among terrestrial species where high endemism is often a result of adaptive radiations [e.g., honeycreepers: @freedEvolutionaryEcologyRadiation1987a; fruit flies: @carsonChromosomalSequencesInterisland1983; silverswords: @witterAdaptiveRadiationGenetic1988, etc.], marine endemism in Hawai&#x02BB;i is more evenly-distributed across taxa [@kayEndemismEvolutionHawaiian1987; @mundyChecklistFishesHawaiian2005]. Among Hawaiian reef fishes, sister taxa rarely co-occur and when they do, they often exhibit a higher degree of range size asymmetry than co-occurring sister species elsewhere in the Indo-Pacific [@gaboriauInfluenceGeographySpeciation2018]. Whether or not they co-occur, the sister species of Hawaiian endemics are often widespread in the Indo-Pacific [@gaboriauInfluenceGeographySpeciation2018; @randallZoogeographyShoreFishes1998].
+The Hawaiian archipelago is an endemism hotspot. Up to twenty-five percent of its reef fish species are endemic, a higher proportion than anywhere else in the world [@randallReefShoreFishes2007]. However, whereas terrestrial endemism in Hawai&#x02BB;i is often associated with adaptive radiation [e.g., honeycreepers: @freedEvolutionaryEcologyRadiation1987a; fruit flies: @carsonChromosomalSequencesInterisland1983; silverswords: @witterAdaptiveRadiationGenetic1988, etc.], marine endemism is more evenly-distributed across taxa [@kayEndemismEvolutionHawaiian1987; @mundyChecklistFishesHawaiian2005]. Among Hawaiian reef fishes, sister taxa rarely co-occur and when they do, they often exhibit a higher degree of range size asymmetry than co-occurring sister species elsewhere in the Indo-Pacific [@gaboriauInfluenceGeographySpeciation2018]. Whether or not they co-occur, the sister species of Hawaiian endemics are often widespread in the Indo-Pacific [@gaboriauInfluenceGeographySpeciation2018; @randallZoogeographyShoreFishes1998; @hobanCirripectesMatatakaroNew2020a].
 
 Two examples of endemic reef fishes with widespread sister species are currently recognized within the sabertooth blenny genus `r spp$cite("Plagiotremus")` (Blennioidei: Blenniidae). `r spp$cite("Plagiotremus goslinei")` and `r spp$cite("Plagiotremus ewaensis",TRUE)` are endemic to the Hawaiian Islands [(and possibly Johnston Atoll?)]{.mark} and their respective sister taxa, `r spp$cite("Plagiotremus tapeinosoma",TRUE)` and `r spp$cite("Plagiotremus rhinorhynchos",TRUE)` are distributed across the tropical Indo-West-Pacific from the Red Sea to the Marquesas Islands [@smith-vanizSabertoothedBlenniesTribe1976a; @randallReefShoreFishes2007]. A phylogenetic analysis of *Plagiotremus* using 22 parsimony-informative morphological characters suggested four species groups and three subgenera [@smith-vanizSabertoothedBlenniesTribe1976a]. According to the analysis, the subgenus *Plagiotremus* contains only `r spp$cite("Plagiotremus spilistius")` and `r spp$cite("Plagiotremus iosodon",TRUE)`. `r spp$cite("Plagiotremus celebesensis")` was originally included, but was synonymized with *P. spilistius* in a follow-up study [@smith-vanizSaberToothedBlenniesTribe1987a]. The subgenus *Musgravius*, recognized as the sister to subgenus *Plagiotremus*, contains the *laudandus* group comprising `r spp$cite("Plagiotremus laudandus")`, `r spp$cite("Plagiotremus phenax",TRUE)`, and `r spp$cite("Plagiotremus townsendi",TRUE)` (although the subspecies *Plagiotremus laudandus flavus* may additionally warrant elevation to species) [@hastingsRecognizingDiversityBlennioid2009a; @smith-vanizAggressiveMimicryAspidontus2020]. *Runula*, which is sister to the other subgenera, contains the *rhinorhynchos* group (*P. rhinorhynchos* and *P. ewaensis*) and the *tapeinosoma* group (*P. tapeinosoma*, *P. goslinei*, and `r spp$cite("Plagiotremus azaleus",TRUE)`) [@smith-vanizSabertoothedBlenniesTribe1976a]. Although Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976a; -@smith-vanizSaberToothedBlenniesTribe1987a] supported the Hawaiian endemic/widespread sister species relationships, he did not rule out the possibility that putative endemic species comprised isolated populations of their widespread sister species. Furthermore, he could not unambiguously resolve the interrelationships of subgenera within *Plagiotremus*, nor the placement of *Plagiotremus* relative to other genera in the tribe Nemophini. Although morphology-based phylogenetic analyses have provided some taxonomic clarity within this group, molecular approaches may enable the further resolution of uncertain relationships as well as help place endemic species within a broader biogeographic context.
 
@@ -244,7 +363,7 @@ To resolve the taxonomy of *Plagiotremus* fishes at various levels, this study c
 
 ## Specimen collection {-}
 
-We collected 360 samples of *Plagiotremus* (*P. tapeinosoma*, *P. rhinorhynchos*, *P. goslinei*, and *P. ewaensis*) from Hawai&#x02BB;i and abroad ([@fig:fig_map]). Specimens were collected by pole spear and hand net and a portion of the caudal fin was preserved in salt-saturated DMSO solution [@seutinPreservationAvianBlood2011] for subsequent molecular analysis. We collected 43 specimens of *P. rhinorhynchos* and 88 specimens of *P. tapeinosoma* across their ranges in the Indo-Pacific, from the Red sea to the Marquesas Islands. Additionally, we collected 42 *P. ewaensis* and 62 *P. goslinei* specimens from 13 different locations in the main (MHI) and northwest Hawaiian Islands (NWHI). All specimens from the Northwest Hawaiian Islands were collected under permits PMNM-2007-032, PMNM-2008-046, PMNM-2009-032L, PMNM-2009-044, PMNM-2011-025, and PMNM-2012-045, issued by the National Oceanic and Atmospheric Administration, the U.S. Fish and Wildlife Service, and the State of Hawaii Division of Aquatic Resources to BWB at the Hawai&#x02BB;i Institute of Marine Biology. Fish sampling protocols were approved by the University of Hawai&#x02BB;i at Manoa Institutional Animal Care & Use Committee under approval nos. 09-753 and 15-2271.
+We collected `r nrow(original_samples)` samples of *Plagiotremus* (*P. tapeinosoma*, *P. rhinorhynchos*, *P. goslinei*, and *P. ewaensis*) from Hawai&#x02BB;i and abroad. Specimens were collected by pole spear and hand net and a portion of the caudal fin was preserved in salt-saturated DMSO solution [@seutinPreservationAvianBlood2011] for subsequent molecular analysis. *Plagiotremus rhinorhynchos* and *P. tapeinosoma* were collected across their ranges in the Indo-Pacific, from the Red sea to the Marquesas Islands. *Plagiotremus ewaensis* and *P. goslinei* were collected from 13 locations in the Main (MHI) and Northwestern Hawaiian Islands (NWHI) ([@fig:fig_map; @tbl:tbl_collection]). All specimens from the NWHI were collected under permits PMNM-2007-032, PMNM-2008-046, PMNM-2009-032L, PMNM-2009-044, PMNM-2011-025, and PMNM-2012-045, issued by the National Oceanic and Atmospheric Administration, the U.S. Fish and Wildlife Service, and the State of Hawaii Division of Aquatic Resources to BWB at the Hawai&#x02BB;i Institute of Marine Biology. Fish sampling protocols were approved by the University of Hawai&#x02BB;i at Manoa Institutional Animal Care & Use Committee under approval nos. 09-753 and 15-2271.
 
 ## DNA extraction and sequencing {-}
 
@@ -252,24 +371,36 @@ Tissue samples were brought to the Hawai&#x02BB;i Institute of Marine Biology (H
 
 ## Additional sequence acquisition {-}
 
-We downloaded all available COI sequence data in the Barcode of Life Database (BoLD) ascribed to the genera *Plagiotremus*, *Xiphasia* and *Meiacanthus*. *Omobranchus* has been identified and used as the outgroup to the tribe Nemophini in the multi-locus molecular phylogenies discussed above, so a COI sequence from *Omobranchus anolius* with identification and location information was downloaded from BoLD and used as the outgroup in our phylogenetic analyses. Three *Plagiotremus* sequences pulled from BoLD were excluded in downstream analyses due to unclear origins or mislabeling.
+We downloaded all available COI sequence data in the Barcode of Life Database (BoLD) from the genera *Plagiotremus*, *Xiphasia* and *Meiacanthus*. *Omobranchus* has been identified and used as the outgroup to the tribe Nemophini in the multi-locus molecular phylogenies discussed above, so a COI sequence from *Omobranchus anolius* with identification and location information was downloaded from BoLD and used as the outgroup in our phylogenetic analyses. Three *Plagiotremus* sequences pulled from BoLD were excluded in downstream analyses due to unclear origins or mislabeling.
 
 
 ## Sequence analysis {-}
 
 ### Phylogenetic analyses {-}
 
-Initial filtering was performed using R 3.6.0 [@rcoreteamLanguageEnvironmentStatistical2019]. A total of 327 COI sequences (234 de novo, 93 downloaded from BoLD) were used to infer molecular phylogenies. <!--Annotated R scripts used to perform all analyses in this paper can be found on GitHub (https://github.com) in the repository cajwalsh/plagio_project. The script used to perform the filtering described in this section is called "1_initial_filtering.R".-->Sequence data was loaded into R using the packages `Biostrings` [@aboyounBiostringsEfficientManipulation2017] and `ape` [@paradisApeEnvironmentModern2019]. The sequences were aligned using the Clustal Omega algorithm [@sieversFastScalableGeneration2011] implemented in the R package `msa` [@bodenhoferMsaPackageMultiple2015]. Since the sequences analyzed here are from various sources, many have different lengths or include loci that are missing in the final alignment. To compare the effects of missing data on tree node support, three versions of the sequence alignment were used: one that excluded loci that were missing in more than one individual (hereafter referred to as the 99% coverage dataset), one that only included loci that were sequenced in >50% of individuals (>50% coverage dataset), and one in which all loci in the alignment were kept (the full dataset). After filtering, identical sequences were merged and taxonomic as well as geographic spread of merged sequences were recorded.<!-- The script used to perform this filtering in the cajwalsh/plagio_project repository is titled: "2_1_tree_alignment_filtering.R".-->
+Initial filtering was performed using R 3.6.0 [@rcoreteamLanguageEnvironmentStatistical2019]. Sequence data was loaded into R using the packages `Biostrings` [@aboyounBiostringsEfficientManipulation2017] and `ape` [@paradisApeEnvironmentModern2019] and aligned using the Clustal Omega algorithm [@sieversFastScalableGeneration2011] implemented in the R package `msa` [@bodenhoferMsaPackageMultiple2015]. Since the sequences analyzed here are from various sources, many have different lengths or include loci that are missing in the final alignment. To compare the effects of missing data on tree node support, three versions of the sequence alignment were generated: one that excluded loci missing in more than one individual (hereafter referred to as the 99% coverage dataset), one that only included loci sequenced in >50% of individuals (>50% coverage dataset), and one with all sequences in the alignment (the full dataset). After filtering, identical sequences were merged and taxonomic as well as geographic spread of merged sequences were recorded.
 
-We inferred maximum likelihood phylogenetic trees from each of the three datasets using `IQ-TREE 2` [@minhIQTREENewModels2020]. `ModelFinder` [@kalyaanamoorthyModelFinderFastModel2017] was used to determine the best substitution model prior to tree estimation and 2,000 ultrafast bootstraps (UFBoot) were performed using `UFBoot2` [@hoangUFBoot2ImprovingUltrafast2018] following tree estimation. The authors of UFBoot2 suggest using a support threshold of $\geq$ 95%. Resulting trees were interpreted and plotted in R using the packages `ape`, `treeio` [@wangTreeioPackagePhylogenetic2020], `ggplot2` [@wickhamGgplot2ElegantGraphics2009], `ggthemes` [@arnoldGgthemesExtraThemes2019], `ggtree` [@yuGgtreePackageVisualization2017], and `patchwork` [@pedersenPatchworkComposerPlots2020]. As a compromise between potential under- and over-filtering, the tree constructed using the > 50% coverage dataset was used to examine the relationships within *Plagiotremus*.<!-- The script used to interpret and plot these trees in the cajwalsh/plagio_project repository is titled: "2_2_tree_plotting.R".-->
+<!--
+TODO: partitionfinder citations
+PF2: @lanfearPartitionFinder2New2017
+greedy algo: @lanfearPartitionFinderCombinedSelection2012
+phyml: @guindonNewAlgorithmsMethods2010
+-->
+
+We inferred maximum likelihood phylogenetic trees from each of the three datasets using `IQ-TREE 2` [@minhIQTREENewModels2020]. `ModelFinder` [@kalyaanamoorthyModelFinderFastModel2017] was used to determine the best substitution model prior to tree estimation and 2,000 ultrafast bootstraps (UFBoot) were performed using `UFBoot2` [@hoangUFBoot2ImprovingUltrafast2018] following tree estimation. The authors of UFBoot2 suggest using a support threshold of $\geq$ 95%. Resulting trees were interpreted and plotted in R using the packages `ape`, `treeio` [@wangTreeioPackagePhylogenetic2020], `ggplot2` [@wickhamGgplot2ElegantGraphics2009], `ggthemes` [@arnoldGgthemesExtraThemes2019], `ggtree` [@yuGgtreePackageVisualization2017], and `patchwork` [@pedersenPatchworkComposerPlots2020]. As a compromise between potential under- and over-filtering, we used the \> 50% coverage dataset to examine relationships within *Plagiotremus*.
 
 ### Haplotype network analysis {-}
 
-To examine finer-scale relationships between *P. tapeinosoma* and *P. goslinei*, a haplotype network analysis was performed using all sequences from these two species as well as their closest relative *P. azaleus*. The sequences (149 original and 25 from BoLD) were interpreted and aligned using the same procedures as for phylogenetic analyses. However, only loci sequenced in all samples were used (i.e., no sites with missing data were kept). Haplotype frequencies were calculated, arranged into a maximum-parsimony network [@templetonCladisticAnalysisPhenotypic1992], and plotted using `ggplot2`, `patchwork`, custom `RColorBrewer` [@neuwirthRColorBrewerColorBrewerPalettes2014], and a customized version of the R package `pegas` [@paradisPegasPackagePopulation2010]. Sampling locations were further grouped by color into their respective biogeographic regions, as defined by Kulbicki et al. [-@kulbickiGlobalBiogeographyReef2013].<!--: *P. azaleus* is found in the Tropical Eastern Pacific realm, *P. goslinei* is restricted to the Hawaiian province (further split into the Northwestern Hawaiian Islands and Main Hawaiian Islands here) in the Indo-Pacific realm, while all other (*P. tapeinosoma*) samples came from various provinces in the Indo-Pacific realm.-->
+To examine finer-scale relationships between *P. tapeinosoma* and *P. goslinei*, a haplotype network analysis was performed using all sequences from these two species and their closest relative *P. azaleus*. Sequences <!--(149 original and 25 from BoLD)-->were interpreted and aligned using the same procedures as for phylogenetic analyses and only loci sequenced in all samples were used (i.e., no sites with missing data were kept). Haplotype frequencies were calculated, arranged into a maximum-parsimony network [@templetonCladisticAnalysisPhenotypic1992], and plotted using `ggplot2`, `patchwork`, custom `RColorBrewer` [@neuwirthRColorBrewerColorBrewerPalettes2014], and a customized version of the R package `pegas` [@paradisPegasPackagePopulation2010]. Sampling locations were further grouped by color into their respective biogeographic regions, as defined by Kulbicki et al. [-@kulbickiGlobalBiogeographyReef2013].<!--: *P. azaleus* is found in the Tropical Eastern Pacific realm, *P. goslinei* is restricted to the Hawaiian province (further split into the Northwestern Hawaiian Islands and Main Hawaiian Islands here) in the Indo-Pacific realm, while all other (*P. tapeinosoma*) samples came from various provinces in the Indo-Pacific realm.-->
 
 # Results {-}
 
-The alignment of all 327 COI sequences contained 698 base pairs. There was >99% coverage between base pairs 180 and 572 and >50% coverage between base pairs 106 and 634. The full dataset contained 184 unique haplotypes with 25 that were shared in at least two individuals (none were shared between species or between original and BoLD data sources), the >50% coverage dataset contained 158 unique haplotypes with 28 that were shared between at least two individuals (two shared between the different data sources), and the >99% coverage dataset contained 123 unique haplotypes with 33 that were shared between at least two individuals (nine of which were shared between original and BoLD data sources while five were shared between species). There were 249 parsimony-informative sites in the full dataset, 194 in the >50% coverage dataset, and 149 in the >99% coverage dataset. ModelFinder selected the TPM2+F+G4 substitution model as the best fit for all three datasets.
+```{r alignment-summary, dependson="alignment", include=FALSE}
+coi_covg <- apply(alignments$coi$c00,2,\(x) (sum(x != 4) / length(x)))
+cytb_covg <- apply(alignments$cytb$c00,2,\(x) (sum(x != 4) / length(x)))
+```
+
+The alignment of all `r nrow(sample_data$coi)` COI sequences was `r coi_len$c00` base pairs long. There was >99% coverage between positions `r dplyr::first(which(coi_covg > 0.99))` and `r dplyr::last(which(coi_covg > 0.99))` and >50% coverage between positions `r dplyr::first(which(coi_covg > 0.5))` and `r dplyr::last(which(coi_covg > 0.5))`. The full dataset contained 184 unique haplotypes with 25 that were shared in at least two individuals (none were shared between species or between original and BoLD data sources), the >50% coverage dataset contained 158 unique haplotypes with 28 that were shared between at least two individuals (two shared between the different data sources), and the >99% coverage dataset contained 123 unique haplotypes with 33 that were shared between at least two individuals (nine of which were shared between original and BoLD data sources while five were shared between species). There were 249 parsimony-informative sites in the full dataset, 194 in the >50% coverage dataset, and 149 in the >99% coverage dataset. ModelFinder selected the TPM2+F+G4 substitution model as the best fit for all three datasets.
 
 Trees built using all three datasets showed ≥94% support for the monophyly of both *Xiphasia* and *Meiacanthus*, with lower support (72--94%) for the monophyly of *Plagiotremus* (Figure 1). Each of the three trees also placed two *Meiacanthus grammistes* sequences (Mgr-502 & Mgr-504) in a clade distinct from the rest of *Meiacanthus* (including other individuals from their own species) as more closely related to *Plagiotremus*. Although there was generally low support for inter-genus relationships in all trees, both the full and >50% coverage trees considered *Meiacanthus* as the sister genus to *Plagiotremus* (plus Mgr-502 & 504) while the >99% coverage tree placed *Xiphasia* as sister genus to *Plagiotremus* (plus Mgr-502 & 504).
 
@@ -305,17 +436,13 @@ The taxonomy and phylogeography of fangblennies was elucidated in this study by 
 
 # Figures and Tables {-}
 
-```{r fig-map, fig.cap='Map of *Plagiotremus* collection sites across the Indo-Pacific.', results="asis", fig.width=12, fig.height=5.3, dependson="init"}
+```{r fig-map, fig.cap='Map of *Plagiotremus* collection sites across the Indo-Pacific.', results="asis", fig.width=8, fig.height=5, dependson="init"}
 expand_bbox <- function(bbox, X, Y, X2 = X, Y2 = Y, crs_out = 4326) {
   bbox <- bbox %>%
     st_as_sfc() %>%
     sf::st_transform(crs = 4326) %>%
     st_shift_longitude() %>%
     st_bbox()
-
-
-  # x1_offs <- (X / 6370000) * (180 / pi) / cos(bbox["xmin"] * pi / 180)
-  # x2_offs <- (X2 / 6370000) * (180 / pi) / cos(bbox["xmax"] * pi / 180)
 
   bbox["xmin"] <- bbox["xmin"] - ((180*X)/(6370000*pi))
   bbox["xmax"] <- bbox["xmax"] + ((180*X2)/(6370000*pi))
@@ -341,8 +468,6 @@ worldrn <- ne_countries(scale = "medium", returnclass = "sf") %>%
 # that of world
 
 offset <- 180 - lon_center
-
-
 polygon <- st_polygon(x = list(rbind(
   c(-0.0001 - offset, 90),
   c(0 - offset, 90),
@@ -364,12 +489,13 @@ blennies <- original_samples %>%
   st_as_sf(coords=c('lon','lat'),remove=FALSE,crs=4326) %>%
   st_transform(target_crs)
 
-regions <- st_read(here("data","gis","ecoregions","meow_ecos.shp"),quiet = TRUE) %>%
+# map_regions <- st_read(here("data","gis","ecoregions","meow_ecos.shp"),quiet = TRUE) %>%
+map_regions <- regions %>%
   filter(str_detect(REALM,fixed("pacific",ignore_case = TRUE)) & !str_detect(REALM,fixed("temperate",ignore_case = TRUE)))
 
 # Convert to polygon geometries, correct geometry errors, project to PCS,
 # snap vertices, merge polygons by REALM, project back to original CRS
-sf_poly <- regions %>%
+sf_poly <- map_regions %>%
   st_cast("POLYGON") %>%
   st_make_valid() %>%
   st_transform(target_crs) %>%
@@ -385,7 +511,7 @@ world3 <- world2 %>% st_transform(crs = target_crs)
 # expand bounding box
 bbox <- blennies %>%
   st_bbox() %>%
-  expand_bbox(X=2500L*1000L,X2=5000L*1000L,Y=500L*1000L,crs_out=target_crs)
+  expand_bbox(X=2500L*1000L,X2=3000L*1000L,Y=1000L*1000L,crs_out=target_crs)
 
 # plot it
 ggplot() +
@@ -400,6 +526,481 @@ ggplot() +
   labs(fill="Species",shape="Species")
 cat("{#fig:fig_map}")
 ```
+
+\newpage
+
+```{r haplotypes, results="asis", dependson="alignment"}
+plagiotremus_data <- all_samples %>%
+  filter(str_detect(species,str_c(unlist(species_pairs),collapse='|'))) %>%
+  drop_na(lon,lat) %>%
+  st_as_sf(coords=c('lon','lat'),remove=FALSE,crs=4326) %>%
+  st_join(regions,st_within) %>%
+  mutate(
+    llon = if_else(middle < 0,middle+360,middle),
+    meow_province = coalesce(meow_province,PROVINCE),
+    meow_province = fct_reorder(meow_province,llon),
+    ecoregion = case_when(
+      ECOREGION == "Hawaii" ~ region,
+      str_detect(ECOREGION,regex('red sea',ignore_case = TRUE)) ~ 'Red Sea',
+      .default = ECOREGION
+    ),
+    color_category = fct_reorder(
+      case_when(
+        str_detect(ecoregion,'Hawaii') ~ 'Hawaii',
+        str_detect(ecoregion,'Marquesas') ~ 'Marquesas',
+        .default = REALM
+      ),
+      llon
+    )
+  )  %>%
+  arrange(color_category,llon) %>%
+  mutate(n = row_number(),ecoregion = fct_reorder(ecoregion,n)) %>%
+  as_tibble()
+
+master_palette <- plagiotremus_data %>%
+  as_tibble() %>%
+  count(color_category,ecoregion) %>%
+  group_by(color_category) %>%
+  mutate( color = rev(paletteer_d( palette_map[as.character(cur_group()$color_category)]))[1:n()], n = n() ) %>%
+  ungroup()
+
+haplotype_plotz <- species_pairs %>%
+  purrr::map(\(pair) {
+    markers %>%
+      set_names() %>%
+      purrr::map(\(marker) {
+        alignment <- alignments %>%
+          pluck(marker,'c00')
+        # filter by samples in this species pair
+        samples <- plagiotremus_data %>%
+          filter(
+            str_detect(species,str_c(pair,collapse='|')),
+            id %in% labels(alignment)
+          )
+        alignment <- alignment[samples$id,]
+        # calculate per-base coverage
+        covg <- apply(alignment,2,\(bases) sum(bases != 4) / length(bases))
+        # keep only positions with >= 99% coverage
+        alignment <- alignment[,covg >= 0.99]
+        samples <- samples %>%
+          filter(id %in% labels(alignment))
+        if (nrow(alignment) > 0) {
+          haplotypes <- haplotype(alignment)
+          hnet <- haploNet(haplotypes)
+          hindex <- attr(haplotypes,'index')
+          ht_locations <- haploFreq(alignment,fac=samples$ecoregion)
+          palette <- master_palette %>%
+            filter(ecoregion %in% colnames(ht_locations)) %>%
+            dplyr::slice(match(colnames(ht_locations),ecoregion)) %>%
+            select(ecoregion,color) %>%
+            deframe()
+          bar_legend <- ggplot(data = samples, aes(y = ecoregion, fill = ecoregion)) +
+            geom_bar() +
+            geom_text(stat = "count", aes(label = ..count..), hjust = -0.25, size = 2) +
+            scale_fill_manual(values = palette, guide = F) +
+            # scale_x_continuous(breaks = seq(0,40,10), limits = c(0,45)) +
+            scale_y_discrete(limits=rev) +
+            theme_transparent() +
+            theme(
+              plot.title = element_blank(),
+              plot.subtitle = element_blank(),
+              axis.text.y = element_text(size = 12, colour = "black"),
+              axis.text.x = element_text(size = 7, colour = "black"),
+              axis.ticks.y = element_blank(),
+              axis.title = element_blank(),
+              legend.position = "none",
+              panel.grid.major.y = element_blank(),
+              panel.grid.minor = element_blank(),
+              panel.border = element_blank(),
+              panel.grid = element_blank()
+            ) +
+            labs(title = "Legend", subtitle = "Number of samples")
+          pd <- NULL
+          rds_file <- here('data','haplotypes',str_glue('{str_c(pair,collapse="-")}_{marker}_replot.rds'))
+          if (file_exists(rds_file)) pd <- readRDS(rds_file)
+          # plot(hnet, pie = ht_locations, bg = palette, # keep the same
+          #      size=attr(hnet, "freq"), show.mutation = 1, length = 0.5, space = 0.75, # mess with
+          #      # labels = F, threshold = 0, fast = F, legend = F)#, xy=pd)
+          #      labels = F, threshold = 0, fast = F, legend = F, xy=pd)
+          # pd <- replot()
+          # saveRDS(pd,rds_file)
+          hap_layout <- c(
+            patchwork::area(l = 1, r = 100,
+                            t = 1, b = 100),
+            patchwork::area(l = 6, r = 30,
+                            t = 65, b = 99)
+          )
+          # make plot with legend
+          joint_plot <- wrap_elements(
+            panel = ~plot(
+              hnet, pie = ht_locations, bg = palette,
+              size=attr(hnet, "freq"), show.mutation = 1,
+              labels = F, threshold = 0, fast = F, legend = F, xy=pd
+            ),
+            clip = FALSE
+          ) +
+            bar_legend +
+            plot_layout(design = hap_layout)
+          # quartz()
+          joint_plot
+        } else {
+          NULL
+        }
+      })
+  })
+```
+
+\newpage
+
+```{r fig-coi-pgt, fig.cap='COI haplotype network of *Plagiotremus tapeinosoma* and *P. goslinei*.', results="asis", fig.width=16, fig.height=10, dependson="haplotypes"}
+haplotype_plotz$pgt$coi
+cat("{#fig:fig_coi_pgt}")
+```
+
+\newpage
+
+```{r fig-cytb-pgt, fig.cap='cytb haplotype network of *Plagiotremus tapeinosoma* and *P. goslinei*.', results="asis", fig.width=16, fig.height=10, dependson="haplotypes"}
+haplotype_plotz$pgt$cytb
+cat("{#fig:fig_cytb_pgt}")
+```
+
+\newpage
+
+```{r fig-coi-per, fig.cap='COI haplotype network of *Plagiotremus rhinorhynchos* and *P. ewaensis*.', results="asis", fig.width=16, fig.height=10, dependson="haplotypes"}
+haplotype_plotz$per$coi
+cat("{#fig:fig_coi_per}")
+```
+
+\newpage
+
+```{r trees, results="asis", dependson="alignment"}
+# read complete COI tree and join sample data
+tree_covg <- names(alignments$coi)
+
+trees <- tree_covg %>%
+  sort() %>%
+  set_names() %>%
+  purrr::map(\(covg) {
+    tree <- read.mrbayes(here('data','trees',str_glue('coi_{covg}.nex.con.tre'))) %>%
+      left_join(all_samples,by=c(label='id')) 
+    
+    # drop all but one Omobranchus tip to simplify things
+    to_drop <- tree %>%
+      as_tibble() %>%
+      filter(
+        # str_detect(species,'Omobranchus'),
+        genus == 'Omobranchus',
+        label != 'Oan-AMS266-08'
+      ) %>%
+      pull(label)
+    
+    tree <- tree %>%
+      drop.tip(to_drop)
+    
+    # figure out our one omobranchus outgroup node
+    outgroup <- tree %>%
+      as_tibble() %>%
+      filter(genus == 'Omobranchus') %>%
+      pull(node)
+    if (length(outgroup) > 1) {
+      outgroup <- getMRCA(tree@phylo,outgroup)
+    }
+    
+    # reroot the tree on the omobranchus node
+    tree@phylo <- reroot(
+      tree@phylo,
+      outgroup,
+      position = tree@phylo$edge.length[which(tree@phylo$edge[,2]==outgroup)]/2
+    )
+    
+    # create groups to color the tree sections
+    genus_groups <- tree %>% 
+      as_tibble() %>%
+      filter(genus != 'Omobranchus') %>%
+      split(.$genus) %>%
+      imap(\(grp,genus) {
+        unique(grp$label)
+      })
+    tree <- tree %>%
+      mutate(lbl = case_when(
+        genus == 'Omobranchus' ~ 'Omobranchus',
+        .default = ''
+      )) %>%
+      groupOTU(genus_groups,'Genus')
+    # make the groups be a factor
+    attr(tree@phylo,'Genus') <- factor(attr(tree@phylo,'Genus'),levels=names(genus_groups))
+    
+    tree
+  })
+```
+
+```{r fig-genus-trees, fig.cap='COI Bayesian consensus trees for *Plagiotremus* and closely-related genera. (A) Full tree base on 50% coverage alignment. (B) Genus-level tree based on full alignment (all sequences). (C) Genus-level tree based on 99% coverage alignment.', results="asis", fig.width=16, fig.height=9.5, dependson="trees"}
+# full tree
+ft <- 'c50'
+# subtrees
+st <- grep('c50',names(trees),invert = TRUE,value = TRUE)
+
+# calculate MRCA of genera for clade labeling, excluding Omobranchus
+genera <- trees %>%
+  purrr::map(\(tree) {
+    tree %>%
+      as_tibble() %>%
+      filter(genus != 'Omobranchus') %>%
+      split(.$genus) %>%
+      imap(\(grp,genus) {
+        if (nrow(grp) > 1) {
+          node <- getMRCA(tree@phylo,grp$node) 
+        } else {
+          node <- grp$node
+        }
+        tibble(id=node,text=genus)
+      }) %>%
+      list_rbind()
+  })
+
+onodes <- trees %>%
+  purrr::map(\(tree) {
+    tree %>%
+      as_tibble() %>%
+      filter(genus == 'Omobranchus') %>%
+      pull(node)
+  })
+
+# gcol <- c(paletteer_d('lisa::MaxErnst',3),'#000000')
+# gcol <- c(paletteer_d('lisa::M_C_Escher',3),'#000000')
+gcol <- c(set_names(paletteer_d('lisa::WassilyKandinsky_1',3),genera$c00$text),'0'='#000000')
+
+# plot the tree
+full_tree <- ggtree(trees %>% pluck(ft),aes(color=Genus),size=0.7) + 
+  geom_cladelab(mapping=aes(node=id,label=text,color=Genus),data=genera %>% pluck(ft), align=TRUE, fontface = "bold.italic", offset = -0.005)  + 
+  # geom_tiplab(aes(label=lbl), align=TRUE) +
+  geom_cladelabel(onodes %>% pluck(ft),'bolditalic(Omobranchus)', offset = 0.005, parse=TRUE) +
+  scale_y_reverse() +
+  # scale_color_discrete(breaks=names(genus_groups)) +
+  # scale_color_discrete(guide='none') +
+  geom_rootedge(0.005) + 
+  xlim(NA,0.46) +
+  # scale_color_paletteer_d('lisa::MaxErnst')
+  scale_color_manual(values=gcol,guide='none') 
+
+subtrees <- trees %>%
+  magrittr::extract(st) %>%
+  imap(\(tree,covg) {
+    gg <- genera %>%
+      pluck(covg)
+    gg$id %>%
+      purrr::reduce(\(g,node) g %>% collapse(node=node),.init=ggtree(tree,aes(color=Genus))) +
+      geom_cladelab(mapping=aes(node=id,label=text,color=Genus),data=gg, align=FALSE, fontface = "bold.italic", offset = 0.001)  + 
+      geom_cladelabel(onodes %>% pluck(covg),'bolditalic(Omobranchus)', parse=TRUE) + #, offset = 0.005)  +
+      geom_point2(aes(subset = (node %in% gg$id)),shape=18,size=3) +
+      geom_rootedge(0.005) + 
+      xlim(NA,0.3) +
+      scale_color_manual(values=gcol,guide='none')  + 
+      # scale_fill_manual(values=gcol,guide='none')  + 
+      scale_y_reverse()
+  })
+
+# plot layout
+layout <- '
+  11112
+  11113
+'
+# plot tags as list
+tags <- list(str_glue('({LETTERS})'))
+
+# build the plot
+c(full_tree,subtrees) %>%
+  purrr::reduce(`+`) + 
+  plot_layout(design=layout) &
+  plot_annotation(tag_levels = tags) &
+  theme(plot.tag = element_text(face='bold'))
+
+cat("{#fig:fig_genus_trees}")
+```
+
+\newpage
+
+```{r fig-plagiotremus-tree, fig.cap='COI Bayesian consensus tree of relationships within *Plagiotremus* based on 50% coverage alignment.', results="asis", fig.width=16, fig.height=9.5, dependson="trees"}
+# drop non-Plagiotremus tips
+to_drop <- trees$c50 %>%
+  as_tibble() %>%
+  filter(genus != 'Plagiotremus') %>%
+  pull(label)
+
+# filter the tree
+tree <- trees$c50 %>%
+  drop.tip(to_drop)
+# save the tip labels
+tips <- tree@phylo$tip.label
+
+alignment <- alignments$coi$c50[tips,]
+
+samples <- all_samples %>%
+  filter(id %in% tips) %>%
+  mutate(region = factor(region))
+
+# get haplotypes
+haplotypes <- haplotype(alignment)
+# generate haplotype index map
+hindex <- attr(haplotypes,'index') %>%
+  imap(\(idx,hap) {
+    tibble(
+      haplotype = hap,
+      sequence = rownames(alignments$coi$c50)[idx]
+    )
+  }) %>%
+  list_rbind()
+
+# # join haplotypes to sample data
+# samples <- samples %>%
+#   left_join(hindex,by=c(id='sequence'))
+
+geo_data <- tree %>%
+  as_tibble() %>%
+  drop_na(lat,lon) %>%
+  select(label,lat,lon) %>%
+  st_as_sf(coords=c('lon','lat'),remove=FALSE,crs=4326) %>%
+  st_join(regions,st_within) %>%
+  as_tibble() %>%
+  select(label,PROVINCE)
+
+
+# join metadata to tree
+# and try to define some geographic range info
+tree <- tree %>%
+  left_join(hindex,by=c(label='sequence')) %>%
+  left_join(geo_data,by='label') %>%
+  mutate(
+    range = PROVINCE,
+    range = case_when(
+      # hawaii gets hawaii
+      PROVINCE == 'Hawaii' ~ 'Hawaii',
+      # azaleus gets east pacific
+      str_detect(label,'^Paz') ~ 'Tropical East Pacific',
+      # otherwise if it's not east pacific or marquesas, it's indo-pacific
+      !(PROVINCE %in% c('Tropical East Pacific','Marquesas')) | is.na(PROVINCE) ~ 'Indo-Pacific',
+      # otherwise it is what it is
+      .default = PROVINCE
+    )
+  )
+
+# get tips with marquesan haplotypes
+marquesan_tips <- tree %>%
+  as_tibble() %>%
+  group_by(haplotype) %>%
+  filter(region == 'Marquesan') %>%
+  ungroup() %>%
+  pull(label)
+
+# get root node and all children for marquesan haplotypes
+marquesan_node <- getMRCA(tree@phylo,marquesan_tips)
+marquesas <- ggtree:::getSubtree(tree@phylo,marquesan_node)
+
+
+# make nice-looking clades we can label
+clades <- tree %>%
+  as_tibble() %>%
+  drop_na(label) %>%
+  mutate(
+    grp = case_when(
+      str_detect(species,'rhinorhynchos') ~ 'P. rhinorhynchos',
+      str_detect(species,'ewaensis') ~ 'P. ewaensis',
+      str_detect(species,'ewaensis') ~ 'P. ewaensis',
+      str_detect(species,'flavus|laudandus') ~ 'P. laudandus/flavus',
+      str_detect(species,'townsendi') ~ 'P. townsendi',
+      str_detect(species,'phenax') ~ 'P. phenax',
+      str_detect(species,'azaleus') ~ 'P. azaleus',
+      str_detect(species,'tapeinosoma|goslinei') ~ 'P. tapeinosoma/goslinei',
+      .default = ''
+    )
+  ) %>%
+  mutate(
+    grp = case_when(
+      node %in% marquesas & !is.na(label) ~ 'P. cf. tapeinosoma\n(Marquesan type)',
+      .default = grp
+    ),
+  ) %>%
+  split(.$grp) %>%
+  imap(\(grp,clade) { 
+    if (nrow(grp) > 1) {
+      node <- getMRCA(tree@phylo,grp$node) 
+    } else {
+      node <- grp$node
+    }
+    tibble(id=node,text=clade)
+  }) %>%
+  list_rbind() %>%
+  mutate(
+    offset = case_when(
+      str_detect(text,'azaleus') ~ -0.001,
+      str_detect(text,'goslinei') ~ -0.08,
+      .default = 0
+    )
+  )
+
+# get the rode node, because we're gonna set its probability to 1
+rootnode <- getMRCA(tree@phylo,tree@phylo$tip.label)
+
+# update some of the internal data for the tree
+tree <- tree %>%
+  mutate(
+    prob = case_when(
+      node == rootnode ~ 1,
+      .default = as.numeric(prob)
+    ),
+    posterior = cut(
+      prob,
+      c(-Inf,0.60,0.75,0.999,Inf),
+      labels=c("<0.60","0.60-0.75","0.75-0.95","1")
+    )
+  )
+
+# figure out which nodes to put points on
+nodepoints <- clades %>%
+  # filter(!str_detect(text,'azaleus')) %>%
+  pull(id) %>%
+  combn(2) %>%
+  apply(MARGIN=2,FUN=\(nodes) {
+    getMRCA(tree@phylo,nodes)
+  }) %>%
+  # c(.,clades$id) %>%
+  unique()
+
+# make colors for our node points
+clr_map <- c("<0.60"="white","0.60-0.75"="gray75","0.75-0.95"="gray40","1"="black")
+
+tree <- groupOTU(tree, tree@phylo$tip.label[grep("Pew|Pgo", tree@phylo$tip.label, invert = TRUE)])
+
+ggtree(tree,aes(color=group,linetype=group)) +
+  scale_y_reverse() +
+  # scale_color_manual(values = c('#DD3D2DFF','black'),guide='none') + 
+  scale_color_manual(values = c('#C82B84','black'),guide='none') + 
+  scale_linetype_manual(values=c(2,1), guide='none') + 
+  # geom_nodelab(aes(label=node)) +
+  geom_cladelab(mapping=aes(node=id,label=text,offset=offset),data=clades, parse=TRUE,fontface='bold.italic', barsize=1) +
+  geom_rootedge(0.005) + 
+  # geom_nodepoint(aes(fill=posterior,subset=(node %in% nodepoints)),shape=21,alpha=1,size=3) +
+  geom_nodelab(aes(subset=(node %in% nodepoints),label=round(prob,2)),hjust=0,geom='text',fontface='bold',size=3) +#nudge_x = -0.003, nudge_y=1.1) +
+  # scale_fill_manual(na.translate=F,name="Posterior prob.",values=clr_map) +
+  theme(legend.position = c(0.1,0.25)) +
+  xlim(NA,0.25) + 
+  geom_treescale(y=-135,x=0,offset=1)
+cat("{#fig:fig_plagiotremus_tree}")
+```
+
+\newpage
+
+```{r tbl-collection,results="asis",dependson="init"}
+tbl_collection <- original_samples %>%
+  group_by(species) %>%
+  summarise(
+    Range = ifelse(n_distinct(meow_province) == 1,"Hawai&#x02BB;i","Indo-Pacific"),
+    N = n()
+  ) %>%
+  mutate(species = str_glue("*{species}*"))
+print_table(tbl_collection,"tbl_collection","Summary of specimen collections.",hdr_case="sentence",accuracy=1)
+```
+
 
 # References {-}
 
