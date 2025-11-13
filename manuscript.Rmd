@@ -439,7 +439,7 @@ The taxonomy and phylogeography of fangblennies was elucidated in this study by 
 
 # Figures and Tables {-}
 
-```{r fig-map, fig.cap='Map of *Plagiotremus* collection sites across the Indo-Pacific. (A) *P. goslinei/tapeinosoma*. (B) *P. ewaensis/rhinorhynchos*.', results="asis", fig.width=8, fig.height=10, dependson="init"}
+```{r fig-map, fig.cap='Map of *Plagiotremus* collection sites across the Indo-Pacific. (A) *P. goslinei/tapeinosoma*. (B) *P. ewaensis/rhinorhynchos*. Background shading represents biogeographic realm, yellow: Western Indo-Pacific, green: Central Indo-Pacific, red: Eastern Indo-Pacific, orange: Tropical East Pacific.', results="asis", fig.width=8, fig.height=10, dependson="init"}
 # define our fake antemeridian
 ante_meridian <- 165
 
@@ -555,7 +555,7 @@ plotz <- species_pairs %>%
 plotz %>%
   purrr::reduce(`/`) +
   plot_annotation(tag_levels = plot_tags) &
-  theme(plot.tag = element_text(face='bold'))
+  theme(plot.tag = element_text(face='bold',margin = margin(r=4,b=4)))
 cat("{#fig:fig_map}")
 ```
 
