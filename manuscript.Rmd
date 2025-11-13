@@ -222,6 +222,9 @@ palette_map <- c(
   'Marquesas' = 'Redmonder::dPBIYlBu',
   'Eastern Indo-Pacific' = 'RColorBrewer::Blues'
 )
+
+# make plot tags
+plot_tags <- list(str_glue('({LETTERS})'))
 ```
 
 ```{r bold-seqs, dependson="init", include=FALSE}
@@ -436,38 +439,13 @@ The taxonomy and phylogeography of fangblennies was elucidated in this study by 
 
 # Figures and Tables {-}
 
-```{r fig-map, fig.cap='Map of *Plagiotremus* collection sites across the Indo-Pacific.', results="asis", fig.width=8, fig.height=5, dependson="init"}
-expand_bbox <- function(bbox, X, Y, X2 = X, Y2 = Y, crs_out = 4326) {
-  bbox <- bbox %>%
-    st_as_sfc() %>%
-    sf::st_transform(crs = 4326) %>%
-    st_shift_longitude() %>%
-    st_bbox()
-
-  bbox["xmin"] <- bbox["xmin"] - ((180*X)/(6370000*pi))
-  bbox["xmax"] <- bbox["xmax"] + ((180*X2)/(6370000*pi))
-  bbox["ymin"] <- bbox["ymin"] - (Y / 6370000) * (180 / pi)
-  bbox["ymax"] <- bbox["ymax"] + (Y2 / 6370000) * (180 / pi)
-
-  bbox %>%
-    st_as_sfc() %>%
-    sf::st_transform(crs = crs_out) %>%
-    st_bbox()
-}
-
-lon_center <- 165
-
-target_crs <- st_crs(str_glue("+proj=moll +x_0=0 +y_0=0 +lat_0=0 +lon_0={lon_center}"))
-
-
-worldrn <- ne_countries(scale = "medium", returnclass = "sf") %>%
-  st_make_valid()
-
+```{r fig-map, fig.cap='Map of *Plagiotremus* collection sites across the Indo-Pacific. (A) *P. goslinei/tapeinosoma*. (B) *P. ewaensis/rhinorhynchos*.', results="asis", fig.width=8, fig.height=10, dependson="init"}
+# define our fake antemeridian
+ante_meridian <- 165
 
 # define a long & slim polygon that overlaps the meridian line & set its CRS to match
 # that of world
-
-offset <- 180 - lon_center
+offset <- 180 - ante_meridian
 polygon <- st_polygon(x = list(rbind(
   c(-0.0001 - offset, 90),
   c(0 - offset, 90),
@@ -479,51 +457,105 @@ polygon <- st_polygon(x = list(rbind(
   st_set_crs(4326)
 
 
-# modify world dataset to remove overlapping portions with world's polygons
-world2 <- worldrn %>% st_difference(polygon)
-#> Warning: attribute variables are assumed to be spatially constant throughout all
-#> geometries
+# ocean background
+offset <- ante_meridian+180
 
-blennies <- original_samples %>%
-  filter(!is.na(lat) & !is.na(lon),str_detect(species,'Plagiotremus')) %>%
-  st_as_sf(coords=c('lon','lat'),remove=FALSE,crs=4326) %>%
-  st_transform(target_crs)
+# our target crs transformation. maybe we did this twice but I'll leave it since it works
+target_crs <- st_crs(str_glue("+proj=moll +x_0=0 +y_0=0 +lat_0=0 +lon_0={ante_meridian}"))
 
-# map_regions <- st_read(here("data","gis","ecoregions","meow_ecos.shp"),quiet = TRUE) %>%
+
+# realms we want to show on the map
 map_regions <- regions %>%
   filter(str_detect(REALM,fixed("pacific",ignore_case = TRUE)) & !str_detect(REALM,fixed("temperate",ignore_case = TRUE)))
 
 # Convert to polygon geometries, correct geometry errors, project to PCS,
 # snap vertices, merge polygons by REALM, project back to original CRS
-sf_poly <- map_regions %>%
-  st_cast("POLYGON") %>%
-  st_make_valid() %>%
-  st_transform(target_crs) %>%
-  st_snap(x = ., y = ., tolerance = 165) %>%
-  summarise(geometry = st_union(geometry), .by = REALM) %>%
-  st_transform(4326) %>%
+# this gets rid of the vertical line at 180, at least in theory
+map_regions <- suppressWarnings(
+  map_regions %>%
+    st_cast("POLYGON") %>%
+    st_make_valid() %>%
+    st_transform(target_crs) %>%
+    st_snap(x = ., y = ., tolerance = 165) %>%
+    summarise(geometry = st_union(geometry), .by = REALM) %>%
+    st_transform(4326) %>%
+    st_shift_longitude() %>%
+    st_transform(target_crs)
+)
+
+# create world map without overlaps and weird artifacts
+worldrn <- suppressWarnings(
+  ne_countries(scale = "medium", returnclass = "sf") %>%
+    st_make_valid() %>%
+    st_difference(polygon) %>%
+    st_transform(crs = target_crs)
+)
+
+
+# make the ocean background fill
+jitter = 0.01
+lat <- c(seq(from=-90,to=90,by=0.25))
+lon <- c(rep(offset-jitter,length(lat)),rep(offset+jitter,length(lat)))
+
+oceans <- cbind(lon, c(lat, rev(lat))) %>%
+  st_linestring() %>%
+  st_cast("POLYGON") %>% 
+  st_sfc(crs=4326) %>% 
   st_shift_longitude() %>%
-  st_transform(target_crs)
+  st_transform(crs=paste0("+proj=moll +lon_0=",ante_meridian," +lat_0=0 +x_0=0 +y_0=0"))
 
-# Transform
-world3 <- world2 %>% st_transform(crs = target_crs)
+# create point data
+plagiotremus_data <- all_samples %>%
+  filter(str_detect(species,str_c(unlist(species_pairs),collapse='|'))) %>%
+  filter(source == 'sequenced') %>%
+  drop_na(lat,lon) %>%
+  st_as_sf(coords=c('lon','lat'),remove=FALSE,crs=4326) %>%
+  dplyr::rename(Species=species) %>%
+  st_transform(target_crs) %>%
+  st_jitter()
 
-# expand bounding box
-bbox <- blennies %>%
-  st_bbox() %>%
-  expand_bbox(X=2500L*1000L,X2=3000L*1000L,Y=1000L*1000L,crs_out=target_crs)
+# get unique species
+spp <- unique(plagiotremus_data$Species)
 
-# plot it
-ggplot() +
-  geom_sf(data = world3, aes(group = admin), fill="darkgrey") +
-  geom_sf(data = sf_poly, aes(fill = REALM),show.legend = FALSE, alpha = 0.3, color="grey77") +
-  new_scale_fill() +
-  geom_sf(data = st_jitter(blennies), aes(fill=species, shape=species), size=2, color="black") +
-  scale_shape_manual(values=c(21:24)) +
-  coord_sf(xlim = bbox[c(1,3)], ylim=bbox[c(2,4)],crs = target_crs) +
-  theme_bw() +
-  theme(legend.position = "bottom", legend.key = element_blank()) +
-  labs(fill="Species",shape="Species")
+# make shape scale
+shapos <- c(21:24) %>%
+  set_names(spp)
+# make fill scale
+fillers <- paletteer_d('wesanderson::Darjeeling1',length(spp)) %>%
+  set_names(spp)
+
+# make two world plots with the different species pairs
+plotz <- species_pairs %>%
+  purrr::map(\(pair) {
+    # get only species in pair
+    pd <- plagiotremus_data %>%
+      filter(str_detect(Species,str_c(pair,collapse='|')))
+    
+    # make the pllot
+    ggplot() +
+      geom_sf(data = oceans, fill="lightblue", alpha=0.3) + 
+      geom_sf(data = worldrn, aes(group = admin), fill="lightgrey") +
+      geom_sf(data = map_regions, aes(fill = REALM),show.legend = FALSE, alpha = 0.3, color="grey77") +
+      scale_fill_paletteer_d('waRhol::skull_76_1',guide="none") +
+      new_scale_fill() +
+      geom_sf(data = pd,  aes(fill=Species, shape=Species), size=2, color="black" ) +
+      scale_fill_manual(values = fillers, guide = guide_legend(title=NULL)) +
+      scale_shape_manual(values=shapos, guide = guide_legend(title=NULL)) +
+      theme_bw() +
+      theme(
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        legend.position = "bottom",
+        legend.key = element_blank(),
+        legend.text = element_text(size=12,face='italic')
+      ) 
+  })
+
+# reduce the plots with `/` so they're stacked on top of one another
+plotz %>%
+  purrr::reduce(`/`) +
+  plot_annotation(tag_levels = plot_tags) &
+  theme(plot.tag = element_text(face='bold'))
 cat("{#fig:fig_map}")
 ```
 
@@ -805,14 +837,11 @@ layout <- '
   11112
   11113
 '
-# plot tags as list
-tags <- list(str_glue('({LETTERS})'))
-
 # build the plot
 c(full_tree,subtrees) %>%
   purrr::reduce(`+`) + 
   plot_layout(design=layout) &
-  plot_annotation(tag_levels = tags) &
+  plot_annotation(tag_levels = plot_tags) &
   theme(plot.tag = element_text(face='bold'))
 
 cat("{#fig:fig_genus_trees}")
@@ -820,7 +849,7 @@ cat("{#fig:fig_genus_trees}")
 
 \newpage
 
-```{r fig-plagiotremus-tree, fig.cap='COI Bayesian consensus tree of relationships within *Plagiotremus* based on 50% coverage alignment.', results="asis", fig.width=16, fig.height=9.5, dependson="trees"}
+```{r fig-plagiotremus-tree, fig.cap='COI Bayesian consensus tree of relationships within *Plagiotremus* based on 50% coverage alignment. Dashed magenta edges indicate individuals collected in Hawai&#x02BB;i. Node labels indicate Bayesian posterior probability.', results="asis", fig.width=9, fig.height=7, dependson="trees"}
 # drop non-Plagiotremus tips
 to_drop <- trees$c50 %>%
   as_tibble() %>%
