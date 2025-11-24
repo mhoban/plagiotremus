@@ -64,7 +64,7 @@ fig_caption: true
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   echo = FALSE,
-  fig.path="output/figures/fig-",
+  fig.path="output/figures/",
   dev="svg",
   dpi=300,
   message=FALSE,
