@@ -162,20 +162,20 @@ alignments %>%
       })
   })
 # create goslinei-tapeinosoma concatenated alignment --------------------------------------------------------------
-spp <- c('Plagiotremus goslinei','Plagiotremus tapeinosoma','Xiphasia setifer')
+spp <- c('Plagiotremus goslinei','Plagiotremus tapeinosoma','Plagiotremus azaleus')
 sss <- all_samples %>%
   filter(species %in% spp)
 
 sss_coi <- sss %>%
-  filter(id %in% labels(alignments$coi$c00))
+  filter(id %in% labels(alignments$coi$c50))
 sss_cytb <- sss %>%
-  filter(id %in% labels(alignments$cytb$c00))
+  filter(id %in% labels(alignments$cytb$c50))
 
-unique_coi <- unique(alignments$coi$c00[sss_coi$id,])
+unique_coi <- unique(alignments$coi$c50[sss_coi$id,])
 coi_len <- ncol(unique_coi)
 coi_missing <- str_c(rep('-',coi_len),collapse="")
 
-unique_cytb <- unique(alignments$cytb$c00[sss_cytb$id,])
+unique_cytb <- unique(alignments$cytb$c50[sss_cytb$id,])
 cytb_len <- ncol(unique_cytb)
 cytb_missing <- str_c(rep('-',cytb_len),collapse="")
 
@@ -213,8 +213,8 @@ all(labels(coi_full) == labels(cytb_full))
 combined <- cbind(coi_full,cytb_full)
 combined <- combined[order(labels(combined)),]
 
-alignment_phy <- 'concatenated.phy'
-alignment_fasta <- 'concatenated.fasta'
+alignment_phy <- 'pgo-pta-paz-concatenated.phy'
+alignment_fasta <- 'pgo-pta-paz-concatenated.fasta'
 # write_fasta(combined,here('output','alignments',alignment_phy))
 combined_samples <- sss %>%
   filter(id %in% labels(combined)) %>%
@@ -222,20 +222,84 @@ combined_samples <- sss %>%
   st_as_sf(coords=c('lon','lat'),remove=FALSE,crs=4326) %>%
   st_join(regions,st_within) %>%
   mutate(meow_province = coalesce(meow_province,PROVINCE)) %>%
+  mutate(meow_province = str_replace_all(meow_province,',','')) %>%
   dplyr::rename(name=id) %>%
-  as_tibble()
+  mutate(distribution = case_when(
+    meow_province == 'Western Indian Ocean' ~ 'Western Indian Ocean',
+meow_province == 'Red Sea and Gulf of Aden' ~ 'Red Sea',
+meow_province == 'Hawaii' ~ 'Hawaii',
+meow_province == 'Marquesas' ~ 'Marquesas',
+REALM == 'Temperate Southern Africa' ~ 'Western Indian Ocean',
+.default = REALM
+  )) #%>%
+# as_tibble()
 
 combined_final <- combined[combined_samples$name,]
 write.dna(combined_final,here('output','alignments',alignment_phy),format = "sequential",nbcol=-1,colsep="")
 write_fasta(combined_final,here('output','alignments',alignment_fasta))
-write_tsv(combined_samples %>% select(name,ecoregion=ECOREGION),here('output','alignments','concatenated_metadata.csv'))
+write_tsv(combined_samples %>% as_tibble() %>% select(name,distribution),here('output','alignments','pgo-pta-paz-concatenated_metadata.csv'))
 
 coi_start <- 1
 coi_end <- coi_len
 cytb_start <- coi_len+1
 cytb_end <- ncol(combined)
 
-pfcfg <- str_glue(pft)
-write_lines(pfcfg,here('output','alignments','partition_finder.cfg'))
+data_block <- str_trim(str_glue('
+coi = {coi_start}-{coi_end}\\1;
+cytb = {cytb_start}-{cytb_end}\\1;
+'))
 
+pfcfg <- str_glue(pft)
+write_lines(pfcfg,here('output','alignments','pgo-pta-paz-concatenated_partition_finder.cfg'))
+
+
+centroids <- combined_samples %>%
+  group_by(distribution) %>%
+  summarise(geometry = st_centroid(st_combine(geometry)))
+
+distances <- centroids %>%
+  st_distance()
+rownames(distances) <- centroids$distribution
+colnames(distances) <- centroids$distribution
+write.csv(distances,here('output','alignments','pgo-pta-concatenated_distances.csv'),row.names = TRUE,quote = FALSE)
+
+# alignment for goslinei/tapeinosoma beast analysis ---------------------------------------------------------------
+spp <- c('Plagiotremus goslinei','Plagiotremus tapeinosoma','Plagiotremus azaleus')
+# spp <- c('Plagiotremus goslinei','Plagiotremus tapeinosoma','Xiphasia matsubarai')
+# spp <- c('Plagiotremus goslinei','Plagiotremus tapeinosoma','Omobranchus anolius')
+
+alignment <- alignments %>%
+  pluck('coi','c99')
+
+samples <- all_samples %>%
+  filter(species %in% spp) %>%
+  filter(id %in% rownames(alignment)) %>%
+  filter(!is.na(lat) & !is.na(lon))
+
+alignment <- alignment[samples$id,] %>%
+  unique()
+
+samples <- samples %>%
+  filter(id %in% rownames(alignment))
+
+write_fasta(alignment,here('output','alignments','pgo-pta-beast.fasta'))
+# alignment for ewaensis/rhinrhynchos beast analysis --------------------------------------------------------------
+spp <- c('Plagiotremus ewaensis','Plagiotremus rhinorhynchos','Plagiotremus laudandus','Plagiotremus flavus')
+# spp <- c('Plagiotremus ewaensis','Plagiotremus rhinorhynchos','Xiphasia matsubarai')
+# spp <- c('Plagiotremus ewaensis','Plagiotremus rhinorhynchos','Omobranchus anolius')
+
+alignment <- alignments %>%
+  pluck('coi','c99')
+
+samples <- all_samples %>%
+  filter(species %in% spp) %>%
+  filter(id %in% rownames(alignment)) %>%
+  filter(!is.na(lat) & !is.na(lon))
+
+alignment <- alignment[samples$id,] %>%
+  unique()
+samples <- samples %>%
+  filter(id %in% rownames(alignment))
+
+write_fasta(alignment,here('output','alignments','pew-prh-beast.fasta'))
 

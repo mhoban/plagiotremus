@@ -255,7 +255,7 @@ bold_tbl <- bold_seqs_raw %>%
   ) %>%
   distinct(id,.keep_all = TRUE) %>%
   filter(str_detect(markercode,'COI')) %>%
-  select(id,species=species_name,basin,country,region,locality=exactsite,province,sequenced_coi,sequenced_cytb,lon,lat,source,nucleotides)
+  select(id,species=species_name,basin,country,region,locality=exactsite,province,sequenced_coi,sequenced_cytb,lon,lat,source,nucleotides,bin_uri,processid,genbank_accession,catalognum)
 
 bold_dna <- map2(bold_tbl$id,bold_tbl$nucleotides,~{
   c(str_glue(">{.x}"),.y)
@@ -337,11 +337,11 @@ sample_data <- markers %>%
 
 # cytb_samples <- all_samples %>% filter(id %in% labels(alignments$cytb$c00))
 cycount <- sample_data$cytb %>%
-  count(source) %>%
+  dplyr::count(source) %>%
   deframe()
 
 cocount <- sample_data$coi%>%
-  count(source) %>%
+  dplyr::count(source) %>%
   deframe()
 
 coi_len <- purrr::map(alignments$coi,ncol)
@@ -354,9 +354,9 @@ The Hawaiian archipelago is an endemism hotspot. Up to twenty-five percent of Ha
 
 # Introduction {-}
 
-The Hawaiian archipelago is an endemism hotspot. Up to twenty-five percent of its reef fish species are endemic, a higher proportion than anywhere else in the world [@randallReefShoreFishes2007]. However, whereas terrestrial endemism in Hawai&#x02BB;i is often associated with adaptive radiation [e.g., honeycreepers: @freedEvolutionaryEcologyRadiation1987a; fruit flies: @carsonChromosomalSequencesInterisland1983; silverswords: @witterAdaptiveRadiationGenetic1988, etc.], marine endemism is more evenly-distributed across taxa [@kayEndemismEvolutionHawaiian1987; @mundyChecklistFishesHawaiian2005]. Among Hawaiian reef fishes, sister taxa rarely co-occur and when they do, they often exhibit a higher degree of range size asymmetry than co-occurring sister species elsewhere in the Indo-Pacific [@gaboriauInfluenceGeographySpeciation2018]. Whether or not they co-occur, the sister species of Hawaiian endemics are often widespread in the Indo-Pacific [@gaboriauInfluenceGeographySpeciation2018; @randallZoogeographyShoreFishes1998; @hobanCirripectesMatatakaroNew2020a].
+The Hawaiian archipelago is an endemism hotspot. Up to twenty-five percent of its reef fish species are endemic, a higher proportion than anywhere else in the world [@randallReefShoreFishes2007]. However, whereas terrestrial endemism in Hawai&#x02BB;i is often associated with adaptive radiation [e.g., honeycreepers: @freedEvolutionaryEcologyRadiation1987a; fruit flies: @carsonChromosomalSequencesInterisland1983; silverswords: @witterAdaptiveRadiationGenetic1988, etc.], marine endemism is more evenly-distributed across taxa [@kayEndemismEvolutionHawaiian1987; @mundyChecklistFishesHawaiian2005]. Among Hawaiian reef fishes, sister taxa rarely co-occur and when they do, they often exhibit a higher degree of range size asymmetry than co-occurring sister species elsewhere in the Indo-Pacific [@gaboriauInfluenceGeographySpeciation2018]. Whether or not they co-occur, the sister species of Hawaiian endemics are often widespread in the Indo-Pacific [@gaboriauInfluenceGeographySpeciation2018; @randallZoogeographyShoreFishes1998; @hobanCirripectesMatatakaroNew2020].
 
-Two examples of endemic reef fishes with widespread sister species are currently recognized within the sabertooth blenny genus `r spp$cite("Plagiotremus")` (Blennioidei: Blenniidae). `r spp$cite("Plagiotremus goslinei")` and `r spp$cite("Plagiotremus ewaensis",TRUE)` are endemic to the Hawaiian Islands [(and possibly Johnston Atoll?)]{.mark} and their respective sister taxa, `r spp$cite("Plagiotremus tapeinosoma",TRUE)` and `r spp$cite("Plagiotremus rhinorhynchos",TRUE)` are distributed across the tropical Indo-West-Pacific from the Red Sea to the Marquesas Islands [@smith-vanizSabertoothedBlenniesTribe1976a; @randallReefShoreFishes2007]. A phylogenetic analysis of *Plagiotremus* using 22 parsimony-informative morphological characters suggested four species groups and three subgenera [@smith-vanizSabertoothedBlenniesTribe1976a]. According to the analysis, the subgenus *Plagiotremus* contains only `r spp$cite("Plagiotremus spilistius")` and `r spp$cite("Plagiotremus iosodon",TRUE)`. `r spp$cite("Plagiotremus celebesensis")` was originally included, but was synonymized with *P. spilistius* in a follow-up study [@smith-vanizSaberToothedBlenniesTribe1987a]. The subgenus *Musgravius*, recognized as the sister to subgenus *Plagiotremus*, contains the *laudandus* group comprising `r spp$cite("Plagiotremus laudandus")`, `r spp$cite("Plagiotremus phenax",TRUE)`, and `r spp$cite("Plagiotremus townsendi",TRUE)` (although the subspecies *Plagiotremus laudandus flavus* may additionally warrant elevation to species) [@hastingsRecognizingDiversityBlennioid2009a; @smith-vanizAggressiveMimicryAspidontus2020]. *Runula*, which is sister to the other subgenera, contains the *rhinorhynchos* group (*P. rhinorhynchos* and *P. ewaensis*) and the *tapeinosoma* group (*P. tapeinosoma*, *P. goslinei*, and `r spp$cite("Plagiotremus azaleus",TRUE)`) [@smith-vanizSabertoothedBlenniesTribe1976a]. Although Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976a; -@smith-vanizSaberToothedBlenniesTribe1987a] supported the Hawaiian endemic/widespread sister species relationships, he did not rule out the possibility that putative endemic species comprised isolated populations of their widespread sister species. Furthermore, he could not unambiguously resolve the interrelationships of subgenera within *Plagiotremus*, nor the placement of *Plagiotremus* relative to other genera in the tribe Nemophini. Although morphology-based phylogenetic analyses have provided some taxonomic clarity within this group, molecular approaches may enable the further resolution of uncertain relationships as well as help place endemic species within a broader biogeographic context.
+Two examples of endemic reef fishes with widespread sister species are currently recognized within the sabertooth blenny genus `r spp$cite("Plagiotremus")` (Blennioidei: Blenniidae). `r spp$cite("Plagiotremus goslinei")` and `r spp$cite("Plagiotremus ewaensis",TRUE)` are endemic to the Hawaiian Islands [(and possibly Johnston Atoll?)]{.mark} and their respective sister taxa, `r spp$cite("Plagiotremus tapeinosoma",TRUE)` and `r spp$cite("Plagiotremus rhinorhynchos",TRUE)` are distributed across the tropical Indo-West-Pacific from the Red Sea to the Marquesas Islands [@smith-vanizSabertoothedBlenniesTribe1976; @randallReefShoreFishes2007]. A phylogenetic analysis of *Plagiotremus* using 22 parsimony-informative morphological characters suggested four species groups and three subgenera [@smith-vanizSabertoothedBlenniesTribe1976]. According to the analysis, the subgenus *Plagiotremus* contains only `r spp$cite("Plagiotremus spilistius")` and `r spp$cite("Plagiotremus iosodon",TRUE)`. `r spp$cite("Plagiotremus celebesensis")` was originally included, but was synonymized with *P. spilistius* in a follow-up study [@smith-vanizSaberToothedBlenniesTribe1987a]. The subgenus *Musgravius*, recognized as the sister to subgenus *Plagiotremus*, contains the *laudandus* group comprising `r spp$cite("Plagiotremus laudandus")`, `r spp$cite("Plagiotremus phenax",TRUE)`, and `r spp$cite("Plagiotremus townsendi",TRUE)` (although the subspecies *Plagiotremus laudandus flavus* may additionally warrant elevation to species) [@hastingsRecognizingDiversityBlennioid2009a; @smith-vanizAggressiveMimicryAspidontus2020]. *Runula*, which is sister to the other subgenera, contains the *rhinorhynchos* group (*P. rhinorhynchos* and *P. ewaensis*) and the *tapeinosoma* group (*P. tapeinosoma*, *P. goslinei*, and `r spp$cite("Plagiotremus azaleus",TRUE)`) [@smith-vanizSabertoothedBlenniesTribe1976]. Although Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976; -@smith-vanizSaberToothedBlenniesTribe1987a] supported the Hawaiian endemic/widespread sister species relationships, he did not rule out the possibility that putative endemic species comprised isolated populations of their widespread sister species. Furthermore, he could not unambiguously resolve the interrelationships of subgenera within *Plagiotremus*, nor the placement of *Plagiotremus* relative to other genera in the tribe Nemophini. Although morphology-based phylogenetic analyses have provided some taxonomic clarity within this group, molecular approaches may enable the further resolution of uncertain relationships as well as help place endemic species within a broader biogeographic context.
 
 Few studies have included *Plagiotremus* in molecular-phylogenetic analyses. *Plagiotremus rhinorhynchos*, *P. tapeinosoma*, *P. azaleus*, and *P. laudandus* are found in several multilocus analyses of blennioids [@linPhylogenyBiogeographyShallow2013; @casewellEvolutionFangsVenom2017; @hundtMultilocusMolecularPhylogeny2014; @hundtExtremeDentitionDoes2018]. Most recently, Smith-Vaniz et al. [-@smith-vanizAggressiveMimicryAspidontus2020] compared cytochrome c oxidase subunit I (COI) sequences from five species of *Plagiotremus* (*P. tapeinosoma*, *P. laudandus*, *P. flavus*, *P. townsendi*, and *P. phenax*) using a neighbor-joining tree, calling for the reintegration of *P. flavus* as a subspecies under *P. laudandus*.
 
@@ -374,42 +374,58 @@ Tissue samples were brought to the Hawai&#x02BB;i Institute of Marine Biology (H
 
 ## Additional sequence acquisition {-}
 
-We downloaded all available COI sequence data in the Barcode of Life Database (BoLD) from the genera *Plagiotremus*, *Xiphasia* and *Meiacanthus*. *Omobranchus* has been identified and used as the outgroup to the tribe Nemophini in the multi-locus molecular phylogenies discussed above, so a COI sequence from *Omobranchus anolius* with identification and location information was downloaded from BoLD and used as the outgroup in our phylogenetic analyses. Three *Plagiotremus* sequences pulled from BoLD were excluded in downstream analyses due to unclear origins or mislabeling.
+We downloaded all available COI sequence data in the Barcode of Life Database (BoLD) from the genera *Plagiotremus*, *Xiphasia* and *Meiacanthus*. *Omobranchus* has been identified for use as the outgroup to the tribe Nemophini in the multi-locus molecular phylogenies discussed above, so a COI sequence from *Omobranchus anolius* with identification and location information was downloaded from BoLD and used as the outgroup in our phylogenetic analyses. <!--Three *Plagiotremus* sequences pulled from BoLD were excluded in downstream analyses due to unclear origins or mislabeling.-->
 
 
 ## Sequence analysis {-}
 
 ### Phylogenetic analyses {-}
 
-Initial filtering was performed using R 3.6.0 [@rcoreteamLanguageEnvironmentStatistical2019]. Sequence data was loaded into R using the packages `Biostrings` [@aboyounBiostringsEfficientManipulation2017] and `ape` [@paradisApeEnvironmentModern2019] and aligned using the Clustal Omega algorithm [@sieversFastScalableGeneration2011] implemented in the R package `msa` [@bodenhoferMsaPackageMultiple2015]. Since the sequences analyzed here are from various sources, many have different lengths or include loci that are missing in the final alignment. To compare the effects of missing data on tree node support, three versions of the sequence alignment were generated: one that excluded loci missing in more than one individual (hereafter referred to as the 99% coverage dataset), one that only included loci sequenced in >50% of individuals (>50% coverage dataset), and one with all sequences in the alignment (the full dataset). After filtering, identical sequences were merged and taxonomic as well as geographic spread of merged sequences were recorded.
+Initial filtering was performed using `R` 4.4.1 [@rcoreteamLanguageEnvironmentStatistical2024]. Sequence data was read using the `R` packages `Biostrings` [@aboyounBiostringsEfficientManipulation2017] and `ape` [@paradisApeEnvironmentModern2019] and aligned using the Clustal Omega algorithm [@sieversFastScalableGeneration2011] implemented in the package `msa` [@bodenhoferMsaPackageMultiple2015]. Since the sequences analyzed here are from various sources, many have different lengths or include loci that are missing in the final alignment. To compare the effects of missing data on tree node support, three versions of the sequence alignment were generated: one that excluded loci missing in more than one individual (hereafter referred to as the 99% coverage dataset), one that only included loci sequenced in >50% of individuals (>50% coverage dataset), and one with all sequences in the alignment (the full dataset). After filtering, identical sequences were merged and taxonomic and geographic distribution of merged sequences were recorded.
 
-<!--
-TODO: partitionfinder citations
-PF2: @lanfearPartitionFinder2New2017
-greedy algo: @lanfearPartitionFinderCombinedSelection2012
-phyml: @guindonNewAlgorithmsMethods2010
--->
+We conducted a Bayesian phylogenetic reconstruction using `MrBayes` v3.2.7 [@ronquistMrBayes32Efficient2012], running two independent searches for 10 million generations each, saving trees every 1,000 generations and discarding the first 10% as burn-in. We used `PartitionFinder` 2 with greedy algorithm to select the best model(s) of nucleotide substitution partitioned by codon position, based on corrected Akaike Information Criterion (AICc) [@lanfearPartitionFinder2New2017; @lanfearPartitionFinderCombinedSelection2012; @guindonNewAlgorithmsMethods2010]. We verified model parameter and Markov-chain convergence using `Tracer` v1.7.2 [@rambautPosteriorSummarizationBayesian2018], assuring effective sample sizes &gt; 200 for all parameters. <!--We inferred maximum likelihood phylogenetic trees from each of the three datasets using `IQ-TREE 2` [@minhIQTREENewModels2020]. `ModelFinder` [@kalyaanamoorthyModelFinderFastModel2017] was used to determine the best substitution model prior to tree estimation and 2,000 ultrafast bootstraps (UFBoot) were performed using `UFBoot2` [@hoangUFBoot2ImprovingUltrafast2018] following tree estimation. The authors of UFBoot2 suggest using a support threshold of $\geq$ 95%.-->Consensus trees were interpreted and plotted in R using the `ggtree` package [@yuGgtreePackageVisualization2017]. As a compromise between potential under- and over-filtering, we used the &gt; 50% coverage dataset to examine phylogenetic relationships within *Plagiotremus*.
 
-We inferred maximum likelihood phylogenetic trees from each of the three datasets using `IQ-TREE 2` [@minhIQTREENewModels2020]. `ModelFinder` [@kalyaanamoorthyModelFinderFastModel2017] was used to determine the best substitution model prior to tree estimation and 2,000 ultrafast bootstraps (UFBoot) were performed using `UFBoot2` [@hoangUFBoot2ImprovingUltrafast2018] following tree estimation. The authors of UFBoot2 suggest using a support threshold of $\geq$ 95%. Resulting trees were interpreted and plotted in R using the packages `ape`, `treeio` [@wangTreeioPackagePhylogenetic2020], `ggplot2` [@wickhamGgplot2ElegantGraphics2009], `ggthemes` [@arnoldGgthemesExtraThemes2019], `ggtree` [@yuGgtreePackageVisualization2017], and `patchwork` [@pedersenPatchworkComposerPlots2020]. As a compromise between potential under- and over-filtering, we used the \> 50% coverage dataset to examine relationships within *Plagiotremus*.
+### Intraspecific phylogeography {-}
 
-### Haplotype network analysis {-}
-
-To examine finer-scale relationships between *P. tapeinosoma* and *P. goslinei*, a haplotype network analysis was performed using all sequences from these two species and their closest relative *P. azaleus*. Sequences <!--(149 original and 25 from BoLD)-->were interpreted and aligned using the same procedures as for phylogenetic analyses and only loci sequenced in all samples were used (i.e., no sites with missing data were kept). Haplotype frequencies were calculated, arranged into a maximum-parsimony network [@templetonCladisticAnalysisPhenotypic1992], and plotted using `ggplot2`, `patchwork`, custom `RColorBrewer` [@neuwirthRColorBrewerColorBrewerPalettes2014], and a customized version of the R package `pegas` [@paradisPegasPackagePopulation2010]. Sampling locations were further grouped by color into their respective biogeographic regions, as defined by Kulbicki et al. [-@kulbickiGlobalBiogeographyReef2013].<!--: *P. azaleus* is found in the Tropical Eastern Pacific realm, *P. goslinei* is restricted to the Hawaiian province (further split into the Northwestern Hawaiian Islands and Main Hawaiian Islands here) in the Indo-Pacific realm, while all other (*P. tapeinosoma*) samples came from various provinces in the Indo-Pacific realm.-->
+To examine intraspecific relationships within *P. tapeinosoma*, *P. goslinei*, *P. rhinorhynchos*, and *P. ewaensis*, we constructed haplotype networks using all sequences from each species pair. Sequences were interpreted and aligned using the same procedures as for phylogenetic analyses and only loci sequenced in all samples were used (i.e., no sites with missing data were kept). Haplotype frequencies were calculated, arranged into a maximum-parsimony network [@templetonCladisticAnalysisPhenotypic1992], and plotted using the package `pegas` [@paradisPegasPackagePopulation2010]. Sampling locations were grouped by color into their respectivemarine ecoregions, as defined by Spalding et al. [-@spaldingMarineEcoregionsWorld2007], with Red Sea ecoregions collapsed and Hawai&#x02BB;i divided into Main and Northwestern Hawaiian Islands. We examined genetic differentiation and diversity among ecoregions using the K2P distance [@kimuraSimpleMethodEstimating1980] and analysis of molecular variance (AMOVA), as well as calculating haplotype diversity (h), nucleotide diversity ($\mathrm{\uppi}$), and Tajima's D (as implemented in `pegas`). Significance of AMOVA comparisons was assessed using a permutation test and *p*-values were adjusted for multiple comparisons according to the modified false discovery rate [B-Y FDR, @benjaminiControlFalseDiscovery2001; @narumBonferroniLessConservative2006]. In addition to AMOVA, we calculated pairwise $\upPhi_\mathrm{st}$ values to examine degree of differentiation among ecoregions.
 
 # Results {-}
 
 ```{r alignment-summary, dependson="alignment", include=FALSE}
 coi_covg <- apply(alignments$coi$c00,2,\(x) (sum(x != 4) / length(x)))
 cytb_covg <- apply(alignments$cytb$c00,2,\(x) (sum(x != 4) / length(x)))
+sample_seqs <- sample_data %>%
+  purrr::map(\(x) x %>%
+        count(source) %>%
+        deframe() %>%
+        as.list()
+  )
 ```
 
-The alignment of all `r nrow(sample_data$coi)` COI sequences was `r coi_len$c00` base pairs long. There was >99% coverage between positions `r dplyr::first(which(coi_covg > 0.99))` and `r dplyr::last(which(coi_covg > 0.99))` and >50% coverage between positions `r dplyr::first(which(coi_covg > 0.5))` and `r dplyr::last(which(coi_covg > 0.5))`. The full dataset contained 184 unique haplotypes with 25 that were shared in at least two individuals (none were shared between species or between original and BoLD data sources), the >50% coverage dataset contained 158 unique haplotypes with 28 that were shared between at least two individuals (two shared between the different data sources), and the >99% coverage dataset contained 123 unique haplotypes with 33 that were shared between at least two individuals (nine of which were shared between original and BoLD data sources while five were shared between species). There were 249 parsimony-informative sites in the full dataset, 194 in the >50% coverage dataset, and 149 in the >99% coverage dataset. ModelFinder selected the TPM2+F+G4 substitution model as the best fit for all three datasets.
+## Overall sequencing results {-}
 
-Trees built using all three datasets showed ≥94% support for the monophyly of both *Xiphasia* and *Meiacanthus*, with lower support (72--94%) for the monophyly of *Plagiotremus* (Figure 1). Each of the three trees also placed two *Meiacanthus grammistes* sequences (Mgr-502 & Mgr-504) in a clade distinct from the rest of *Meiacanthus* (including other individuals from their own species) as more closely related to *Plagiotremus*. Although there was generally low support for inter-genus relationships in all trees, both the full and >50% coverage trees considered *Meiacanthus* as the sister genus to *Plagiotremus* (plus Mgr-502 & 504) while the >99% coverage tree placed *Xiphasia* as sister genus to *Plagiotremus* (plus Mgr-502 & 504).
+We generated `r sample_seqs$coi$sequenced` new COI sequences and retrieved `r sample_seqs$coi$bold` sequences from BOLD ([@tbl:tbl_collection;@tbl:tbl_bold_seqs]). The final full COI alignment was `r coi_len$c00` base pairs long (50% coverage: `r coi_len$c50` bp, 99% coverage: `r coi_len$c99` bp). New sequences generated for this study are available in GenBank under accession numbers [XXXX](https://www.ncbi.nlm.nih.gov/nuccore/)--[XXXX](https://www.ncbi.nlm.nih.gov/nuccore/).
+
+## Phylogenetic reconstruction {-}
+
+<!--
+models:
+codon 1: GTR+I+G
+codon 2: HKY+I
+codon 3: GTR+G
+-->
+
+The best-fit partitioning scheme for the 50%-coverage COI alignment according to `PartitionFinder` 2 was GTR+I+$\upGamma$, HKY+I, and GTR+$\upGamma$ for codons 1--3 respectively. Best-fit models for other alignments can be found in [@tbl:tbl_models]. Trees had $\geq$ 99% posterior probability for all genus-level nodes (*Xiphasia*, *Meiacanthus*, and *Plagiotremus*) in the 50% coverage and full datasets ([@fig:fig_genus_trees[]{}A; @fig:fig_genus_trees[]{}B]). In the 99% coverage dataset, the split between *Xiphasia* and *Meiacanthus/Plagiotremus* had posterior support of ~90% ([@fig:fig_genus_trees[]{}C]). All three trees placed *Meiacanthus* as sister to *Plagiotremus*.
 
 Almost all species within *Plagiotremus* were resolved as monophyletic with high (≥94% UFBoot) support (Figure 2). All *P. rhinorhynchos* and *P. ewaensis* samples were arranged in a well-supported sister group to all other *Plagiotremus* species. Reciprocal monophyly of these two species was also well supported (with the exception of Prh-022—one of many original samples from Diego Garcia in the Chagos Archipelago). One division of the other well-supported *Plagiotremus* clade contained *P. townsendi*, *P. phenax*, *P. laudandus*, and *P. flavus*. The first two of these four species made up their own well-supported clade which was sister to one containing the latter two (as *P. flavus* has historically been considered a subspecies of *P. laudandus*). The last remaining inter-species node with high support contains *P. azaleus*, *P. tapeinosoma*, and *P. goslinei*. Within this group, *P. azaleus* is separated from *P. tapeinosoma* and *P. goslinei* with low (45%) support, and the latter two species form a mixed clade. Other tree iterations nested both *P. azaleus* amongst mixed *P. tapeinosoma* and *P. goslinei* clades (although *P. azaleus* itself was always monophyletic and highly-diverged). This mixed clade with relatively low support was analyzed further in the haplotype network analysis.
 
 Post-alignment filtering for the haplotype network analysis of *P. azaleus*, *P. tapeinosoma*, and *P. goslinei* yielded a contiguous sequence of 466 bp (between 107 and 572) of the original 698 bp alignment. Three main haplotypes were apparent in the network, each being shared by 45, 36, and 20 individuals. No other haplotypes were shared by more than four individuals. The two most common haplotypes were shared by *P. tapeinosoma* and *P. goslinei*. Thirty-nine *P. goslinei* (in Hawai&#x02BB;i) and six *P. tapeinosoma* (five from the Central Pacific province and one from the Polynesian province) shared the most common haplotype. The second most common haplotype was shared by 36 individuals, one of which was from the NW Hawaiian Islands (i.e. *P. goslinei*), while the remaining 35 (*P. tapeinosoma*) were from almost all other provinces in the Indo-Pacific realm ranging from South Africa and the Red Sea in the western Indian Ocean to the Society Islands in Polynesia. These two most common haplotypes (one of which is shared by the majority of *P. goslinei* and one of which is the most common amongst *P. tapeinsoma*) only differ by one nucleotide (at position 96 of the 466 base pair sequence). A third haplotype shared by one *P. tapeinosoma* and one *P. goslinei* is different from the main Hawaiian haplotype at a single nucleotide position. Two *P. goslinei* individuals shared a haplotype that was more closely related to the main *P. tapeinosoma* than it was to most *P. goslinei* haplotypes, and two *P. tapeinosoma* from the Central Pacific had haplotypes that were more closely-related to the main *P. goslinei* haplotype. Most of the remaining (less frequent) *P. tapeinosoma* and *P. goslinei* haplotypes were not more than a few nucleotides different from either of the two most common haplotypes. The exception to this is the third most common haplotype to which all *P. tapeinosoma* from the Marquesas (in the easternmost point of the Polynesian province) either shared or were linked to. This third most common haplotype was distinct from the main *P. tapeinosoma* haplotype at seven nucleotide positions (~1.5%). All samples from the Marquesas differed by between six and ten nucleotides (1.2--2.1%) from the main *P. tapeinosoma* haplotype. The two *P. azaleus* samples were considerably diverged (a minimum of 43 steps or 9.2%) from the closest *P. tapeinosoma* haplotype.
+
+## *Plagiotremus goslinei* and *P. tapeinosoma* {-}
+
+The full dataset contained 184 unique haplotypes with 25 that were shared in at least two individuals (none were shared between species or between original and BoLD data sources), the >50% coverage dataset contained 158 unique haplotypes with 28 that were shared between at least two individuals (two shared between the different data sources), and the >99% coverage dataset contained 123 unique haplotypes with 33 that were shared between at least two individuals (nine of which were shared between original and BoLD data sources while five were shared between species). There were 249 parsimony-informative sites in the full dataset, 194 in the >50% coverage dataset, and 149 in the >99% coverage dataset. ModelFinder selected the TPM2+F+G4 substitution model as the best fit for all three datasets.
+
+## *Plagiotremus ewaensis* and *P. rhinorhynchos* {-}
 
 # Discussion {-}
 
@@ -417,11 +433,11 @@ This study of COI gene sequences from 327 Nemophini fishes supported the monophy
 
 Only one previously-published phylogeny has supported *Meiacanthus* as the sister genus to *Plagiotremus* [@linPhylogenyBiogeographyShallow2013]. All subsequent phylogenies found *Xiphasia* to be the sister genus of *Plagiotremus* while the position of *Meiacanthus* within Nemophini has varied [@hundtMultilocusMolecularPhylogeny2014; @casewellEvolutionFangsVenom2017; @hundtExtremeDentitionDoes2018]. These later differences have been attributed by some authors to be due to increased taxonomic coverage within *Meiacanthus* and other Nemophini genera [@hundtMultilocusMolecularPhylogeny2014]. While this COI phylogeny is limited by a lack of genetic resolution, it is plausible that the increased taxonomic resolution of this study led to the inference of different relationships. Relative to the previous multi-locus phylogenies, this study considered three times more *Plagiotremus* species and included considerable geographic variation by analyzing individuals from as many locations as possible across all genera and species. However, interpretation of the genus-level relationships observed here should only be considered speculative as they were not well supported overall. Increasing both the genetic and taxonomic resolution in future phylogenetic studies may further resolve these relationships.
 
-In attempting to resolve the phylogenetic relationships between the "species groups" he defined within *Plagiotremus*, Smith-Vaniz [@smith-vanizSabertoothedBlenniesTribe1976a] noted that:
+In attempting to resolve the phylogenetic relationships between the "species groups" he defined within *Plagiotremus*, Smith-Vaniz [@smith-vanizSabertoothedBlenniesTribe1976] noted that:
 
 "Rigid application of the principles of phylogenetic (cladistic) systematics dictates that the *laudandus* and *tapeinosoma* species groups be accorded a sister-group relationship because they share the greatest number of apomorphic characters…However…I believe their occurrence in both groups is a case of parallel evolution."
 
-The results of this genetic study, however, support the "rigid cladistic" interpretation. The clearest divergence within *Plagiotremus* was between the "*rhinorhynchos* species group" and all others. Long internal branches separated these well-supported groups. This topology indicates that the previously-recognized subgenus Runula is polyphyletic as its constituent "*tapeinosoma* species group" is in fact more closely related to the "*laudandus* species group" (subgenus Musgravius) than to the "*rhinorhynchos* species group" that was also placed in Runula by Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976a]. Other molecular phylogenies also support this alternative arrangement of "species groups" within *Plagiotremus*. Similar to this study, Hundt et al. [-@hundtMultilocusMolecularPhylogeny2014] found *P. tapeinsoma* to be more closely-related to *P. laudandus* than *P. rhinorhynchos* (although these were the only three *Plagiotremus* species considered in this study), and all phylogenetic analyses that have included *P. rhinorhynchos* put it on a rather long branch relative to other species within Nemophini [@linPhylogenyBiogeographyShallow2013; @hundtMultilocusMolecularPhylogeny2014; @hundtExtremeDentitionDoes2018]. These results suggest that the subgenus Runula should be dissolved. Further analyses including samples from the "*spilistius* species group" not considered here would provide a more complete picture of the relationships of all *Plagiotremus* species.
+The results of this genetic study, however, support the "rigid cladistic" interpretation. The clearest divergence within *Plagiotremus* was between the "*rhinorhynchos* species group" and all others. Long internal branches separated these well-supported groups. This topology indicates that the previously-recognized subgenus Runula is polyphyletic as its constituent "*tapeinosoma* species group" is in fact more closely related to the "*laudandus* species group" (subgenus Musgravius) than to the "*rhinorhynchos* species group" that was also placed in Runula by Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976]. Other molecular phylogenies also support this alternative arrangement of "species groups" within *Plagiotremus*. Similar to this study, Hundt et al. [-@hundtMultilocusMolecularPhylogeny2014] found *P. tapeinsoma* to be more closely-related to *P. laudandus* than *P. rhinorhynchos* (although these were the only three *Plagiotremus* species considered in this study), and all phylogenetic analyses that have included *P. rhinorhynchos* put it on a rather long branch relative to other species within Nemophini [@linPhylogenyBiogeographyShallow2013; @hundtMultilocusMolecularPhylogeny2014; @hundtExtremeDentitionDoes2018]. These results suggest that the subgenus Runula should be dissolved. Further analyses including samples from the "*spilistius* species group" not considered here would provide a more complete picture of the relationships of all *Plagiotremus* species.
 
 Both Hawaiian endemic species within *Plagiotremus* were considered by Smith-Vaniz to potentially only warrant subspecies recognition. The reciprocal monophyly of the Hawaiian endemic *P. ewaensis* and the widespread *P. rhinorhynchos* in this study validates the species-level status of the former. While Smith-Vaniz distinguished *P. ewaensis* and *P. rhinorhynchos* based on their color patterns and significantly different number of incisors, he more generally based his decision to uphold species-level recognition for both Hawaiian endemics based on the precedent set by Gosline and Brock [-@goslineHandbookHawaiianFishes1960]—the first of whom was honored by the naming of *P. goslinei*, and the second of whom initially described *P. ewaensis*. The arguments of Gosline and Brock were that: (1) there was no biological reason not to recognize the Hawaiian endemics as full species as there was no "intergradation" between them and their widespread relatives (i.e. intermediate or mixed forms), and (2) they were the most distinctive sub-groups in the Indo-West-Pacific. In light of the results of this study, the arguments of Gosline and Brock no longer hold for *P. goslinei*.
 
@@ -431,7 +447,7 @@ Regarding the first argument concerning intergradation, *P. goslinei* and *P. ta
 
 While shared haplotypes between *P. goslinei* and *P. tapeinosoma* alone may not be sufficient to synonymize them (as they may still be diverging if truly isolated), the fact that two *P. goslinei* samples were more closely-related to *P. tapeinosoma* and two *P. tapeinsoma* samples from Kiribati and Palau were more closely-related to the main *P. goslinei* haplotype is evidence of recent migration between the two groups with supposedly different ranges. This potential recent mixing along with the presence of shared haplotypes imply that they are not demographically or evolutionarily distinct (yet, at least).
 
-Regarding the second argument of Hawaiian endemics being the most distinct in the Indo-West-Pacific, *P. tapeinosoma* from the Marquesas is considerably more diverged from the rest of *P. tapeinosoma* than *P. goslinei* is, despite not also being considered a distinct species. Smith-Vaniz [@smith-vanizSabertoothedBlenniesTribe1976a] recognized that Marquesan *P. tapeinosoma* had meristic values (fish trait counts/measurements) "at least as low as those of *goslinei*" that potentially warranted them subspecies status. Therefore, according to the criteria specified by previous authors to justify their own species-level taxonomic recognition of Hawaiian endemics [@goslineHandbookHawaiianFishes1960; @smith-vanizSabertoothedBlenniesTribe1976a], *P. goslinei* should likely not be considered a distinct species from *P. tapeinosoma*. On the other hand, *P. tapeinosoma* samples on literal opposite sides of the planet shared the same COI haplotype while *P. goslinei* is almost completely diverged from the rest of the "*tapeinosoma* species group". Therefore, joint study of how phenotypic and genetic variation is partitioned geographically within the geographic "*tapeinosoma* species group" lineages (wider Indo-Pacific, Hawaiian, Marquesas, and Eastern Pacific) should be carried out to clarify their interrelationships and taxonomic statuses. This would likely result in *P. tapeinosoma* from the Marquesas being formally described as a distinct species given its complete genetic divergence from *P. tapeinosoma* outside of Polynesia and its meristic distinctness observed by Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976a].
+Regarding the second argument of Hawaiian endemics being the most distinct in the Indo-West-Pacific, *P. tapeinosoma* from the Marquesas is considerably more diverged from the rest of *P. tapeinosoma* than *P. goslinei* is, despite not also being considered a distinct species. Smith-Vaniz [@smith-vanizSabertoothedBlenniesTribe1976] recognized that Marquesan *P. tapeinosoma* had meristic values (fish trait counts/measurements) "at least as low as those of *goslinei*" that potentially warranted them subspecies status. Therefore, according to the criteria specified by previous authors to justify their own species-level taxonomic recognition of Hawaiian endemics [@goslineHandbookHawaiianFishes1960; @smith-vanizSabertoothedBlenniesTribe1976], *P. goslinei* should likely not be considered a distinct species from *P. tapeinosoma*. On the other hand, *P. tapeinosoma* samples on literal opposite sides of the planet shared the same COI haplotype while *P. goslinei* is almost completely diverged from the rest of the "*tapeinosoma* species group". Therefore, joint study of how phenotypic and genetic variation is partitioned geographically within the geographic "*tapeinosoma* species group" lineages (wider Indo-Pacific, Hawaiian, Marquesas, and Eastern Pacific) should be carried out to clarify their interrelationships and taxonomic statuses. This would likely result in *P. tapeinosoma* from the Marquesas being formally described as a distinct species given its complete genetic divergence from *P. tapeinosoma* outside of Polynesia and its meristic distinctness observed by Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976].
 
 Although *P. azaleus* (in the Eastern Pacific) is considerably diverged from all other "*tapeinosoma* species group" lineages, the initial description of *P. goslinei* [@strasburgNotesBlennioidFishes1956] suggested that it may be a geographical intermediate of *P. azaleus* and *P. tapeinosoma*. The placement of *P. azaleus* as the sister group to *P. tapeinosoma* and *P. goslinei* in this study was not well supported, and other trees nested it within mixed groups of *P. tapeinosoma* and *P. goslinei*. Furthermore, although *P. azaleus* was closest to a *P. tapeinosoma* haplotype in the network, only one to two more steps separated it from multiple *P. goslinei* clusters—which is very few relative to its 43 steps from the rest of the network. Therefore, further genetic study of these lineages could determine whether *P. azaleus* originally colonized the Eastern Pacific through Hawai&#x02BB;i (sharing an ancestor with *P. goslinei* there as well) and contribute to the growing literature about whether isolated islands with high levels of endemism export biodiversity to other regions [@bowenOriginsTropicalMarine2013]. On the other hand, both the *P. azaleus* and Marquesan *P. tapeinosoma* haplotypes were linked to the rest of *P. tapeinosoma* through Indian Ocean haplotypes (rather than those from the Pacific which are much closer). This may indicate that the divergence of these lineages dates back to the closure of the Tethys Sea (that divided the tropical Atlantic and Indo-Pacific realms) as observed in many other reef fish groups [@floeterAtlanticReefFish2008].
 
@@ -499,8 +515,8 @@ lon <- c(rep(offset-jitter,length(lat)),rep(offset+jitter,length(lat)))
 
 oceans <- cbind(lon, c(lat, rev(lat))) %>%
   st_linestring() %>%
-  st_cast("POLYGON") %>% 
-  st_sfc(crs=4326) %>% 
+  st_cast("POLYGON") %>%
+  st_sfc(crs=4326) %>%
   st_shift_longitude() %>%
   st_transform(crs=paste0("+proj=moll +lon_0=",ante_meridian," +lat_0=0 +x_0=0 +y_0=0"))
 
@@ -530,10 +546,10 @@ plotz <- species_pairs %>%
     # get only species in pair
     pd <- plagiotremus_data %>%
       filter(str_detect(Species,str_c(pair,collapse='|')))
-    
+
     # make the pllot
     ggplot() +
-      geom_sf(data = oceans, fill="lightblue", alpha=0.3) + 
+      geom_sf(data = oceans, fill="lightblue", alpha=0.3) +
       geom_sf(data = worldrn, aes(group = admin), fill="lightgrey") +
       geom_sf(data = map_regions, aes(fill = REALM),show.legend = FALSE, alpha = 0.3, color="grey77") +
       scale_fill_paletteer_d('waRhol::skull_76_1',guide="none") +
@@ -548,13 +564,13 @@ plotz <- species_pairs %>%
         legend.position = "bottom",
         legend.key = element_blank(),
         legend.text = element_text(size=12,face='italic')
-      ) 
+      )
   })
 
 # reduce the plots with `/` so they're stacked on top of one another
 plotz %>%
   purrr::reduce(`/`) +
-  plot_annotation(tag_levels = plot_tags) &
+  # plot_annotation(tag_levels = plot_tags) &
   theme(plot.tag = element_text(face='bold',margin = margin(r=4,b=4)))
 cat("{#fig:fig_map}")
 ```
@@ -563,7 +579,7 @@ cat("{#fig:fig_map}")
 
 ```{r haplotypes, results="asis", dependson="alignment"}
 plagiotremus_data <- all_samples %>%
-  filter(str_detect(species,str_c(unlist(species_pairs),collapse='|'))) %>%
+  filter(species %in% str_glue("Plagiotremus {unlist(species_pairs)}")) %>%
   drop_na(lon,lat) %>%
   st_as_sf(coords=c('lon','lat'),remove=FALSE,crs=4326) %>%
   st_join(regions,st_within) %>%
@@ -714,8 +730,8 @@ trees <- tree_covg %>%
   set_names() %>%
   purrr::map(\(covg) {
     tree <- read.mrbayes(here('data','trees',str_glue('coi_{covg}.nex.con.tre'))) %>%
-      left_join(all_samples,by=c(label='id')) 
-    
+      left_join(all_samples,by=c(label='id'))
+
     # drop all but one Omobranchus tip to simplify things
     to_drop <- tree %>%
       as_tibble() %>%
@@ -725,10 +741,10 @@ trees <- tree_covg %>%
         label != 'Oan-AMS266-08'
       ) %>%
       pull(label)
-    
+
     tree <- tree %>%
       drop.tip(to_drop)
-    
+
     # figure out our one omobranchus outgroup node
     outgroup <- tree %>%
       as_tibble() %>%
@@ -737,16 +753,27 @@ trees <- tree_covg %>%
     if (length(outgroup) > 1) {
       outgroup <- getMRCA(tree@phylo,outgroup)
     }
-    
+
     # reroot the tree on the omobranchus node
     tree@phylo <- reroot(
       tree@phylo,
       outgroup,
       position = tree@phylo$edge.length[which(tree@phylo$edge[,2]==outgroup)]/2
     )
-    
+
+    # probs get set to NA when tree is rerooted
+    # here we're doing essentially what figtree does
+    tree <- tree %>%
+      mutate(
+        prob = case_when(
+          !isTip & is.na(prob) ~ "1",
+          .default = prob
+        ),
+        prob_cut = cut(as.numeric(prob),c(-Inf,0.9,0.99,Inf),labels=c('<0.9','≥0.9','≥0.99'))
+      )
+
     # create groups to color the tree sections
-    genus_groups <- tree %>% 
+    genus_groups <- tree %>%
       as_tibble() %>%
       filter(genus != 'Omobranchus') %>%
       split(.$genus) %>%
@@ -761,12 +788,12 @@ trees <- tree_covg %>%
       groupOTU(genus_groups,'Genus')
     # make the groups be a factor
     attr(tree@phylo,'Genus') <- factor(attr(tree@phylo,'Genus'),levels=names(genus_groups))
-    
+
     tree
   })
 ```
 
-```{r fig-genus-trees, fig.cap='COI Bayesian consensus trees for *Plagiotremus* and closely-related genera. (A) Full tree base on 50% coverage alignment. (B) Genus-level tree based on full alignment (all sequences). (C) Genus-level tree based on 99% coverage alignment.', results="asis", fig.width=16, fig.height=9.5, dependson="trees"}
+```{r fig-genus-trees, fig.cap='COI Bayesian consensus trees for *Plagiotremus* and closely-related genera. (A) Full tree based on 50% coverage alignment. (B) Genus-level tree based on full alignment (all sequences). (C) Genus-level tree based on 99% coverage alignment.', results="asis", fig.width=8, fig.height=5, dependson="trees"}
 # full tree
 ft <- 'c50'
 # subtrees
@@ -781,7 +808,7 @@ genera <- trees %>%
       split(.$genus) %>%
       imap(\(grp,genus) {
         if (nrow(grp) > 1) {
-          node <- getMRCA(tree@phylo,grp$node) 
+          node <- getMRCA(tree@phylo,grp$node)
         } else {
           node <- grp$node
         }
@@ -802,44 +829,79 @@ onodes <- trees %>%
 # gcol <- c(paletteer_d('lisa::M_C_Escher',3),'#000000')
 gcol <- c(set_names(paletteer_d('lisa::WassilyKandinsky_1',3),genera$c00$text),'0'='#000000')
 
+gnodes <- genera[[ft]] %>%
+  pull(id) %>%
+  combn(2) %>%
+  apply(MARGIN=2,FUN=\(nodes) {
+    getMRCA(trees[[ft]]@phylo,nodes)
+  }) %>%
+  # c(.,clades$id) %>%
+  unique()
+
+pointcol <- c('≥0.99' = 'black','≥0.9' = 'darkgrey')
+
 # plot the tree
-full_tree <- ggtree(trees %>% pluck(ft),aes(color=Genus),size=0.7) + 
-  geom_cladelab(mapping=aes(node=id,label=text,color=Genus),data=genera %>% pluck(ft), align=TRUE, fontface = "bold.italic", offset = -0.005)  + 
-  # geom_tiplab(aes(label=lbl), align=TRUE) +
-  geom_cladelabel(onodes %>% pluck(ft),'bolditalic(Omobranchus)', offset = 0.005, parse=TRUE) +
+full_tree <- ggtree(trees %>% pluck(ft),aes(color=Genus),size=0.7) +
+  geom_cladelab(mapping=aes(node=id,label=text,color=Genus),data=genera %>% pluck(ft), align=FALSE, fontface = "bold.italic", offset = 0.005)  +
+  geom_cladelabel(onodes %>% pluck(ft),'bolditalic(Omobranchus)', offset = 0.005, parse=TRUE, size=3) +
+  geom_point2(aes(fill=prob_cut,subset = node %in% gnodes),shape=21,size=2,show.legend = TRUE) +
   scale_y_reverse() +
   # scale_color_discrete(breaks=names(genus_groups)) +
   # scale_color_discrete(guide='none') +
-  geom_rootedge(0.005) + 
-  xlim(NA,0.46) +
+  geom_rootedge(0.005) +
+  # xlim(NA,0.46) +
   # scale_color_paletteer_d('lisa::MaxErnst')
-  scale_color_manual(values=gcol,guide='none') 
+  scale_color_manual(values=gcol,guide='none') +
+  scale_fill_manual(values=pointcol,drop=FALSE,name='Node support (posterior probability)') +
+  theme(
+    legend.position = 'inside',
+    legend.justification = 'left',
+    legend.position.inside = c(0,0.1)
+  ) +
+  xlim(0,0.55)
 
-subtrees <- trees %>%
-  magrittr::extract(st) %>%
+
+subtrees <- trees[st] %>%
+  # magrittr::extract(st) %>%
   imap(\(tree,covg) {
+    # browser()
     gg <- genera %>%
       pluck(covg)
+
+    gnodes <- gg %>%
+      pull(id) %>%
+      combn(2) %>%
+      apply(MARGIN=2,FUN=\(nodes) {
+        getMRCA(tree@phylo,nodes)
+      }) %>%
+      # c(.,clades$id) %>%
+      unique()
+
     gg$id %>%
       purrr::reduce(\(g,node) g %>% collapse(node=node),.init=ggtree(tree,aes(color=Genus))) +
-      geom_cladelab(mapping=aes(node=id,label=text,color=Genus),data=gg, align=FALSE, fontface = "bold.italic", offset = 0.001)  + 
+      geom_cladelab(mapping=aes(node=id,label=text,color=Genus),data=gg, align=FALSE, fontface = "bold.italic", offset = 0.001)  +
+      geom_point2(aes(fill=prob_cut,subset = node %in% gnodes),shape=21,size=2) +
+      # geom_nodelab(aes(label=prob)) +
       geom_cladelabel(onodes %>% pluck(covg),'bolditalic(Omobranchus)', parse=TRUE) + #, offset = 0.005)  +
       geom_point2(aes(subset = (node %in% gg$id)),shape=18,size=3) +
-      geom_rootedge(0.005) + 
+      geom_rootedge(0.005) +
       xlim(NA,0.3) +
-      scale_color_manual(values=gcol,guide='none')  + 
-      # scale_fill_manual(values=gcol,guide='none')  + 
-      scale_y_reverse()
+      scale_color_manual(values=gcol,guide='none')  +
+      scale_fill_manual(values=pointcol,guide='none') +
+      # scale_fill_manual(values=gcol,guide='none')  +
+      scale_y_reverse() +
+      xlim(0,0.28)
+      # coord_cartesian(clip='off') +
   })
 
 # plot layout
 layout <- '
-  11112
-  11113
+  11122
+  11133
 '
 # build the plot
 c(full_tree,subtrees) %>%
-  purrr::reduce(`+`) + 
+  purrr::reduce(`+`) +
   plot_layout(design=layout) &
   plot_annotation(tag_levels = plot_tags) &
   theme(plot.tag = element_text(face='bold'))
@@ -950,9 +1012,9 @@ clades <- tree %>%
     ),
   ) %>%
   split(.$grp) %>%
-  imap(\(grp,clade) { 
+  imap(\(grp,clade) {
     if (nrow(grp) > 1) {
-      node <- getMRCA(tree@phylo,grp$node) 
+      node <- getMRCA(tree@phylo,grp$node)
     } else {
       node <- grp$node
     }
@@ -1002,17 +1064,17 @@ tree <- groupOTU(tree, tree@phylo$tip.label[grep("Pew|Pgo", tree@phylo$tip.label
 
 ggtree(tree,aes(color=group,linetype=group)) +
   scale_y_reverse() +
-  # scale_color_manual(values = c('#DD3D2DFF','black'),guide='none') + 
-  scale_color_manual(values = c('#C82B84','black'),guide='none') + 
-  scale_linetype_manual(values=c(2,1), guide='none') + 
+  # scale_color_manual(values = c('#DD3D2DFF','black'),guide='none') +
+  scale_color_manual(values = c('#C82B84','black'),guide='none') +
+  scale_linetype_manual(values=c(2,1), guide='none') +
   # geom_nodelab(aes(label=node)) +
   geom_cladelab(mapping=aes(node=id,label=text,offset=offset),data=clades, parse=TRUE,fontface='bold.italic', barsize=1) +
-  geom_rootedge(0.005) + 
+  geom_rootedge(0.005) +
   # geom_nodepoint(aes(fill=posterior,subset=(node %in% nodepoints)),shape=21,alpha=1,size=3) +
   geom_nodelab(aes(subset=(node %in% nodepoints),label=round(prob,2)),hjust=0,geom='text',fontface='bold',size=3) +#nudge_x = -0.003, nudge_y=1.1) +
   # scale_fill_manual(na.translate=F,name="Posterior prob.",values=clr_map) +
   theme(legend.position = c(0.1,0.25)) +
-  xlim(NA,0.25) + 
+  xlim(NA,0.25) +
   geom_treescale(y=-135,x=0,offset=1)
 cat("{#fig:fig_plagiotremus_tree}")
 ```
@@ -1024,10 +1086,13 @@ tbl_collection <- original_samples %>%
   group_by(species) %>%
   summarise(
     Range = ifelse(n_distinct(meow_province) == 1,"Hawai&#x02BB;i","Indo-Pacific"),
-    N = n()
+    N = n(),
+    COI = sum(sequenced_coi),
+    cytb = sum(sequenced_cytb)
   ) %>%
-  mutate(species = str_glue("*{species}*"))
-print_table(tbl_collection,"tbl_collection","Summary of specimen collections.",hdr_case="sentence",accuracy=1)
+  mutate(species = str_glue("*{species}*")) %>%
+  dplyr::rename(Species = species)
+print_table(tbl_collection,"tbl_collection","Summary of specimen collections.",hdr_case=NA,accuracy=1)
 ```
 
 
@@ -1036,5 +1101,27 @@ print_table(tbl_collection,"tbl_collection","Summary of specimen collections.",h
 <!-- show main bibliography -->
 <div class="multi-refs"></div>
 
+\newpage
+
 # Supplemental material {label="S"}
 
+```{r sup-tbl-bold-seqs,results="asis",dependson="bold-seqs"}
+bold_tbl_seqs <- bold_seqs$coi$samples %>%
+  select(species,processid,bin_uri,genbank_accession,country,catalognum) %>%
+  dplyr::rename(
+    Species=species,
+    `Process ID`=processid,
+    `BIN`=bin_uri,
+    `GenBank Accession`=genbank_accession,
+    Country=country,
+    `Catalog Number`=catalognum
+  ) %>%
+  arrange(Species)
+print_table(bold_tbl_seqs,'tbl_bold_seqs','Summary of external sequences used in this study.',hdr_case=NA)
+```
+
+\newpage
+
+```{r sup-tbl-alignment-models, results="asis", dependson="init"}
+print_table(here('data','tables','models.csv'),'tbl_models','Summary of best-fit paritioning models by COI alignment coverage')
+```
