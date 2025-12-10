@@ -132,8 +132,19 @@ alignments %>%
       iwalk(\(alignment,quality) {
         alignment <- alignment %>%
           unique()
-        tt <- tips[tips %in% labels(alignment)]
-        alignment <- alignment[tt,]
+        # tt <- tips[tips %in% labels(alignment)]
+        # alignment <- alignment[tt,]
+        samples <- all_samples %>%
+          filter(id %in% rownames(alignment)) %>%
+          group_by(species) %>%
+          mutate( lbl = str_glue('{species}-{row_number()}')) %>%
+          mutate( lbl = str_replace_all(lbl,'\\s+','_')) %>%
+          arrange(lbl) %>%
+          ungroup()
+        alignment <- alignment[samples$id,]
+        rownames(alignment) <- samples$lbl
+        
+        
         write_fasta(alignment,str_glue('output/alignments/{marker}_{quality}.fasta')) 
         write.nexus.data(alignment,str_glue('output/alignments/{marker}_{quality}.nex'),interleaved = FALSE) 
         write.dna(alignment,str_glue('output/alignments/{marker}_{quality}.phy'),format = "sequential",nbcol=-1,colsep="")
@@ -163,7 +174,7 @@ alignments %>%
   })
 # create goslinei-tapeinosoma concatenated alignment --------------------------------------------------------------
 spp <- c('Plagiotremus goslinei','Plagiotremus tapeinosoma','Plagiotremus azaleus')
-sss <- all_samples %>%
+sss <- oll_samples %>%
   filter(species %in% spp)
 
 sss_coi <- sss %>%

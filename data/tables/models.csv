@@ -1,0 +1,4 @@
+Coverage,Codon 1,Codon 2,Codon 3
+All sequences,GTR+I+$\upGamma$,GTR+I,GTR+$\upGamma$
+50%,GTR+I+$\upGamma$,HKY+I,GTR+$\upGamma$
+99%,GTR+I,GTR+I,GTR+$\upGamma$
