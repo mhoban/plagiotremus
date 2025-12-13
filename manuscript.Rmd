@@ -236,21 +236,13 @@ hawaii_species <- list(pgo='Plagiotremus goslinei',pew='Plagiotremus ewaensis')
 
 # map of various ecoregion realms to color palettes
 palette_map <- c(
-  'Temperate Southern Africa' = 'beyonce::X59',
-  'Western Indo-Pacific' = 'RColorBrewer::OrRd',
-  'Central Indo-Pacific' = 'RColorBrewer::Greens',
+  'Red Sea' = 'RColorBrewer::Reds',
+  'Western Indian Ocean' = 'RColorBrewer::Oranges',
+  'Central Indo-Pacific' = 'beyonce::X59',
+  'Central Pacific' = 'RColorBrewer::Greens',
   'Hawaii' = 'ggsci::purple_material',
   'Marquesas' = 'Redmonder::dPBIYlBu',
-  'Eastern Indo-Pacific' = 'RColorBrewer::Blues'
-)
-
-hawaii_palette_map <- c(
-  'Main Hawaiian Islands' = 'palettetown::jynx',
-  'Northwestern Hawaiian Islands' = 'impressionist.colors::les_nympheas_2'
-  # 'Main Hawaiian Islands' = 'impressionist.colors::la_sieste',
-  # 'Northwestern Hawaiian Islands' = 'impressionist.colors::un_dimanche_apres_midi_a_l_ile_de_la_grande_jatte'
-  # 'Main Hawaiian Islands' = 'unikn::pal_unikn_pair',
-  # 'Northwestern Hawaiian Islands' = 'miscpalettes::earthTones'
+  'Polynesian Province' = 'RColorBrewer::Blues'
 )
 
 # make plot tags
@@ -281,8 +273,6 @@ bold_tbl <- bold_seqs_raw %>%
     nucleotides = str_replace(nucleotides,"-+$",""),
     nucleotides = str_replace(nucleotides,"N+$",""),
     nucleotides = str_replace(nucleotides,"^N+",""),
-    basin = NA,
-    province=NA,
     source="bold",
     sequenced_coi=1,
     sequenced_cytb=0
@@ -290,7 +280,7 @@ bold_tbl <- bold_seqs_raw %>%
   distinct(id,.keep_all = TRUE) %>%
   filter(str_detect(markercode,'COI')) %>%
   filter(!(id %in% to_filter)) %>%
-  select(id,species=species_name,basin,country,region,locality=exactsite,province,sequenced_coi,sequenced_cytb,lon,lat,source,nucleotides,bin_uri,processid,genbank_accession,catalognum)
+  select(id,species=species_name,country,locality=exactsite,sequenced_coi,sequenced_cytb,lon,lat,source,nucleotides,bin_uri,processid,genbank_accession,catalognum)
 
 bold_dna <- map2(bold_tbl$id,bold_tbl$nucleotides,~{
   c(str_glue(">{.x}"),.y)
@@ -384,6 +374,7 @@ cytb_len <- purrr::map(alignments$cytb,ncol)
 ```
 
 ```{r haplotypes, include=FALSE, dependson="alignment"}
+# map MEOW provinces to kulbicki provinces
 province_map <- c(
   'Agulhas' = 'Western Indian Ocean',
   'Red Sea and Gulf of Aden' = 'Red Sea',
@@ -402,15 +393,37 @@ province_map <- c(
   'Western Coral Triangle' = 'Central Indo-Pacific'
 )
 
+kprovince_map <- c(
+  'Red Sea and Gulf of Aden' = 'Red Sea',
+  'Agulhas' = 'Western Indian Ocean',
+  'Western Indian Ocean' = 'Western Indian Ocean',
+  'Central Indian Ocean Islands' = 'Western Indian Ocean',
+  'South Kuroshio' = 'Central Indo-Pacific',
+  'Tropical Northwestern Pacific' = 'Central Indo-Pacific',
+  'Northeast Australian Shelf' =  'Central Indo-Pacific',
+  'Java Transitional' = 'Central Indo-Pacific',
+  'Western Coral Triangle' = 'Central Indo-Pacific',
+  'Tropical Southwestern Pacific' = 'Central Pacific',
+  'Marshall, Gilbert and Ellis Islands' = 'Central Pacific',
+  'Central Polynesia' = 'Central Pacific',
+  'Southeast Polynesia' = 'Polynesian Province',
+  'Marquesas' = 'Polynesian Province',
+  'Hawaii' = 'Hawaii'
+)
+
 province_abbrev <- c(
+  'Western Indian Ocean' = 'WIO',
   'Western Indian' = 'WIO',
   'Red Sea' = 'RS',
-  'Centran Indo-Pacific' = 'CIP',
+  'Central Indo-Pacific' = 'CIP',
   'Central Pacific' = 'CP',
-  'Polynesian' = 'POLY',
+  'Polynesian' = 'PL',
+  'Polynesian Province' = 'PL',
   'Main Hawaiian Islands' = 'MHI',
   'Northwestern Hawaiian Islands' = 'NWHI',
-  'Marquesan' = 'MARQ'
+  'Hawaii' = 'HW',
+  'Marquesan' = 'MQ',
+  'Marquesas' = 'MQ'
 )
 
 plagiotremus_data <- all_samples %>%
@@ -420,48 +433,52 @@ plagiotremus_data <- all_samples %>%
   st_join(regions,st_within) %>%
   mutate(
     llon = if_else(middle < 0,middle+360,middle),
-    meow_province = coalesce(meow_province,PROVINCE),
-    meow_province = fct_reorder(meow_province,llon),
     ecoregion = case_when(
-      ECOREGION == "Hawaii" ~ region,
+      ECOREGION == "Hawaii" & nwhi ~ "Northwestern Hawaiian Islands",
+      ECOREGION == "Hawaii" & !nwhi ~ "Main Hawaiian Islands",
       str_detect(ECOREGION,regex('red sea',ignore_case = TRUE)) ~ 'Red Sea',
       .default = ECOREGION
     ),
-    kulbicki_province = case_when(
-      ECOREGION == "Hawaii" ~ region,
+    province = case_when(
+      ECOREGION == "Hawaii" & nwhi ~ "Northwestern Hawaiian Islands",
+      ECOREGION == "Hawaii" & !nwhi ~ "Main Hawaiian Islands",
       .default = province_map[PROVINCE]
     ),
-    color_category = fct_reorder(
+    prov = province_abbrev[province],
+    kulbicki_province = kprovince_map[PROVINCE],
+    kprov = province_abbrev[kulbicki_province],
+    old_color_category = fct_reorder(
       case_when(
         str_detect(ecoregion,'Hawaii') ~ 'Hawaii',
         str_detect(ecoregion,'Marquesas') ~ 'Marquesas',
         .default = REALM
       ),
       llon
-    )
+    ),
+    color_category = fct_reorder(kulbicki_province,llon)
   )  %>%
-  arrange(color_category,llon) %>%
-  mutate(n = row_number(),ecoregion = fct_reorder(ecoregion,n), kulbicki_province = fct_reorder(kulbicki_province,n)) %>%
+  arrange(old_color_category,llon) %>%
+  mutate(
+    n = row_number(),
+    ecoregion = fct_reorder(ecoregion,n),
+    province = fct_reorder(province,n),
+    kulbicki_province = fct_reorder(kulbicki_province,n),
+    # color_category = fct_reorder(color_category,n),
+    kprov = fct_reorder(kprov,n),
+    prov = fct_reorder(prov,n)
+  ) %>%
   as_tibble()
 
 master_palette <- plagiotremus_data %>%
   as_tibble() %>%
-  count(color_category,kulbicki_province) %>%
+  count(color_category,ecoregion) %>%
   group_by(color_category) %>%
-  mutate( color = rev(paletteer_d( palette_map[as.character(cur_group()$color_category)]))[1:n()], n = n() ) %>%
+  # mutate( color = rev(paletteer_d( palette_map[as.character(cur_group()$color_category)]))[1:n()], n = n() ) %>%
+  mutate( color = paletteer_d( palette_map[as.character(cur_group()$color_category)],direction=-1)[1:n()], n = n() ) %>%
   ungroup()
 
-hawaii_master_palette <- plagiotremus_data %>%
-  as_tibble() %>%
-  filter(str_detect(region,'Hawaii')) %>%
-  mutate(locality = fct_reorder(locality,lon)) %>%
-  count(region,locality) %>%
-  group_by(region) %>%
-  # mutate( color = rev(paletteer_d( hawaii_palette_map[as.character(cur_group()$region)]))[1:n()], n = n() ) %>%
-  mutate( color = paletteer_d( hawaii_palette_map[as.character(cur_group()$region)], n = n() )) %>%
-  ungroup()
-
-
+pair <- species_pairs[[1]]
+marker <- 'coi'
 haplotypes <- species_pairs %>%
   purrr::map(\(pair) {
     markers %>%
@@ -488,15 +505,21 @@ haplotypes <- species_pairs %>%
           haplotypes <- pegas::haplotype(alignment)
           hnet <- haploNet(haplotypes)
           hindex <- attr(haplotypes,'index')
-          ht_locations <- haploFreq(alignment,fac=samples$kulbicki_province)
+          ht_locations <- haploFreq(alignment,fac=samples$ecoregion)
           palette <- master_palette %>%
-            filter(kulbicki_province %in% colnames(ht_locations)) %>%
-            dplyr::slice(match(colnames(ht_locations),kulbicki_province)) %>%
-            select(kulbicki_province,color) %>%
+            filter(ecoregion %in% colnames(ht_locations)) %>%
+            dplyr::slice(match(colnames(ht_locations),ecoregion)) %>%
+            select(ecoregion,color) %>%
             deframe()
-          bar_legend <- ggplot(data = samples, aes(y = kulbicki_province, fill = kulbicki_province)) +
-            geom_bar() +
-            geom_text(stat = "count", aes(label = ..count..), hjust = -0.25, size = 2) +
+          bar_legend <- ggplot(data = samples) +
+            geom_bar(aes(y = ecoregion, fill = ecoregion)) +
+            # geom_bar(position= position_dodge2(width=0.9,preserve="single"), aes(y = kulbicki_province, fill = ecoregion)) +
+            # geom_text(stat = "count", aes(label = ..count..), hjust = -0.25, size = 2) +
+            # geom_text(
+            #   stat="count",
+            #   aes(y = kulbicki_province, group = ecoregion, label = ecoregion),
+            #   x=0, position = position_dodge(width=0.9), hjust=0, size=3
+            # ) +
             scale_fill_manual(values = palette, guide = F) +
             # scale_x_continuous(breaks = seq(0,40,10), limits = c(0,45)) +
             scale_y_discrete(limits=rev) +
@@ -505,16 +528,28 @@ haplotypes <- species_pairs %>%
               plot.title = element_blank(),
               plot.subtitle = element_blank(),
               axis.text.y = element_text(size = 12, colour = "black"),
-              axis.text.x = element_text(size = 7, colour = "black"),
+              # axis.text.y = element_text(size = 7, colour = "black"),
               axis.ticks.y = element_blank(),
               axis.title = element_blank(),
               legend.position = "none",
               panel.grid.major.y = element_blank(),
               panel.grid.minor = element_blank(),
               panel.border = element_blank(),
-              panel.grid = element_blank()
+              panel.grid = element_blank(),
+              strip.placement = "outside",
+              strip.background = element_rect(fill="grey95",color="darkgrey")
             ) +
-            labs(title = "Legend", subtitle = "Number of samples")
+            labs(title = "Legend", subtitle = "Number of samples")  +
+            facet_wrap(
+              ~kprov,
+              scales="free_y",
+              ncol=1,
+              space="free_y",
+              strip.position = "left"
+            )
+            # coord_flip()
+            # scale_x_reverse()
+
           pd <- NULL
           pp <- str_replace_all(pair,'Plagiotremus ','')
           rds_file <- here('data','haplotypes',str_glue('{str_c(pp,collapse="-")}_{marker}_replot.rds'))
@@ -532,16 +567,17 @@ haplotypes <- species_pairs %>%
                             t = 65, b = 99)
           )
           # make plot with legend
-          joint_plot <- wrap_elements(
+          net_plot <- wrap_elements(
             panel = ~plot(
               hnet, pie = ht_locations, bg = palette,
               size=attr(hnet, "freq"), show.mutation = 1,
               labels = F, threshold = 0, fast = F, legend = F, xy=pd
             ),
             clip = FALSE
-          ) +
-            bar_legend +
-            plot_layout(design = hap_layout)
+          )
+
+          joint_plot <- net_plot + bar_legend + plot_layout(design=hap_layout)
+
           # quartz()
           list(
             alignment = alignment,
@@ -557,109 +593,6 @@ haplotypes <- species_pairs %>%
       })
   })
 
-# hawaii_haplotypes <- hawaii_species %>%
-  # purrr::map(\(pair) {
-  #   markers %>%
-  #     set_names() %>%
-  #     purrr::map(\(marker) {
-  #       alignment <- alignments %>%
-  #         pluck(marker,'c00')
-  #       # filter by samples in this species pair
-  #       samples <- plagiotremus_data %>%
-  #         filter(
-  #           species %in% pair,
-  #           id %in% labels(alignment)
-  #         ) %>%
-  #         mutate(locality = fct_reorder(locality,lon))
-  #       alignment <- alignment[samples$id,]
-  #       # calculate per-base coverage
-  #       covg <- apply(alignment,2,\(bases) sum(bases != 4) / length(bases))
-  #       # keep only positions with >= 99% coverage
-  #       alignment <- alignment[,covg >= 0.99]
-  #       samples <- samples %>%
-  #         filter(id %in% labels(alignment))
-  #       hplot <- NULL
-  #       if (nrow(alignment) > 0) {
-  #         haplotypes <- haplotype(alignment)
-  #         hnet <- haploNet(haplotypes)
-  #         hindex <- attr(haplotypes,'index')
-  #         ht_locations <- haploFreq(alignment,fac=samples$locality)
-  #         palette <- hawaii_master_palette %>%
-  #           filter(locality %in% colnames(ht_locations)) %>%
-  #           dplyr::slice(match(colnames(ht_locations),locality)) %>%
-  #           select(locality,color) %>%
-  #           deframe()
-  #         bar_legend <- ggplot(data = samples, aes(y = locality, fill = locality)) +
-  #           geom_bar() +
-  #           geom_text(stat = "count", aes(label = ..count..), hjust = -0.25, size = 2) +
-  #           scale_fill_manual(values = palette, guide = F) +
-  #           # scale_x_continuous(breaks = seq(0,40,10), limits = c(0,45)) +
-  #           scale_y_discrete(limits=rev) +
-  #           theme_transparent() +
-  #           theme(
-  #             plot.title = element_blank(),
-  #             plot.subtitle = element_blank(),
-  #             axis.text.y = element_text(size = 12, colour = "black"),
-  #             axis.text.x = element_text(size = 7, colour = "black"),
-  #             axis.ticks.y = element_blank(),
-  #             axis.title = element_blank(),
-  #             legend.position = "none",
-  #             panel.grid.major.y = element_blank(),
-  #             panel.grid.minor = element_blank(),
-  #             panel.border = element_blank(),
-  #             panel.grid = element_blank()
-  #           ) +
-  #           labs(title = "Legend", subtitle = "Number of samples")
-  #         pd <- NULL
-  #         pp <- str_replace_all(pair,'Plagiotremus ','')
-  #         rds_file <- here('data','haplotypes',str_glue('{str_c(pp,collapse="-")}_{marker}_replot.rds'))
-  #         if (file_exists(rds_file)) pd <- readRDS(rds_file)
-  #         # plot(hnet, pie = ht_locations, bg = palette, # keep the same
-  #         #      size=attr(hnet, "freq"), show.mutation = 1, length = 0.5, space = 0.75, # mess with
-  #         #      # labels = F, threshold = 0, fast = F, legend = F)#, xy=pd)
-  #         #      labels = F, threshold = 0, fast = F, legend = F, xy=pd)
-  #         # pd <- replot()
-  #         # saveRDS(pd,rds_file)
-  #         hap_layout <- c(
-  #           patchwork::area(l = 1, r = 100,
-  #                           t = 1, b = 100),
-  #           patchwork::area(l = 6, r = 30,
-  #                           t = 65, b = 99)
-  #         )
-  #         # make plot with legend
-  #
-  #         pud <- function(net,pie,pal,d) {
-  #           par(mar = c(0,0,0,0))
-  #           plot(
-  #             net, pie = pie, bg = pal,
-  #             size=attr(net, "freq"), show.mutation = 1,
-  #             labels = F, threshold = 0, fast = F, legend = F, xy=d
-  #           )
-  #         }
-  #
-  #         pl <- "
-  #           #22
-  #           122
-  #         "
-  #         joint_plot <- bar_legend + wrap_elements(
-  #           panel = ~pud(hnet,ht_locations,palette,pd),
-  #           clip = FALSE
-  #         )
-  #         # quartz()
-  #         list(
-  #           alignment = alignment,
-  #           samples = samples,
-  #           plot = joint_plot,
-  #           haplotypes = haplotypes,
-  #           network = hnet,
-  #           frequencies = ht_locations
-  #         )
-  #       } else {
-  #         NULL
-  #       }
-  #     })
-  # })
-
 hap_summary <- function(h) {
   hindex <- attr(h$haplotypes,'index') %>%
     imap(\(idx,hap) {
@@ -673,7 +606,7 @@ hap_summary <- function(h) {
 
   h_summary = hindex %>%
     group_by(haplotype) %>%
-    summarise(n = n(), spp = n_distinct(species), src = n_distinct(source), loc = n_distinct(kulbicki_province)) %>%
+    summarise(n = n(), spp = n_distinct(species), src = n_distinct(source), loc = n_distinct(province)) %>%
     ungroup()
 
   list(
@@ -694,7 +627,8 @@ hap_summary <- function(h) {
 ```
 
 ```{r amovas, include=FALSE,dependson="haplotypes"}
-library(haplotypes)
+# this goes slow as hell so we're manually caching it for
+# convenience sake in rstudio
 if (!file_exists(here('cache','amovas.rds'))) {
   amovas <- haplotypes %>%
     imap(\(pair,spp) {
@@ -702,15 +636,12 @@ if (!file_exists(here('cache','amovas.rds'))) {
         imap(\(hap,marker) {
           if (!is.null(hap)) {
             samples <- hap$samples %>%
-              add_count(kulbicki_province) %>%
-              filter(n >= 5) %>%
-              mutate(kulbicki_province = province_abbrev[kulbicki_province]) %>%
-              mutate(kulbicki_province  = fct_reorder(kulbicki_province,llon)) %>%
-              droplevels()
+              add_count(province) %>%
+              filter(n >= 5)
             dd <- dist.dna(hap$alignment[samples$id,])
             list(
-              amova = amova(dd ~ kulbicki_province,data=samples,nperm = 9999),
-              pairwise = pairPhiST(dd,samples$kulbicki_province,nperm=9999)
+              amova = amova(dd ~ prov,data=samples,nperm = 9999),
+              pairwise = haplotypes::pairPhiST(dd,samples$prov,nperm=9999)
             )
           }
         })
@@ -728,24 +659,21 @@ dna_distances <-
       imap(\(hap,marker) {
         if (!is.null(hap)) {
           alignment <- hap$alignment
-          samples <- hap$samples %>%
-            mutate(kulbicki_province = province_abbrev[kulbicki_province]) %>%
-            mutate(kulbicki_province  = fct_reorder(kulbicki_province,llon))
+          samples <- hap$samples
           distances <- dist.dna(alignment) %>%
             as.matrix() %>%
             as_tibble(rownames='left') %>%
             pivot_longer(-left,names_to = 'right',values_to = 'dist') %>%
-            left_join(samples %>% select(id,kulbicki_province),by=c(left='id')) %>%
-            left_join(samples %>% select(id,kulbicki_province),by=c(right='id'),suffix=c('_left','_right')) %>%
+            left_join(samples %>% select(id,prov),by=c(left='id')) %>%
+            left_join(samples %>% select(id,prov),by=c(right='id'),suffix=c('_left','_right')) %>%
             filter(left != right) %>%
-            group_by(across(starts_with('kulbicki_province'))) %>%
+            group_by(across(starts_with('prov'))) %>%
             summarise(dist = mean(dist,na.rm=TRUE)) %>%
             ungroup()  %>%
-            # mutate(kulbicki_province_right = factor(kulbicki_province_right,levels = rev(levels(kulbicki_province_left)))) %>%
-            mutate(dist = if_else(kulbicki_province_left == kulbicki_province_right,0,dist)) %>%
-            pivot_wider(names_from = 'kulbicki_province_right', values_from = 'dist')
-                  dist_matrix <- distances %>%
-            column_to_rownames('kulbicki_province_left') %>%
+            mutate(dist = if_else(prov_left == prov_right,0,dist)) %>%
+            pivot_wider(names_from = 'prov_right', values_from = 'dist')
+          dist_matrix <- distances %>%
+            column_to_rownames('prov_left') %>%
             as.matrix()
           diag(dist_matrix) <- NA
           dist_matrix[upper.tri(dist_matrix)] <- NA
@@ -866,7 +794,7 @@ max_hap <- h$summary %>%
 
 
 hap1 <- h$details %>%
-  mutate(hi = if_else(str_detect(kulbicki_province,'Hawaii'),'hi','ip')) %>%
+  mutate(hi = if_else(str_detect(province,'Hawaii'),'hi','ip')) %>%
   count(haplotype,hi) %>%
   filter(haplotype == top_3[1]) %>%
   select(-haplotype) %>%
@@ -874,7 +802,7 @@ hap1 <- h$details %>%
   as.list()
 
 hap2 <- h$details %>%
-  mutate(hi = if_else(str_detect(kulbicki_province,'Hawaii'),'hi','ip')) %>%
+  mutate(hi = if_else(str_detect(province,'Hawaii'),'hi','ip')) %>%
   count(haplotype,hi) %>%
   filter(haplotype == top_3[2]) %>%
   select(-haplotype) %>%
@@ -892,19 +820,19 @@ dd <- dist.dna(alignment) %>%
   as.matrix()
 
 m_sp <- samples %>%
-  filter(kulbicki_province == 'Marquesas') %>%
+  filter(province == 'Marquesas') %>%
   pull(id)
 ip_sp <- samples %>%
-  filter(kulbicki_province != 'Marquesas') %>%
+  filter(province != 'Marquesas') %>%
   pull(id)
 
 marq_div_all <- mean(dd[m_sp,ip_sp])
 
 m_sp <- samples %>%
-  filter(kulbicki_province == 'Marquesas' & species == 'Plagiotremus tapeinosoma') %>%
+  filter(province == 'Marquesas' & species == 'Plagiotremus tapeinosoma') %>%
   pull(id)
 ip_sp <- samples %>%
-  filter(kulbicki_province != 'Marquesas' & species == 'Plagiotremus tapeinosoma') %>%
+  filter(province != 'Marquesas' & species == 'Plagiotremus tapeinosoma') %>%
   pull(id)
 
 marq_div_pta <- mean(dd[m_sp,ip_sp])
@@ -927,7 +855,7 @@ max_hap <- h$summary %>%
 
 
 hap1 <- h$details %>%
-  mutate(hi = if_else(str_detect(kulbicki_province,'Hawaii'),'hi','ip')) %>%
+  mutate(hi = if_else(str_detect(province,'Hawaii'),'hi','ip')) %>%
   count(haplotype,hi) %>%
   filter(haplotype == top_3[1]) %>%
   select(-haplotype) %>%
@@ -935,7 +863,7 @@ hap1 <- h$details %>%
   as.list()
 
 hap2 <- h$details %>%
-  mutate(hi = if_else(str_detect(kulbicki_province,'Hawaii'),'hi','ip')) %>%
+  mutate(hi = if_else(str_detect(province,'Hawaii'),'hi','ip')) %>%
   count(haplotype,hi) %>%
   filter(haplotype == top_3[2]) %>%
   select(-haplotype) %>%
@@ -1503,7 +1431,7 @@ print_table(tbl_collection,"tbl_collection","Specimen collection summary.",hdr_c
 hap <- haplotypes$pgt$coi
 
 hap_stats <- hap$samples %>%
-  group_by(kulbicki_province) %>%
+  group_by(province) %>%
   # group_by(PROVINCE) %>%
   summarise(
     n = n(),
@@ -1523,7 +1451,7 @@ hap_stats <- hap$samples %>%
   )) %>%
   arrange(llon) %>%
   select(-c(sig,llon)) %>%
-  dplyr::rename(Province=kulbicki_province)
+  dplyr::rename(Province=province)
 
 print_table(hap_stats,id="tbl_stats_coi_pgt","COI population genetic summary statistics for *P. goslinei*/*tapeinosoma* across marine biogeographic provinces (n = number of samples, S = number of segregating sites, H = number of unique haplotypes, h = haplotype diversity, $\\mathrm{\\uppi}$ = nucleotide diversity, D = Tajima's D; results in bold are statistically significant).",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
 ```
@@ -1534,7 +1462,7 @@ print_table(hap_stats,id="tbl_stats_coi_pgt","COI population genetic summary sta
 hap <- haplotypes$pgt$cytb
 
 hap_stats <- hap$samples %>%
-  group_by(kulbicki_province) %>%
+  group_by(province) %>%
   # group_by(PROVINCE) %>%
   summarise(
     n = n(),
@@ -1554,7 +1482,7 @@ hap_stats <- hap$samples %>%
   )) %>%
   arrange(llon) %>%
   select(-c(sig,llon)) %>%
-  dplyr::rename(Province=kulbicki_province)
+  dplyr::rename(Province=province)
 
 print_table(hap_stats,id="tbl_stats_cytb_pgt","cytb population genetic summary statistics for *P. goslinei*/*tapeinosoma* across marine biogeographic provinces. Column names as in [@tbl:tbl_stats_coi_pgt].",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
 ```
@@ -1565,7 +1493,7 @@ print_table(hap_stats,id="tbl_stats_cytb_pgt","cytb population genetic summary s
 hap <- haplotypes$per$coi
 
 hap_stats <- hap$samples %>%
-  group_by(kulbicki_province) %>%
+  group_by(province) %>%
   # group_by(PROVINCE) %>%
   summarise(
     n = n(),
@@ -1585,7 +1513,7 @@ hap_stats <- hap$samples %>%
   )) %>%
   arrange(llon) %>%
   select(-c(sig,llon)) %>%
-  dplyr::rename(Province=kulbicki_province)
+  dplyr::rename(Province=province)
 
 print_table(hap_stats,id="tbl_stats_coi_per","COI population genetic summary statistics for *P. ewaensis*/*rhinorhynchos* across marine biogeographic province. Column names as in [@tbl:tbl_stats_coi_pgt].",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
 ```
@@ -1616,19 +1544,19 @@ amova_tbl <- function(mova,roundr=3,adjust=FALSE, alpha=0.05, upper_p = FALSE) {
 ```
 
 ```{r tbl-amova-pgt-coi, results="asis", dependson=c("amovas","amova-tbl")}
-print_table(amova_tbl(amovas$pgt$coi$pairwise,adjust="BY",upper_p=TRUE),id="tbl_amova_pgt_coi","Pairwise COI $\\upPhi_\\mathrm{st}$ (below diagonal) and associated *p*-values (above diagonal) among Indo-Pacific biogeographic provinces (where N &gt; 5) for *Plagiotremus goslinei*/*P. tapeinosoma*. Significant comparisons appear in bold. Province abbreviations: WIO: Western Indian Ocean, RS: Red Sea, CIP: Central Indo-Pacific, CP: Central Pacific, MHI: Main Hawaiian Islands, NWHI: Northwestern Hawaiian Islands, MARQ: Marquesas",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
+print_table(amova_tbl(amovas$pgt$coi$pairwise,adjust="BY",upper_p=TRUE),id="tbl_amova_pgt_coi","Pairwise COI $\\upPhi_\\mathrm{st}$ (below diagonal) and associated *p*-values (above diagonal) among biogeographic provinces (where N &gt; 5) for *Plagiotremus goslinei*/*P. tapeinosoma*. Significant comparisons appear in bold. Abbreviations: RS: Red Sea, WIO: Western Indian Ocean, CIP: Central Indo-Pacific, CP: Central Pacific, PL: Polynesian Province, MHI: Main Hawaiian Islands, NWHI: Northwestern Hawaiian Islands, MQ: Marquesas.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
 ```
 
 \newpage
 
 ```{r tbl-amova-pgt-cytb, results="asis", dependson=c("amovas","amova-tbl")}
-print_table(amova_tbl(amovas$pgt$cytb$pairwise,adjust="BY",upper_p=TRUE),id="tbl_amova_pgt_cytb","Pairwise cytb $\\upPhi_\\mathrm{st}$ (below diagonal) and associated *p*-values (above diagonal) among Indo-Pacific biogeographic provinces (where N &gt; 5) for *Plagiotremus goslinei*/*P. tapeinosoma*. Significant comparisons appear in bold.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
+print_table(amova_tbl(amovas$pgt$cytb$pairwise,adjust="BY",upper_p=TRUE),id="tbl_amova_pgt_cytb","Pairwise cytb $\\upPhi_\\mathrm{st}$ (below diagonal) and associated *p*-values (above diagonal) among biogeographic provinces (where N &gt; 5) for *Plagiotremus goslinei*/*P. tapeinosoma*. Significant comparisons appear in bold.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
 ```
 
 \newpage
 
 ```{r tbl-amova-per-coi, results="asis", dependson=c("amovas","amova-tbl")}
-print_table(amova_tbl(amovas$per$coi$pairwise,adjust="BY",upper_p=TRUE),id="tbl_amova_per_coi","Pairwise COI $\\upPhi_\\mathrm{st}$ (below diagonal) and associated *p*-values (above diagonal) among Indo-Pacific biogeographic provinces (where N &gt; 5) for *Plagiotremus ewaensis*/*P. rhinorhynchos*. Significant comparisons appear in bold.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
+print_table(amova_tbl(amovas$per$coi$pairwise,adjust="BY",upper_p=TRUE),id="tbl_amova_per_coi","Pairwise COI $\\upPhi_\\mathrm{st}$ (below diagonal) and associated *p*-values (above diagonal) among biogeographic provinces (where N &gt; 5) for *Plagiotremus ewaensis*/*P. rhinorhynchos*. Significant comparisons appear in bold.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
 ```
 
 \newpage
@@ -1701,17 +1629,17 @@ print_table(here('data','tables','models.csv'),'tbl_supp_models','Summary of bes
 \newpage
 
 ```{r tbl-supp-dist-pgt-coi, results="asis", dependson="dna-distances"}
-print_table(dna_distances$pgt$coi,id="tbl_supp_dist_pgt_coi","Mean COI Kimura 2-parameter (K2P) distances among Indo-Pacific biogeographic provinces for *Plagiotremus goslinei*/*P. tapeinosoma*. Province abbreviations: WIO: Western Indian Ocean, RS: Red Sea, CIP: Central Indo-Pacific, CP: Central Pacific, MHI: Main Hawaiian Islands, NWHI: Northwestern Hawaiian Islands, MARQ: Marquesas",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
+print_table(dna_distances$pgt$coi,id="tbl_supp_dist_pgt_coi","Mean COI Kimura 2-parameter (K2P) distances among biogeographic provinces for *Plagiotremus goslinei*/*P. tapeinosoma*. Abbreviations: RS: Red Sea, WIO: Western Indian Ocean, CIP: Central Indo-Pacific, CP: Central Pacific, PL: Polynesian Province, MHI: Main Hawaiian Islands, NWHI: Northwestern Hawaiian Islands, MQ: Marquesas.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
 ```
 
 \newpage
 
 ```{r tbl-supp-dist-pgt-cytb, results="asis", dependson="dna-distances"}
-print_table(dna_distances$pgt$cytb,id="tbl_supp_dist_pgt_cytb","Mean cytb Kimura 2-parameter (K2P) distances among Indo-Pacific biogeographic provinces for *Plagiotremus goslinei*/*P. tapeinosoma*.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
+print_table(dna_distances$pgt$cytb,id="tbl_supp_dist_pgt_cytb","Mean cytb Kimura 2-parameter (K2P) distances among biogeographic provinces for *Plagiotremus goslinei*/*P. tapeinosoma*.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
 ```
 
 \newpage
 
 ```{r tbl-supp-dist-per-coi, results="asis", dependson="dna-distances"}
-print_table(dna_distances$per$coi,id="tbl_supp_dist_per_coi","Mean COI Kimura 2-parameter (K2P) distances among Indo-Pacific biogeographic provinces for *Plagiotremus ewaensis*/*P. rhynorhynchos*.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
+print_table(dna_distances$per$coi,id="tbl_supp_dist_per_coi","Mean COI Kimura 2-parameter (K2P) distances among biogeographic provinces for *Plagiotremus ewaensis*/*P. rhynorhynchos*.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
 ```
