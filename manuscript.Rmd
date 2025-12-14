@@ -121,7 +121,6 @@ markers <- c("coi","cytb")
 regions <- st_read(here("data","gis","ecoregions","meow_ecos.shp"),quiet = TRUE) %>%
   st_shift_longitude() %>%
   group_by(ECOREGION) %>%
-  # mutate(middle = st_coordinates(st_centroid(st_combine(geometry)))[,'X'] )  %>%
   mutate(middle = max(st_coordinates(st_shift_longitude(st_combine(geometry)))[,'X']) )  %>%
   ungroup()
 
@@ -134,7 +133,6 @@ scounts <- original_samples %>%
 
 # stolen from insect: join two DNAbins together
 join_seq <- function(...){
-  # browser()
   dots <- list(...)
   nlsts <- length(dots)
   DNA <- any(sapply(dots, class) == "DNAbin")
@@ -199,7 +197,6 @@ print_table <- function(tbl,id="",caption="",hdr_case="sentence",hide=character(
       across(
         where(~format_numbers & is.numeric(.x) & !is.integer(.x)),
         ~fmt(.x,roundr,accuracy)
-        # ~r(num(.x,accuracy))
       )
     )
 
@@ -306,15 +303,12 @@ local_seqs <- markers %>%
   set_names() %>%
   purrr::map( \(marker) {
     seqs <- read_fasta(here("data",str_glue("plagiotremus-{marker}.fasta")),aligned=FALSE)
-    # seqs <- seqs[labels(seqs) %in% all_samples$id,]
 
     # filter metadata to match seqs
     samples <- all_samples %>%
       dplyr::filter(id %in% labels(seqs)) %>%
       arrange(id)
 
-    # order sequences the same as the sample metadata
-    # seqs <- seqs[match(samples$id,labels(seqs)),]
     list(samples = samples, sequences = seqs)
   })
 ```
@@ -334,7 +328,6 @@ alignments <- markers %>%
     al <- ss %>%
       as.character() %>%
       lapply(paste0,collapse="") %>%
-      # map_chr(~str_c(marker,collapse="")) %>%
       unlist() %>%
       DNAStringSet() %>%
       msa(.,method="ClustalOmega",gapOpening = 2000,gapExtension = 1000) %>%
@@ -426,6 +419,13 @@ province_abbrev <- c(
   'Marquesas' = 'MQ'
 )
 
+wrap_fac <- function(f,w=20) {
+  factor(
+    str_wrap(f,w),
+    levels = str_wrap(levels(f),w)
+  )
+}
+
 plagiotremus_data <- all_samples %>%
   filter(species %in% unlist(species_pairs)) %>%
   drop_na(lon,lat) %>%
@@ -463,9 +463,9 @@ plagiotremus_data <- all_samples %>%
     ecoregion = fct_reorder(ecoregion,n),
     province = fct_reorder(province,n),
     kulbicki_province = fct_reorder(kulbicki_province,n),
-    # color_category = fct_reorder(color_category,n),
-    kprov = fct_reorder(kprov,n),
-    prov = fct_reorder(prov,n)
+    prov = fct_reorder(prov,n),
+    ecoregion = fct_relevel(ecoregion,c('Main Hawaiian Islands','Northwestern Hawaiian Islands'),after=Inf),
+    kprov = fct_relevel(fct_reorder(kprov,n),"HW",after=Inf)
   ) %>%
   as_tibble()
 
@@ -473,7 +473,6 @@ master_palette <- plagiotremus_data %>%
   as_tibble() %>%
   count(color_category,ecoregion) %>%
   group_by(color_category) %>%
-  # mutate( color = rev(paletteer_d( palette_map[as.character(cur_group()$color_category)]))[1:n()], n = n() ) %>%
   mutate( color = paletteer_d( palette_map[as.character(cur_group()$color_category)],direction=-1)[1:n()], n = n() ) %>%
   ungroup()
 
@@ -488,7 +487,6 @@ haplotypes <- species_pairs %>%
         samples <- plagiotremus_data %>%
           filter(
             species %in% pair,
-            # str_detect(species,str_c(pair,collapse='|')),
             id %in% labels(alignment)
           )
         alignment <- alignment[samples$id,]
@@ -508,34 +506,25 @@ haplotypes <- species_pairs %>%
             filter(ecoregion %in% colnames(ht_locations)) %>%
             dplyr::slice(match(colnames(ht_locations),ecoregion)) %>%
             select(ecoregion,color) %>%
-            deframe()
+            deframe() %>%
+            set_names(str_wrap(names(.),25))
           bar_legend <- ggplot(data = samples) +
-            geom_bar(aes(y = ecoregion, fill = ecoregion)) +
-            # geom_bar(position= position_dodge2(width=0.9,preserve="single"), aes(y = kulbicki_province, fill = ecoregion)) +
-            # geom_text(stat = "count", aes(label = ..count..), hjust = -0.25, size = 2) +
-            # geom_text(
-            #   stat="count",
-            #   aes(y = kulbicki_province, group = ecoregion, label = ecoregion),
-            #   x=0, position = position_dodge(width=0.9), hjust=0, size=3
-            # ) +
-            scale_fill_manual(values = palette, guide = F) +
-            # scale_x_continuous(breaks = seq(0,40,10), limits = c(0,45)) +
+            geom_bar(aes(y = ecoregion, fill = wrap_fac(ecoregion,25))) +
+            scale_fill_manual(values = palette,name='Ecoregion') +
             scale_y_discrete(limits=rev) +
             theme_transparent() +
             theme(
               plot.title = element_blank(),
               plot.subtitle = element_blank(),
-              axis.text.y = element_text(size = 12, colour = "black"),
-              # axis.text.y = element_text(size = 7, colour = "black"),
+              axis.text.y = element_blank(),
               axis.ticks.y = element_blank(),
               axis.title = element_blank(),
-              legend.position = "none",
               panel.grid.major.y = element_blank(),
               panel.grid.minor = element_blank(),
               panel.border = element_blank(),
               panel.grid = element_blank(),
-              strip.placement = "outside",
-              strip.background = element_rect(fill="grey95",color="darkgrey")
+              strip.background = element_rect(fill="grey95",color="darkgrey"),
+              legend.title = element_blank()
             ) +
             labs(title = "Legend", subtitle = "Number of samples")  +
             facet_wrap(
@@ -545,9 +534,13 @@ haplotypes <- species_pairs %>%
               space="free_y",
               strip.position = "left"
             )
-            # coord_flip()
-            # scale_x_reverse()
 
+          leg <- get_legend(bar_legend)
+          leg <- ggplot() +
+            theme_void() +
+            annotation_custom(leg) +
+            theme(margins = margin(0,0,0,0))
+          bar_legend <- bar_legend + theme(legend.position = "none")
           pd <- NULL
           pp <- str_replace_all(pair,'Plagiotremus ','')
           rds_file <- here('data','haplotypes',str_glue('{str_c(pp,collapse="-")}_{marker}_replot.rds'))
@@ -559,12 +552,13 @@ haplotypes <- species_pairs %>%
           # pd <- replot()
           # saveRDS(pd,rds_file)
           hap_layout <- c(
-            patchwork::area(l = 1, r = 100,
-                            t = 1, b = 100),
-            patchwork::area(l = 6, r = 30,
-                            t = 65, b = 99)
+            # area(top, left, bottom, right)
+            area(1,5,100,100),  # plot
+            area(64,1.5,99,30), # bar plot
+            area(1,1.5,64,15)   # legend
           )
-          # make plot with legend
+
+          # get haplotype network plot from base R
           net_plot <- wrap_elements(
             panel = ~plot(
               hnet, pie = ht_locations, bg = palette,
@@ -574,9 +568,11 @@ haplotypes <- species_pairs %>%
             clip = FALSE
           )
 
-          joint_plot <- net_plot + bar_legend + plot_layout(design=hap_layout)
+          joint_plot <- net_plot +
+            bar_legend +
+            leg +
+            plot_layout(design=hap_layout)
 
-          # quartz()
           list(
             alignment = alignment,
             samples = samples,
@@ -969,7 +965,6 @@ oceans <- cbind(lon, c(lat, rev(lat))) %>%
 
 # create point data
 plagiotremus_data <- all_samples %>%
-  # filter(str_detect(species,str_c(unlist(species_pairs),collapse='|'))) %>%
   filter(species %in% unlist(species_pairs)) %>%
   filter(source == 'sequenced') %>%
   drop_na(lat,lon) %>%
@@ -994,7 +989,6 @@ plotz <- species_pairs %>%
     # get only species in pair
     pd <- plagiotremus_data %>%
       filter(Species %in% pair)
-      # filter(str_detect(Species,str_c(pair,collapse='|')))
 
     # make the pllot
     ggplot() +
@@ -1019,7 +1013,6 @@ plotz <- species_pairs %>%
 # reduce the plots with `/` so they're stacked on top of one another
 plotz %>%
   purrr::reduce(`/`) +
-  # plot_annotation(tag_levels = plot_tags) &
   theme(plot.tag = element_text(face='bold',margin = margin(r=4,b=4)))
 cat("{#fig:fig_map}")
 ```
@@ -1062,7 +1055,6 @@ trees <- tree_covg %>%
     to_drop <- tree %>%
       as_tibble() %>%
       filter(
-        # str_detect(species,'Omobranchus'),
         genus == 'Omobranchus',
         label != 'Oan-AMS266-08'
       ) %>%
@@ -1161,7 +1153,6 @@ gnodes <- genera[[ft]] %>%
   apply(MARGIN=2,FUN=\(nodes) {
     getMRCA(trees[[ft]]@phylo,nodes)
   }) %>%
-  # c(.,clades$id) %>%
   unique()
 
 pointcol <- c('≥0.99' = 'black','≥0.9' = 'darkgrey')
@@ -1172,11 +1163,7 @@ full_tree <- ggtree(trees %>% pluck(ft),aes(color=Genus),size=0.7) +
   geom_cladelabel(onodes %>% pluck(ft),'bolditalic(Omobranchus)', offset = 0.005, parse=TRUE, size=3) +
   geom_point2(aes(fill=prob_cut,subset = node %in% gnodes),shape=21,size=2,show.legend = TRUE) +
   scale_y_reverse() +
-  # scale_color_discrete(breaks=names(genus_groups)) +
-  # scale_color_discrete(guide='none') +
   geom_rootedge(0.005) +
-  # xlim(NA,0.46) +
-  # scale_color_paletteer_d('lisa::MaxErnst')
   scale_color_manual(values=gcol,guide='none') +
   scale_fill_manual(values=pointcol,drop=FALSE,name='Node support\n(posterior probability)') +
   theme(
@@ -1189,9 +1176,7 @@ full_tree <- ggtree(trees %>% pluck(ft),aes(color=Genus),size=0.7) +
 
 
 subtrees <- trees[st] %>%
-  # magrittr::extract(st) %>%
   imap(\(tree,covg) {
-    # browser()
     gg <- genera %>%
       pluck(covg)
 
@@ -1201,24 +1186,20 @@ subtrees <- trees[st] %>%
       apply(MARGIN=2,FUN=\(nodes) {
         getMRCA(tree@phylo,nodes)
       }) %>%
-      # c(.,clades$id) %>%
       unique()
 
     gg$id %>%
       purrr::reduce(\(g,node) g %>% collapse(node=node),.init=ggtree(tree,aes(color=Genus))) +
       geom_cladelab(mapping=aes(node=id,label=text,color=Genus),data=gg, align=FALSE, fontface = "bold.italic", offset = 0.001)  +
       geom_point2(aes(fill=prob_cut,subset = node %in% gnodes),shape=21,size=2) +
-      # geom_nodelab(aes(label=prob)) +
-      geom_cladelabel(onodes %>% pluck(covg),'bolditalic(Omobranchus)', parse=TRUE) + #, offset = 0.005)  +
+      geom_cladelabel(onodes %>% pluck(covg),'bolditalic(Omobranchus)', parse=TRUE) +
       geom_point2(aes(subset = (node %in% gg$id)),shape=18,size=3) +
       geom_rootedge(0.005) +
       xlim(NA,0.3) +
       scale_color_manual(values=gcol,guide='none')  +
       scale_fill_manual(values=pointcol,guide='none') +
-      # scale_fill_manual(values=gcol,guide='none')  +
       scale_y_reverse() +
       xlim(0,0.28)
-      # coord_cartesian(clip='off') +
   })
 
 # plot layout
@@ -1343,7 +1324,6 @@ tree <- tree %>%
 
 # figure out which nodes to put points on
 nodepoints <- clades %>%
-  # filter(!str_detect(text,'azaleus')) %>%
   pull(id) %>%
   combn(2) %>%
   apply(MARGIN=2,FUN=\(nodes) {
@@ -1358,15 +1338,11 @@ tree <- groupOTU(tree, tree@phylo$tip.label[grep("Pew|Pgo", tree@phylo$tip.label
 
 ggtree(tree,aes(color=group,linetype=group)) +
   scale_y_reverse() +
-  # scale_color_manual(values = c('#DD3D2DFF','black'),guide='none') +
   scale_color_manual(values = c('#C82B84','black'),guide='none') +
   scale_linetype_manual(values=c(2,1), guide='none') +
-  # geom_nodelab(aes(label=node)) +
   geom_cladelab(mapping=aes(node=id,label=text,offset=offset),data=clades, parse=TRUE,fontface='bold.italic', barsize=1) +
   geom_rootedge(0.005) +
-  # geom_nodepoint(aes(fill=posterior,subset=(node %in% nodepoints)),shape=21,alpha=1,size=3) +
   geom_nodelab(aes(subset=(node %in% nodepoints),label=round(prob,2)),hjust=0,geom='text',fontface='bold',size=3) +#nudge_x = -0.003, nudge_y=1.1) +
-  # scale_fill_manual(na.translate=F,name="Posterior prob.",values=clr_map) +
   theme(legend.position = c(0.1,0.25)) +
   xlim(NA,0.25) +
   geom_treescale(y=-135,x=0,offset=1)
@@ -1380,7 +1356,6 @@ tbl_collection <- original_samples %>%
   left_join(plagiotremus_data,by="id",suffix=c("","_sequenced")) %>%
   group_by(species) %>%
   summarise(
-    # Range = ifelse(n_distinct(meow_province) == 1,"Hawai&#x02BB;i","Indo-Pacific"),
     Range = ifelse(cur_group()$species %in% hawaii_species,'Hawai&#x02BB;i','Indo-Pacific'),
     N = n(),
     `COI sequences` = sum(sequenced_coi),
@@ -1398,7 +1373,6 @@ hap <- haplotypes$pgt$coi
 
 hap_stats <- hap$samples %>%
   group_by(province) %>%
-  # group_by(PROVINCE) %>%
   summarise(
     n = n(),
     S = length(seg.sites(hap$alignment[id,])),
@@ -1429,7 +1403,6 @@ hap <- haplotypes$pgt$cytb
 
 hap_stats <- hap$samples %>%
   group_by(province) %>%
-  # group_by(PROVINCE) %>%
   summarise(
     n = n(),
     S = length(seg.sites(hap$alignment[id,])),
@@ -1460,7 +1433,6 @@ hap <- haplotypes$per$coi
 
 hap_stats <- hap$samples %>%
   group_by(province) %>%
-  # group_by(PROVINCE) %>%
   summarise(
     n = n(),
     S = length(seg.sites(hap$alignment[id,])),
@@ -1488,7 +1460,6 @@ print_table(hap_stats,id="tbl_stats_coi_per","COI population genetic summary sta
 
 ```{r amova-tbl, include=FALSE}
 amova_tbl <- function(mova,roundr=3,adjust=FALSE, alpha=0.05, upper_p = FALSE) {
-  # browser()
   phi <- mova$PhiST
   pval <- mova$p
 
@@ -1549,7 +1520,6 @@ covg_data <- alignments %>%
 verts <- covg_data %>%
   group_by(dataset) %>%
   summarise(min = min(pos), max = max(pos), first_cov=dplyr::first(coverage), last_cov=dplyr::last(coverage))
-  # mutate(dataset = fct_reorder(dataset,-parse_number(dataset)))
 ggplot(covg_data) +
   geom_area(aes(x = pos, y = coverage, fill=dataset),alpha=0.7, stat="identity",position="identity") +
   geom_line(aes(x = pos, y = coverage, color = dataset)) +
