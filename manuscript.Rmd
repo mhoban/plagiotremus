@@ -477,8 +477,6 @@ master_palette <- plagiotremus_data %>%
   mutate( color = paletteer_d( palette_map[as.character(cur_group()$color_category)],direction=-1)[1:n()], n = n() ) %>%
   ungroup()
 
-pair <- species_pairs[[1]]
-marker <- 'coi'
 haplotypes <- species_pairs %>%
   purrr::map(\(pair) {
     markers %>%
@@ -1028,21 +1026,21 @@ cat("{#fig:fig_map}")
 
 \newpage
 
-```{r fig-hap-coi-pgt, fig.cap='COI haplotype network of *Plagiotremus tapeinosoma* and *P. goslinei*.', results="asis", fig.width=16, fig.height=10, dependson="haplotypes"}
+```{r fig-hap-coi-pgt, fig.cap='COI haplotype network of *Plagiotremus tapeinosoma* and *P. goslinei*. Abbreviations: RS: Red Sea, WIO: Western Indian Ocean, CIP: Central Indo-Pacific, CP: Central Pacific, PL: Polynesian Province, MHI: Main Hawaiian Islands, NWHI: Northwestern Hawaiian Islands, MQ: Marquesas.', results="asis", fig.width=16, fig.height=10, dependson="haplotypes"}
 haplotypes$pgt$coi$plot
 cat("{#fig:fig_hap_coi_pgt}")
 ```
 
 \newpage
 
-```{r fig-hap-cytb-pgt, fig.cap='cytb haplotype network of *Plagiotremus tapeinosoma* and *P. goslinei*.', results="asis", fig.width=16, fig.height=10, dependson="haplotypes"}
+```{r fig-hap-cytb-pgt, fig.cap='cytb haplotype network of *Plagiotremus tapeinosoma* and *P. goslinei*. Abbreviations as in [@fig:fig_hap_coi_pgt].', results="asis", fig.width=16, fig.height=10, dependson="haplotypes"}
 haplotypes$pgt$cytb$plot
 cat("{#fig:fig_hap_cytb_pgt}")
 ```
 
 \newpage
 
-```{r fig-hap-coi-per, fig.cap='COI haplotype network of *Plagiotremus rhinorhynchos* and *P. ewaensis*.', results="asis", fig.width=16, fig.height=10, dependson="haplotypes"}
+```{r fig-hap-coi-per, fig.cap='COI haplotype network of *Plagiotremus rhinorhynchos* and *P. ewaensis*. Abbreviations as in [@fig:fig_hap_coi_pgt].', results='asis', fig.width=16, fig.height=10, dependson='haplotypes'}
 haplotypes$per$coi$plot
 cat("{#fig:fig_hap_coi_per}")
 ```
@@ -1253,69 +1251,37 @@ tree <- trees$c50 %>%
 # save the tip labels
 tips <- tree@phylo$tip.label
 
-alignment <- alignments$coi$c50[tips,]
-
-samples <- all_samples %>%
-  filter(id %in% tips) %>%
-  mutate(region = factor(region))
+hap <- haplotypes %>%
+  pluck('pgt','coi')
 
 # get haplotypes
-tree_haps <- pegas::haplotype(alignment)
 # generate haplotype index map
-hindex <- attr(tree_haps,'index') %>%
-  imap(\(idx,hap) {
+hindex <- attr(hap$haplotypes,'index') %>%
+  imap(\(idx,h) {
     tibble(
-      haplotype = hap,
-      sequence = rownames(alignments$coi$c50)[idx]
+      haplotype = h,
+      sequence = rownames(hap$alignment)[idx]
     )
   }) %>%
   list_rbind()
-
-# # join haplotypes to sample data
-# samples <- samples %>%
-#   left_join(hindex,by=c(id='sequence'))
-
-geo_data <- tree %>%
-  as_tibble() %>%
-  drop_na(lat,lon) %>%
-  select(label,lat,lon) %>%
-  st_as_sf(coords=c('lon','lat'),remove=FALSE,crs=4326) %>%
-  st_join(regions,st_within) %>%
-  as_tibble() %>%
-  select(label,PROVINCE)
-
 
 # join metadata to tree
 # and try to define some geographic range info
 tree <- tree %>%
   left_join(hindex,by=c(label='sequence')) %>%
-  left_join(geo_data,by='label') %>%
-  mutate(
-    range = PROVINCE,
-    range = case_when(
-      # hawaii gets hawaii
-      PROVINCE == 'Hawaii' ~ 'Hawaii',
-      # azaleus gets east pacific
-      str_detect(label,'^Paz') ~ 'Tropical East Pacific',
-      # otherwise if it's not east pacific or marquesas, it's indo-pacific
-      !(PROVINCE %in% c('Tropical East Pacific','Marquesas')) | is.na(PROVINCE) ~ 'Indo-Pacific',
-      # otherwise it is what it is
-      .default = PROVINCE
-    )
-  )
+  left_join(hap$samples,by=c(label='id'))
 
 # get tips with marquesan haplotypes
 marquesan_tips <- tree %>%
   as_tibble() %>%
   group_by(haplotype) %>%
-  filter(region == 'Marquesan') %>%
+  filter(province == 'Marquesas') %>%
   ungroup() %>%
   pull(label)
 
 # get root node and all children for marquesan haplotypes
 marquesan_node <- getMRCA(tree@phylo,marquesan_tips)
 marquesas <- ggtree:::getSubtree(tree@phylo,marquesan_node)
-
 
 # make nice-looking clades we can label
 clades <- tree %>%
@@ -1383,7 +1349,6 @@ nodepoints <- clades %>%
   apply(MARGIN=2,FUN=\(nodes) {
     getMRCA(tree@phylo,nodes)
   }) %>%
-  # c(.,clades$id) %>%
   unique()
 
 # make colors for our node points
@@ -1415,8 +1380,9 @@ tbl_collection <- original_samples %>%
   left_join(plagiotremus_data,by="id",suffix=c("","_sequenced")) %>%
   group_by(species) %>%
   summarise(
-    Range = ifelse(n_distinct(meow_province) == 1,"Hawai&#x02BB;i","Indo-Pacific"),
-    `Sample size` = n(),
+    # Range = ifelse(n_distinct(meow_province) == 1,"Hawai&#x02BB;i","Indo-Pacific"),
+    Range = ifelse(cur_group()$species %in% hawaii_species,'Hawai&#x02BB;i','Indo-Pacific'),
+    N = n(),
     `COI sequences` = sum(sequenced_coi),
     `cytb sequences` = sum(sequenced_cytb)
   ) %>%
@@ -1590,7 +1556,7 @@ ggplot(covg_data) +
   geom_segment(aes(x=min,xend=min,y=0,yend=first_cov,color=dataset),data=verts) +
   geom_segment(aes(x=max,xend=max,y=0,yend=last_cov,color=dataset),data=verts)  +
   facet_wrap(~dataset,ncol=1) +
-  labs(x='Nucleotide',y='Coverage') +
+  labs(x='Nucleotide position',y='Coverage (%)') +
   theme_bw() +
   theme(
     strip.background = element_blank(),
@@ -1598,6 +1564,7 @@ ggplot(covg_data) +
     panel.grid = element_line(color="#f0f0f0")
   ) +
   guides(color='none',fill = guide_legend(override.aes = list(alpha=1))) +
+  scale_y_continuous(labels = scales::percent) +
   scale_fill_paletteer_d('tvthemes::Pearl',direction = -1,labels=c('99%','50%','Full dataset'),name='Filtering') +
   scale_color_paletteer_d('tvthemes::Pearl',direction = -1,labels=c('99%','50%','Full dataset'))
 cat("{#fig:fig_supp_covg}")
@@ -1606,7 +1573,7 @@ cat("{#fig:fig_supp_covg}")
 \newpage
 
 ```{r tbl-supp-bold-seqs,results="asis",dependson="bold-seqs"}
-bold_tbl_seqs <- bold_seqs$coi$samples %>%
+bold_seq_tbl <- bold_seqs$coi$samples %>%
   select(species,processid,bin_uri,genbank_accession,country,catalognum) %>%
   dplyr::rename(
     Species=species,
@@ -1617,7 +1584,7 @@ bold_tbl_seqs <- bold_seqs$coi$samples %>%
     `Catalog Number`=catalognum
   ) %>%
   arrange(Species)
-print_table(bold_tbl_seqs,'tbl_supp_bold_seqs','Summary of external sequences used in this study.',hdr_case=NA)
+print_table(bold_seq_tbl,'tbl_supp_bold_seqs','Summary of external sequences used in this study.',hdr_case=NA)
 ```
 
 \newpage
