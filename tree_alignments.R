@@ -15,7 +15,7 @@ library(patchwork)
 library(ggfun)
 library(seqinr)
 
-load('output/image.Rdata')
+# load('output/image.Rdata')
 
 # stolen from shaunpwilkinson/insect
 duplicated.DNAbin <- function(x, incomparables = FALSE, pointers = TRUE, ...){
@@ -276,8 +276,6 @@ write.csv(distances,here('output','alignments','pgo-pta-concatenated_distances.c
 
 # alignment for goslinei/tapeinosoma beast analysis ---------------------------------------------------------------
 spp <- c('Plagiotremus goslinei','Plagiotremus tapeinosoma','Plagiotremus azaleus')
-# spp <- c('Plagiotremus goslinei','Plagiotremus tapeinosoma','Xiphasia matsubarai')
-# spp <- c('Plagiotremus goslinei','Plagiotremus tapeinosoma','Omobranchus anolius')
 
 alignment <- alignments %>%
   pluck('coi','c99')
@@ -314,3 +312,89 @@ samples <- samples %>%
 
 write_fasta(alignment,here('output','alignments','pew-prh-beast.fasta'))
 
+
+# plagiotremus beast alignment ------------------------------------------------------------------------------------
+
+# mixed haplotypes: XVII and III
+
+spd <- all_samples %>%
+  mutate(species_group = case_when(
+    species == 'Plagiotremus tapeinosoma' & meow_province == 'Marquesas' ~ 'pta_marquesas',
+    .default = species
+  ))
+
+unique_coi <- alignments$coi$c99 %>%
+  unique()
+
+spd <- spd %>%
+  filter(id %in% rownames(unique_coi))
+
+spda <- spd %>%
+  group_by(species_group) %>%
+  slice_sample(n = 4) %>%
+  ungroup() %>%
+  # filter(genus == 'Plagiotremus' | species == 'Xiphasia setifer')
+  filter(genus == 'Plagiotremus' | species == 'Meiacanthus atrodorsalis')
+
+beast_alignment <- unique_coi[spda$id,]
+write_fasta(beast_alignment,here('output','alignments','plagiotremus-beast.fasta'))
+
+# biogeography beast ----------------------------------------------------------------------------------------------
+
+htt <- haplotypes$pgt$coi
+alignment <- htt$alignment %>%
+  unique()
+samples <- htt$samples %>%
+  filter(id %in% rownames(alignment)) %>%
+  mutate(pvc = str_replace_all(province,'[[:space:]-]','')) %>%
+  mutate(beast_id = str_glue("{id}_{pvc}"))
+
+alignment <- alignment[samples$id,]
+rownames(alignment) <- samples$beast_id
+
+write_fasta(alignment,here('output','alignments','plagiotremus-beast_biogeography.fasta'))
+
+
+# biogeography azaleus --------------------------------------------------------------------------------------------
+
+# spp <- c('Plagiotremus goslinei','Plagiotremus tapeinosoma','Plagiotremus azaleus')
+# 
+# htt <- all_samples
+# alignment <- alignments
+# samples <- htt$samples %>%
+#   filter(id %in% rownames(alignment)) %>%
+#   mutate(pvc = str_replace_all(province,'[[:space:]-]','')) %>%
+#   mutate(beast_id = str_glue("{id}_{pvc}"))
+# 
+# alignment <- alignment[samples$id,]
+# rownames(alignment) <- samples$beast_id
+# 
+# write_fasta(alignment,here('output','alignments','plagiotremus-beast_biogeography.fasta'))
+
+spp <- c('Plagiotremus goslinei','Plagiotremus tapeinosoma','Plagiotremus azaleus')
+
+alignment <- alignments %>%
+  pluck('coi','c99')
+
+samples <- all_samples %>%
+  filter(species %in% spp) %>%
+  filter(id %in% rownames(alignment)) #%>%
+  # filter(!is.na(lat) & !is.na(lon))
+
+alignment <- alignment[samples$id,] %>%
+  unique()
+
+samples <- samples %>%
+  filter(id %in% rownames(alignment)) %>%
+  left_join(plagiotremus_data %>% select(id,province),by='id') %>%
+  mutate(province = case_when(
+    species == 'Plagiotremus azaleus' ~ 'Tropical East Pacific',
+    .default = province
+  )) %>%
+  mutate(pvc = str_replace_all(province,'[[:space:]-]','')) %>%
+  mutate(beast_id = str_glue("{id}_{pvc}"))
+
+alignment <- alignment[samples$id,]
+rownames(alignment) <- samples$beast_id
+
+write_fasta(alignment,here('output','alignments','plagiotremus-beast_biogeography_azaleus.fasta'))
