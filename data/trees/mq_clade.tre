@@ -1,0 +1,111 @@
+#NEXUS
+begin taxa;
+	dimensions ntax=7;
+	taxlabels
+	Pta-024_PolynesianProvince
+	Pta-086_Marquesas
+	Pta-087_Marquesas
+	Pta-093_Marquesas
+	Pta-095_Marquesas
+	Pta-MARQ057-12_Marquesas
+	Pta-MARQ200-12_Marquesas
+;
+end;
+
+begin trees;
+	tree tree_1 = [&R] (Pta-024_PolynesianProvince[&height=8.565789631030869E-16,height_95%_HPD={0.0,1.7763568394002505E-15},height_median=8.881784197001252E-16,height_range={0.0,7.105427357601002E-15},length=0.7978042970957108,length_95%_HPD={0.08004009239858956,1.7461461269877177},length_median=0.694658331812428,length_range={0.0054748562567557,5.095199716975525},location="PolynesianProvince",location.prob=1.0,location.set={"PolynesianProvince"},location.set.prob={1.0}]:1.91010,((((Pta-086_Marquesas[&height=8.58737676793841E-16,height_95%_HPD={0.0,1.7763568394002505E-15},height_median=8.881784197001252E-16,height_range={0.0,7.105427357601002E-15},length=0.27211883452007046,length_95%_HPD={0.005892452185497721,0.6389037546427812},length_median=0.22891122168648348,length_range={4.3943915166710923E-4,2.5195884874227854},location="Marquesas",location.prob=1.0,location.set={"Marquesas"},location.set.prob={1.0}]:0.559000,(Pta-093_Marquesas[&height=8.597766005891373E-16,height_95%_HPD={0.0,1.7763568394002505E-15},height_median=8.881784197001252E-16,height_range={0.0,7.105427357601002E-15},length=0.3412910870647634,length_95%_HPD={0.019297516805880655,0.7654665843371835},length_median=0.2958748739472412,length_range={4.3943915166710923E-4,2.791594490855876},location="Marquesas",location.prob=1.0,location.set={"Marquesas"},location.set.prob={1.0}]:0.504670,Pta-MARQ057-12_Marquesas[&height=8.606633864671804E-16,height_95%_HPD={0.0,1.7763568394002505E-15},height_median=8.881784197001252E-16,height_range={0.0,7.105427357601002E-15},length=0.3405117188373857,length_95%_HPD={0.016721316418133014,0.7575001433902768},length_median=0.29522801575498026,length_range={8.550811595808838E-4,3.183422867117388},location="Marquesas",location.prob=1.0,location.set={"Marquesas"},location.set.prob={1.0}]:0.504670)[&CAheight_95%_HPD={0.0700070051857109,1.0250845573864318},CAheight_mean=0.5046704240375027,CAheight_median=0.46160438827153927,CAheight_range={0.006186779368337003,3.1834228671173888},height=0.2790490102220851,height_95%_HPD={0.025692881409353774,0.5959988162075818},height_median=0.24628505144446677,height_range={0.006186779368337003,1.7444969038396163},length=0.159168252088568,length_95%_HPD={1.6939138261395925E-5,0.46389152265576916},length_median=0.11222919769687545,length_range={1.6939138261395925E-5,2.19656284829189},location="Marquesas",location.prob=0.9959360049385256,location.set={"Marquesas","CentralIndoPacific","MainHawaiianIslands","RedSea","TropicalEastPacific","CentralPacific","PolynesianProvince","WesternIndianOcean","NorthwesternHawaiianIslands"},location.set.prob={0.9959360049385256,6.687586810021092E-4,5.658727300787077E-4,0.0010288595092340141,0.0011317454601574154,1.543289263851021E-4,1.543289263851021E-4,1.543289263851021E-4,2.0577190184680282E-4},posterior=0.11999086442310067]:0.0543298)[&CAheight_95%_HPD={0.13109683190367782,1.0868839542160669},CAheight_mean=0.5590001929902731,CAheight_median=0.5147911815211834,CAheight_range={0.012962879725503473,3.2099965690782484},height=0.3256336319093653,height_95%_HPD={0.06407645694573283,0.6645446423606298},height_median=0.29418426889265525,height_range={0.012962879725503473,1.5975598151845478},length=0.16170366425020705,length_95%_HPD={1.0590744272676034E-5,0.47524856794630566},length_median=0.11428481903426269,length_range={1.0590744272676034E-5,1.5302009726459471},location="Marquesas",location.prob=0.9950572082379863,location.set={"Marquesas","CentralIndoPacific","MainHawaiianIslands","TropicalEastPacific","RedSea","CentralPacific","PolynesianProvince","NorthwesternHawaiianIslands"},location.set.prob={0.9950572082379863,2.7459954233409613E-4,5.491990846681923E-4,0.0015560640732265446,0.002013729977116705,1.8306636155606407E-4,2.7459954233409613E-4,9.153318077803204E-5},posterior=0.06743660650354312]:0.0385340,Pta-095_Marquesas[&height=8.605126191617943E-16,height_95%_HPD={0.0,1.7763568394002505E-15},height_median=8.881784197001252E-16,height_range={0.0,7.105427357601002E-15},length=0.34132476884889096,length_95%_HPD={0.019048432877641908,0.762913601319382},length_median=0.29677448921081107,length_range={9.039132921513371E-4,2.6363657506169216},location="Marquesas",location.prob=1.0,location.set={"Marquesas"},location.set.prob={1.0}]:0.597534)[&CAheight_95%_HPD={0.1654504023736676,1.1219725184254452},CAheight_mean=0.5975342136764409,CAheight_median=0.5505901766035273,CAheight_range={0.045963797199111145,3.2099965690782484},height=0.4060503841248506,height_95%_HPD={0.10960736820118466,0.7794167572234407},height_median=0.37260663633593527,height_range={0.045963797199111145,1.5255287208588024},length=0.15326508849642717,length_95%_HPD={1.3318596662870164E-5,0.4677847027887658},length_median=0.1047297154926694,length_range={1.3318596662870164E-5,2.079617536738567},location="Marquesas",location.prob=0.9931771894093686,location.set={"Marquesas","CentralIndoPacific","MainHawaiianIslands","TropicalEastPacific","RedSea","CentralPacific","PolynesianProvince","WesternIndianOcean","NorthwesternHawaiianIslands"},location.set.prob={0.9931771894093686,9.164969450101833E-4,5.091649694501018E-4,0.001934826883910387,0.001934826883910387,5.091649694501018E-4,4.073319755600815E-4,1.0183299389002037E-4,5.091649694501018E-4},posterior=0.060615787264511986]:0.0213931,Pta-087_Marquesas[&height=8.603440339021354E-16,height_95%_HPD={0.0,1.7763568394002505E-15},height_median=8.881784197001252E-16,height_range={0.0,7.105427357601002E-15},length=0.34085320401784647,length_95%_HPD={0.019697391695202793,0.7620823925822089},length_median=0.29646964854059443,length_range={6.857222335141522E-4,3.2217214790526683},location="Marquesas",location.prob=1.0,location.set={"Marquesas"},location.set.prob={1.0}]:0.618927)[&CAheight_95%_HPD={0.1927996979298081,1.1546653306551624},CAheight_mean=0.6189273024183238,CAheight_median=0.5700306519020448,CAheight_range={0.06432196698728276,3.2217214790526683},height=0.4964122812889669,height_95%_HPD={0.1481609885724442,0.9091423925192315},height_median=0.4623451270691419,height_range={0.06432196698728276,2.288471201070955},length=0.17564659507820266,length_95%_HPD={1.0924881124196872E-5,0.5353648200141996},length_median=0.11747530708648135,length_range={1.0924881124196872E-5,2.323712380411779},location="Marquesas",location.prob=0.9899567172332647,location.set={"Marquesas","MainHawaiianIslands","CentralIndoPacific","TropicalEastPacific","RedSea","CentralPacific","PolynesianProvince","WesternIndianOcean","NorthwesternHawaiianIslands"},location.set.prob={0.9899567172332647,0.001386729419674749,0.0015968399378072865,0.003025591461108543,0.002311215699457915,4.2022103626507544E-4,2.941547253855528E-4,4.2022103626507544E-4,5.883094507711056E-4},posterior=0.14689143477938815]:0.0258010,Pta-MARQ200-12_Marquesas[&height=8.584964491052234E-16,height_95%_HPD={0.0,1.7763568394002505E-15},height_median=8.881784197001252E-16,height_range={0.0,7.105427357601002E-15},length=0.41032965130236304,length_95%_HPD={0.053300625659724155,0.8796492271440002},length_median=0.3617233604955046,length_range={0.0044655804899695895,2.8767837141487034},location="Marquesas",location.prob=1.0,location.set={"Marquesas"},location.set.prob={1.0}]:0.644728)[&CAheight_95%_HPD={0.206847159413452,1.1866168100133136},CAheight_mean=0.6447282827834704,CAheight_median=0.594234628441026,CAheight_range={0.08848564015471538,3.2217214790526683},height=0.6447165739781477,height_95%_HPD={0.206847159413452,1.1865883385175318},height_median=0.5942305571247388,height_range={0.08848564015471538,3.2217214790526683},length=1.0987327281110997,length_95%_HPD={0.18648086134849784,2.346136516216135},length_median=0.9598873963635153,length_range={0.04167926125168275,6.780178963398713},location="Marquesas",location.prob=0.9709635006759134,location.set={"Marquesas","CentralIndoPacific","MainHawaiianIslands","TropicalEastPacific","RedSea","CentralPacific","PolynesianProvince","WesternIndianOcean","NorthwesternHawaiianIslands"},location.set.prob={0.9709635006759134,0.004555471194977871,0.004117207706030135,0.0046789256989068105,0.006604815960198268,0.002141935643167102,0.002086381116399079,0.0018456448337376469,0.003006117170669679},posterior=0.9999938273129059]:1.26537)[&CAheight_95%_HPD={0.6678121732158018,3.2926670279521533},CAheight_mean=1.9100958183692023,CAheight_median=1.8340450531776213,CAheight_range={0.24453490428467983,7.914693937040481},height=1.2028685919636495,height_95%_HPD={0.514208721923834,1.9920407297282754},height_median=1.1413940303485468,height_range={0.24453490428467983,4.373405511805691},length=0.3773658139429035,length_95%_HPD={1.7679348042065612E-4,0.9659641273556625},length_median=0.3006983669890051,length_range={1.7679348042065612E-4,3.390983802556807},location="CentralPacific",location.prob=0.21542418456022758,location.set={"Marquesas","MainHawaiianIslands","CentralIndoPacific","CentralPacific","RedSea","TropicalEastPacific","PolynesianProvince","WesternIndianOcean","NorthwesternHawaiianIslands"},location.set.prob={0.13393866178247146,0.06402712287128327,0.13276957250302016,0.21542418456022758,0.07727680137173142,0.007910837457620513,0.20918904173648728,0.09446241377966565,0.06500136393749269},posterior=0.15839732352287597];
+end;
+
+begin figtree;
+	set appearance.backgroundColorAttribute="Default";
+	set appearance.backgroundColour=#ffffff;
+	set appearance.branchColorAttribute="User selection";
+	set appearance.branchColorGradient=false;
+	set appearance.branchLineWidth=1.0;
+	set appearance.branchMinLineWidth=0.0;
+	set appearance.branchWidthAttribute="Fixed";
+	set appearance.foregroundColour=#000000;
+	set appearance.hilightingGradient=false;
+	set appearance.selectionColour=#2d3680;
+	set branchLabels.colorAttribute="User selection";
+	set branchLabels.displayAttribute="Branch times";
+	set branchLabels.fontName="sansserif";
+	set branchLabels.fontSize=8;
+	set branchLabels.fontStyle=0;
+	set branchLabels.isShown=false;
+	set branchLabels.significantDigits=4;
+	set layout.expansion=0;
+	set layout.layoutType="RECTILINEAR";
+	set layout.zoom=0;
+	set legend.attribute="CAheight_mean";
+	set legend.fontSize=10.0;
+	set legend.isShown=false;
+	set legend.significantDigits=4;
+	set nodeBars.barWidth=4.0;
+	set nodeBars.displayAttribute="CAheight_95%_HPD";
+	set nodeBars.isShown=false;
+	set nodeLabels.colorAttribute="User selection";
+	set nodeLabels.displayAttribute="Node ages";
+	set nodeLabels.fontName="sansserif";
+	set nodeLabels.fontSize=8;
+	set nodeLabels.fontStyle=0;
+	set nodeLabels.isShown=false;
+	set nodeLabels.significantDigits=4;
+	set nodeShapeExternal.colourAttribute="User selection";
+	set nodeShapeExternal.isShown=false;
+	set nodeShapeExternal.minSize=10.0;
+	set nodeShapeExternal.scaleType=Width;
+	set nodeShapeExternal.shapeType=Circle;
+	set nodeShapeExternal.size=4.0;
+	set nodeShapeExternal.sizeAttribute="Fixed";
+	set nodeShapeInternal.colourAttribute="User selection";
+	set nodeShapeInternal.isShown=false;
+	set nodeShapeInternal.minSize=10.0;
+	set nodeShapeInternal.scaleType=Width;
+	set nodeShapeInternal.shapeType=Circle;
+	set nodeShapeInternal.size=4.0;
+	set nodeShapeInternal.sizeAttribute="Fixed";
+	set polarLayout.alignTipLabels=false;
+	set polarLayout.angularRange=0;
+	set polarLayout.rootAngle=0;
+	set polarLayout.rootLength=100;
+	set polarLayout.showRoot=true;
+	set radialLayout.spread=0.0;
+	set rectilinearLayout.alignTipLabels=false;
+	set rectilinearLayout.curvature=0;
+	set rectilinearLayout.rootLength=100;
+	set scale.offsetAge=0.0;
+	set scale.rootAge=1.0;
+	set scale.scaleFactor=1.0;
+	set scale.scaleRoot=false;
+	set scaleAxis.automaticScale=true;
+	set scaleAxis.fontSize=8.0;
+	set scaleAxis.isShown=false;
+	set scaleAxis.lineWidth=1.0;
+	set scaleAxis.majorTicks=1.0;
+	set scaleAxis.minorTicks=0.5;
+	set scaleAxis.origin=0.0;
+	set scaleAxis.reverseAxis=false;
+	set scaleAxis.showGrid=true;
+	set scaleBar.automaticScale=true;
+	set scaleBar.fontSize=10.0;
+	set scaleBar.isShown=true;
+	set scaleBar.lineWidth=1.0;
+	set scaleBar.scaleRange=0.0;
+	set tipLabels.boxSize=4;
+	set tipLabels.colorAttribute="User selection";
+	set tipLabels.displayAttribute="Names";
+	set tipLabels.fontName="sansserif";
+	set tipLabels.fontSize=8;
+	set tipLabels.fontStyle=0;
+	set tipLabels.isShown=true;
+	set tipLabels.significantDigits=4;
+	set tipLabels.tipPath=true;
+	set trees.order=false;
+	set trees.orderType="increasing";
+	set trees.rooting=false;
+	set trees.rootingType="User Selection";
+	set trees.transform=false;
+	set trees.transformType="cladogram";
+end;
+

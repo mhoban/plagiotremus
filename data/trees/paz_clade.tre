@@ -1,0 +1,108 @@
+#NEXUS
+begin taxa;
+	dimensions ntax=4;
+	taxlabels
+	Paz-ANGBF32306-19_TropicalEastPacific
+	Paz-BLPAA17146-20_TropicalEastPacific
+	Paz-BMAR3098-22_TropicalEastPacific
+	Paz-BMAR3103-22_TropicalEastPacific
+;
+end;
+
+begin trees;
+	tree tree_1 = [&R] ((Paz-ANGBF32306-19_TropicalEastPacific[&height=8.591776432031947E-16,height_95%_HPD={0.0,1.7763568394002505E-15},height_median=8.881784197001252E-16,height_range={0.0,7.105427357601002E-15},length=0.20879173533057485,length_95%_HPD={0.002908472230685355,0.5192121570050543},length_median=0.16940582716201247,length_range={4.767475111275843E-4,2.041645487005057},location="TropicalEastPacific",location.prob=1.0,location.set={"TropicalEastPacific"},location.set.prob={1.0}]:0.208965,Paz-BMAR3098-22_TropicalEastPacific[&height=8.591557134133203E-16,height_95%_HPD={0.0,1.7763568394002505E-15},height_median=8.881784197001252E-16,height_range={0.0,7.105427357601002E-15},length=0.20884950856732737,length_95%_HPD={0.0028836658387194625,0.5192467557384908},length_median=0.16940615801113168,length_range={4.767475111275843E-4,2.319524162031403},location="TropicalEastPacific",location.prob=1.0,location.set={"TropicalEastPacific"},location.set.prob={1.0}]:0.208965)[&CAheight_95%_HPD={0.002908472230686243,0.5199760777170628},CAheight_mean=0.2089654418621268,CAheight_median=0.16941087846351732,CAheight_range={4.7674751112847247E-4,2.3195241620314038},height=0.2080816575035611,height_95%_HPD={0.0032582827557954275,0.5165529564085904},height_median=0.16912866854908692,height_range={4.7674751112847247E-4,2.041645487005058},length=0.4465278637941539,length_95%_HPD={0.03229428695737102,0.9984569136955992},length_median=0.3856734200821066,length_range={0.0015772654221244409,4.1422209757628154},location="TropicalEastPacific",location.prob=0.9937177695608622,location.set={"Marquesas","CentralIndoPacific","MainHawaiianIslands","TropicalEastPacific","CentralPacific","RedSea","PolynesianProvince","WesternIndianOcean","NorthwesternHawaiianIslands"},location.set.prob={0.0014468916562581156,6.677961490422072E-4,3.2771477684478685E-4,0.9937177695608622,1.4221584655528486E-4,0.003060732349776783,2.1023212099476892E-4,1.669490372605518E-4,2.596985024053028E-4},posterior=0.9982839929878274]:0.538394,(Paz-BLPAA17146-20_TropicalEastPacific[&height=8.595230373937153E-16,height_95%_HPD={0.0,1.7763568394002505E-15},height_median=8.881784197001252E-16,height_range={0.0,7.105427357601002E-15},length=0.4939464758333861,length_95%_HPD={0.049137584743515816,1.0351756533922956},length_median=0.4418487783388496,length_range={0.004183326564384693,3.436118814625818},location="TropicalEastPacific",location.prob=1.0,location.set={"TropicalEastPacific"},location.set.prob={1.0}]:0.560006,Paz-BMAR3103-22_TropicalEastPacific[&height=8.59359934581525E-16,height_95%_HPD={0.0,1.7763568394002505E-15},height_median=8.881784197001252E-16,height_range={0.0,7.105427357601002E-15},length=0.5334237515320369,length_95%_HPD={0.05341507891141717,1.1334791378849118},length_median=0.4762640790397459,length_range={0.004183326564384693,4.3007248112976395},location="TropicalEastPacific",location.prob=1.0,location.set={"TropicalEastPacific"},location.set.prob={1.0}]:0.560006)[&CAheight_95%_HPD={0.052803477206939675,1.1925053830504169},CAheight_mean=0.5600064184669014,CAheight_median=0.5014984343347735,CAheight_range={0.004183326564385581,4.30072481129764},height=0.4172954629044392,height_95%_HPD={0.03848765822445621,0.8842768451294702},height_median=0.3715757380837976,height_range={0.004183326564385581,3.077944322463333},length=0.33743443117718136,length_95%_HPD={1.6981545881922244E-5,0.9019432972847907},length_median=0.26403724613578383,length_range={1.6981545881922244E-5,3.437970150737376},location="TropicalEastPacific",location.prob=0.9855258030395814,location.set={"Marquesas","CentralIndoPacific","MainHawaiianIslands","TropicalEastPacific","RedSea","CentralPacific","PolynesianProvince","WesternIndianOcean","NorthwesternHawaiianIslands"},location.set.prob={0.0032399933196014027,0.00181484161888326,0.0010911317708623281,0.9855258030395814,0.006546790625173968,3.785559205032567E-4,3.3401992985581476E-4,5.455658854311641E-4,5.232978901074431E-4},posterior=0.5543998913607071]:0.187353)[&CAheight_95%_HPD={0.19868559163140098,1.4097016152760995},CAheight_mean=0.7473594177640627,CAheight_median=0.6864535249049297,CAheight_range={0.0739441144031332,4.30072481129764},height=0.7473594177640627,height_95%_HPD={0.19868559163140098,1.4097016152760995},height_median=0.6864535249049297,height_range={0.0739441144031332,4.30072481129764},length=4.348092562002369,length_95%_HPD={1.939237258955943,7.507985322111205},length_median=4.05725866843526,length_range={0.5535185857515841,15.9945430138391},location="TropicalEastPacific",location.prob=0.9674143848300042,location.set={"MainHawaiianIslands","Marquesas","CentralIndoPacific","TropicalEastPacific","RedSea","CentralPacific","PolynesianProvince","WesternIndianOcean","NorthwesternHawaiianIslands"},location.set.prob={0.002592528579541246,0.006919582232537468,0.004499888891632305,0.9674143848300042,0.012339201501197501,0.001333300412335498,0.001296264289770623,0.0016666255154193725,0.0019382237475617885},posterior=1.0];
+end;
+
+begin figtree;
+	set appearance.backgroundColorAttribute="Default";
+	set appearance.backgroundColour=#ffffff;
+	set appearance.branchColorAttribute="User selection";
+	set appearance.branchColorGradient=false;
+	set appearance.branchLineWidth=1.0;
+	set appearance.branchMinLineWidth=0.0;
+	set appearance.branchWidthAttribute="Fixed";
+	set appearance.foregroundColour=#000000;
+	set appearance.hilightingGradient=false;
+	set appearance.selectionColour=#2d3680;
+	set branchLabels.colorAttribute="User selection";
+	set branchLabels.displayAttribute="Branch times";
+	set branchLabels.fontName="sansserif";
+	set branchLabels.fontSize=8;
+	set branchLabels.fontStyle=0;
+	set branchLabels.isShown=false;
+	set branchLabels.significantDigits=4;
+	set layout.expansion=0;
+	set layout.layoutType="RECTILINEAR";
+	set layout.zoom=0;
+	set legend.attribute="CAheight_mean";
+	set legend.fontSize=10.0;
+	set legend.isShown=false;
+	set legend.significantDigits=4;
+	set nodeBars.barWidth=4.0;
+	set nodeBars.displayAttribute="CAheight_95%_HPD";
+	set nodeBars.isShown=false;
+	set nodeLabels.colorAttribute="User selection";
+	set nodeLabels.displayAttribute="Node ages";
+	set nodeLabels.fontName="sansserif";
+	set nodeLabels.fontSize=8;
+	set nodeLabels.fontStyle=0;
+	set nodeLabels.isShown=false;
+	set nodeLabels.significantDigits=4;
+	set nodeShapeExternal.colourAttribute="User selection";
+	set nodeShapeExternal.isShown=false;
+	set nodeShapeExternal.minSize=10.0;
+	set nodeShapeExternal.scaleType=Width;
+	set nodeShapeExternal.shapeType=Circle;
+	set nodeShapeExternal.size=4.0;
+	set nodeShapeExternal.sizeAttribute="Fixed";
+	set nodeShapeInternal.colourAttribute="User selection";
+	set nodeShapeInternal.isShown=false;
+	set nodeShapeInternal.minSize=10.0;
+	set nodeShapeInternal.scaleType=Width;
+	set nodeShapeInternal.shapeType=Circle;
+	set nodeShapeInternal.size=4.0;
+	set nodeShapeInternal.sizeAttribute="Fixed";
+	set polarLayout.alignTipLabels=false;
+	set polarLayout.angularRange=0;
+	set polarLayout.rootAngle=0;
+	set polarLayout.rootLength=100;
+	set polarLayout.showRoot=true;
+	set radialLayout.spread=0.0;
+	set rectilinearLayout.alignTipLabels=false;
+	set rectilinearLayout.curvature=0;
+	set rectilinearLayout.rootLength=100;
+	set scale.offsetAge=0.0;
+	set scale.rootAge=1.0;
+	set scale.scaleFactor=1.0;
+	set scale.scaleRoot=false;
+	set scaleAxis.automaticScale=true;
+	set scaleAxis.fontSize=8.0;
+	set scaleAxis.isShown=false;
+	set scaleAxis.lineWidth=1.0;
+	set scaleAxis.majorTicks=1.0;
+	set scaleAxis.minorTicks=0.5;
+	set scaleAxis.origin=0.0;
+	set scaleAxis.reverseAxis=false;
+	set scaleAxis.showGrid=true;
+	set scaleBar.automaticScale=true;
+	set scaleBar.fontSize=10.0;
+	set scaleBar.isShown=true;
+	set scaleBar.lineWidth=1.0;
+	set scaleBar.scaleRange=0.0;
+	set tipLabels.boxSize=4;
+	set tipLabels.colorAttribute="User selection";
+	set tipLabels.displayAttribute="Names";
+	set tipLabels.fontName="sansserif";
+	set tipLabels.fontSize=8;
+	set tipLabels.fontStyle=0;
+	set tipLabels.isShown=true;
+	set tipLabels.significantDigits=4;
+	set tipLabels.tipPath=true;
+	set trees.order=false;
+	set trees.orderType="increasing";
+	set trees.rooting=false;
+	set trees.rootingType="User Selection";
+	set trees.transform=false;
+	set trees.transformType="cladogram";
+end;
+
