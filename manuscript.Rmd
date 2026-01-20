@@ -714,12 +714,16 @@ dna_distances <-
           dist_matrix <- distances %>%
             column_to_rownames('prov_left') %>%
             as.matrix()
-          diag(dist_matrix) <- NA
-          dist_matrix[upper.tri(dist_matrix)] <- NA
-          dist_matrix %>%
+          mat <- dist_matrix
+          diag(mat) <- NA
+          mat[upper.tri(mat)] <- NA
+          list(
+            matrix = dist_matrix,
+            tbl = mat %>%
             as.data.frame() %>%
             filter(!if_all(everything(),is.na)) %>%
             select(where(~!all(is.na(.x))))
+          )
         }
       })
   })
@@ -753,7 +757,7 @@ Tissue samples were brought to the Hawai&#x02BB;i Institute of Marine Biology (H
 
 ## Additional sequence acquisition {-}
 
-We downloaded all available COI sequence data in the Barcode of Life Database (BoLD) for the genera *Plagiotremus*, *Xiphasia* and *Meiacanthus*. *Omobranchus* has been identified as an appropriate outgroup to the tribe Nemophini in the multi-locus molecular phylogenies discussed above, so a COI sequence from *Omobranchus anolius* with identification and location information was downloaded from BoLD and used as the outgroup in our phylogenetic analyses. <!--Three *Plagiotremus* sequences pulled from BoLD were excluded in downstream analyses due to unclear origins or mislabeling.-->
+We downloaded all available COI sequence data in the Barcode of Life Database (BoLD) for the genera *Plagiotremus*, *Xiphasia* and *Meiacanthus*. Detailed metadata for external sequences can be found in [@tbl:tbl_supp_bold_seqs]. *Omobranchus* has been identified as an appropriate outgroup to the tribe Nemophini in the multi-locus molecular phylogenies discussed above, so a COI sequence from *Omobranchus anolius* with identification and location information was downloaded from BoLD and used as the outgroup in our phylogenetic analyses. <!--Three *Plagiotremus* sequences pulled from BoLD were excluded in downstream analyses due to unclear origins or mislabeling.-->
 
 
 ## Sequence analysis {-}
@@ -878,7 +882,7 @@ ip_sp <- samples %>%
 marq_div_pta <- mean(dd[m_sp,ip_sp])
 ```
 
-Three main haplotypes represented `r format_list(top_3_n)` individuals across all biogeographic provinces ([@fig:fig_hap_coi_pgt]). The bulk of *P. goslinei* individuals (`r hap1$hi` specimens from both MHI and NWHI) shared a single haplotype with `r hap1$ip` *P. tapeinosoma* specimens from the Central Indo-Pacific, Central Pacific, and Polynesian provinces. The most common *P. tapeinosoma* haplotype represented `r hap2$ip` individuals spanning the Indo-Pacific realm from South Africa and the Red Sea to the Society Islands (every Indo-Pacific province). `r english::Words(hap2$hi)` *P. goslinei* individual`r ifelse(hap2$hi > 1,'s','')` from the Northwestern Hawaiian Islands also shared this haplotype. The third most frequent haplotype almost entirely comprised individuals from the Marquesas, with the exception of one from the Society Islands. Remaining haplotypes represented `r english::words(max_hap)` or fewer individuals each. The two most common haplotypes differed from one another by a single mutation and represented both species. A third haplotype shared across species contained a single individual of each and differed from the main Hawaiian haplotype by one mutation. Two *P. goslinei* individuals were more closely related to the main *P. tapeinosoma* haplotype than to the rest of the Hawaiian haplotypes, and two *P. tapeinosoma* (from the Central Indo-Pacific and Central Pacific) were more closely related to the main *P. goslinei* haplotype. The remaining haplotypes of both species, with the the exception of Marquesan haplotypes, were not more than a few steps diverged from either of the two most common haplotypes. All individuals from the Marquesas either shared or were linked to the third most frequent haplotype, and all were separated from the others of either species by 5--9 mutational steps (mean `r pc(marq_div_all,0.01)` sequence divergence including both species, `r pc(marq_div_pta,0.01)` for *P. tapeinosoma* only).
+Three main haplotypes represented `r format_list(top_3_n)` individuals across all biogeographic provinces ([@fig:fig_hap_coi_pgt]). The bulk of *P. goslinei* individuals (`r hap1$hi` specimens from both MHI and NWHI) shared a single haplotype with `r hap1$ip` *P. tapeinosoma* specimens from the Central Indo-Pacific, Central Pacific, and Polynesian provinces. The most common *P. tapeinosoma* haplotype represented `r hap2$ip` individuals spanning the Indo-Pacific realm from South Africa and the Red Sea to the Society Islands (every Indo-Pacific province). `r english::Words(hap2$hi)` *P. goslinei* individual`r ifelse(hap2$hi > 1,'s','')` from the Northwestern Hawaiian Islands also shared this haplotype. The third most frequent haplotype almost entirely comprised individuals from the Marquesas, with the exception of one from the Society Islands. Remaining haplotypes represented `r english::words(max_hap)` or fewer individuals each. The two most common haplotypes differed from one another by a single mutation and represented both species. A third haplotype shared across species contained a single individual of each and differed from the main Hawaiian haplotype by one mutation. Two *P. goslinei* individuals were more closely related to the main *P. tapeinosoma* haplotype than to the rest of the Hawaiian haplotypes, and two *P. tapeinosoma* (from the Central Indo-Pacific and Central Pacific) were more closely related to the main *P. goslinei* haplotype. The remaining haplotypes of both species, with the the exception of Marquesan haplotypes, were not more than a few steps diverged from either of the two most common haplotypes. All individuals from the Marquesas either shared or were linked to the third most frequent haplotype, and all were separated from the others of either species by 5--9 mutational steps (mean `r pc(marq_div_all,0.01)` sequence divergence including both species, `r pc(marq_div_pta,0.01)` for *P. tapeinosoma* only). Mean pairwise seqeunce divergence among provinces can be found in [@tbl:tbl_supp_dist_pgt_coi].
 
 ```{r amova-coi-pgt, include=FALSE, dependson="amovas"}
 model <- amovas$pgt$coi$amova
@@ -955,7 +959,7 @@ ip_sp <- samples %>%
 marq_div_pta <- mean(dd[m_sp,ip_sp])
 ```
 
-As in the COI dataset, the plurality of Hawaiian specimens (`r hap1$hi` individuals) shared a single haplotype, which also included `r english::words(hap1$ip)` *P. tapeinosoma* (from the Central Pacific and Polynesian provinces) ([@fig:fig_hap_cytb_pgt]). Unlike COI, *P. tapeinosoma* cytb haplotypes were not shared as broadly across provinces, with the Red Sea, Western Indian Ocean (WIO, and Marquesas) largely represented by unique haplotypes (although there was one haplotype shared by specimens from the WIO to Polynesia). However, singleton haplotypes from distant provinces were commonly diverged by only one or two mutations. There were no *P. goslinei* individuals represented by primarily *P. tapeinosoma* haplotypes, but two were more closely related to diverged haplotypes from the WIO or the Marquesas than to most other *P. goslinei*. The majority of cytb haplotypes were only separated by 1--3 mutational steps across both species, but there were two notably divergent haplogroups in the network: one representing Marquesan individuals (as for COI) and one representing 7 from the WIO. The WIO haplogroup was diverged from the main *P. goslinei* haplotype by 5 mutations, with the Marquesan group a minimum of 12--18 steps further (mean `r pc(marq_div_all,0.01)` sequence divergence including both species, `r pc(marq_div_pta,0.01)` for *P. tapeinosoma* only).
+As in the COI dataset, the plurality of Hawaiian specimens (`r hap1$hi` individuals) shared a single haplotype, which also included `r english::words(hap1$ip)` *P. tapeinosoma* (from the Central Pacific and Polynesian provinces) ([@fig:fig_hap_cytb_pgt]). Unlike COI, *P. tapeinosoma* cytb haplotypes were not shared as broadly across provinces, with the Red Sea, Western Indian Ocean (WIO, and Marquesas) largely represented by unique haplotypes (although there was one haplotype shared by specimens from the WIO to Polynesia). However, singleton haplotypes from distant provinces were commonly diverged by only one or two mutations. There were no *P. goslinei* individuals represented by primarily *P. tapeinosoma* haplotypes, but two were more closely related to diverged haplotypes from the WIO or the Marquesas than to most other *P. goslinei*. The majority of cytb haplotypes were only separated by 1--3 mutational steps across both species, but there were two notably divergent haplogroups in the network: one representing Marquesan individuals (as for COI) and one representing 7 from the WIO. The WIO haplogroup was diverged from the main *P. goslinei* haplotype by 5 mutations, with the Marquesan group a minimum of 12--18 steps further (mean `r pc(marq_div_all,0.01)` sequence divergence including both species, `r pc(marq_div_pta,0.01)` for *P. tapeinosoma* only). Mean pairwise seqeunce divergence among provinces can be found in [@tbl:tbl_supp_dist_pgt_cytb].
 
 ```{r amova-cytb-pgt, include=FALSE, dependson="amovas"}
 model <- amovas$pgt$cytb$amova
@@ -1015,7 +1019,7 @@ per_div <- mean(dd[r_sp,e_sp])
 ```
 #### COI {-}
 
-There were `r h$n` unique COI haplotypes among the `r nrow(hap$alignment)` sequences generated for the *P. ewaensis*/*rhinorhynchos* species pair (`r length(e_sp)` *P. ewaensis*, `r length(r_sp)` *P. rhinorhynchos*), with `r h$shared` haplotypes that were shared in at least two individuals and `r h$shared_src` shared between original and BoLD data sources ([@fig:fig_hap_coi_per]). The two species shared no haplotypes in common, and were separated by a minimum of 16 mutational steps (mean `r pc(per_div,0.01)` sequence divergence). There were `r length(seg.sites(hap$alignment))` segregating sites, overall haplotype diversity (h) was `r num(hap.div(hap$alignment),0.001)` and nucleotide diversity ($\mathrm{\uppi}$) was `r num(nuc.div(hap$alignment),0.001)`. Within *P. ewaensis*, there were `r length(seg.sites(hap$alignment[e_sp,]))` segregating sites, haplotype diversity was `r num(hap.div(hap$alignment[e_sp,]),0.001)`, and nucleotide diversity was `r num(nuc.div(hap$alignment[e_sp,]),0.001)`. Within *P. rhinorhynchos*, there were `r length(seg.sites(hap$alignment[r_sp,]))` segregating sites, haplotype diversity was `r num(hap.div(hap$alignment[r_sp,]),0.001)`, and nucleotide diversity was `r num(nuc.div(hap$alignment[r_sp,]),0.001)`. For *P. ewaensis*, haplotype diversity was similar in the MHI and NWHI (MHI: h = 0.821; NWHI: h = 0.85) and nucleotide diversity was equal ($\mathrm{\uppi}$ = 0.004) ([@tbl:tbl_stats_coi_per]). For *P. rhinorhynchos*, haplotype and nucleotide diversity were highest in the CP (h = 0.909, $\mathrm{\uppi}$ = 0.004) and lowest in Red Sea (h = 0, $\mathrm{\uppi}$ = 0). Tajima's D was negative and significant only in the CP ([@tbl:tbl_stats_cytb_pgt]).
+There were `r h$n` unique COI haplotypes among the `r nrow(hap$alignment)` sequences generated for the *P. ewaensis*/*rhinorhynchos* species pair (`r length(e_sp)` *P. ewaensis*, `r length(r_sp)` *P. rhinorhynchos*), with `r h$shared` haplotypes that were shared in at least two individuals and `r h$shared_src` shared between original and BoLD data sources ([@fig:fig_hap_coi_per]). The two species shared no haplotypes in common, and were separated by a minimum of 16 mutational steps (mean `r pc(per_div,0.01)` sequence divergence). There were `r length(seg.sites(hap$alignment))` segregating sites, overall haplotype diversity (h) was `r num(hap.div(hap$alignment),0.001)` and nucleotide diversity ($\mathrm{\uppi}$) was `r num(nuc.div(hap$alignment),0.001)`. Within *P. ewaensis*, there were `r length(seg.sites(hap$alignment[e_sp,]))` segregating sites, haplotype diversity was `r num(hap.div(hap$alignment[e_sp,]),0.001)`, and nucleotide diversity was `r num(nuc.div(hap$alignment[e_sp,]),0.001)`. Within *P. rhinorhynchos*, there were `r length(seg.sites(hap$alignment[r_sp,]))` segregating sites, haplotype diversity was `r num(hap.div(hap$alignment[r_sp,]),0.001)`, and nucleotide diversity was `r num(nuc.div(hap$alignment[r_sp,]),0.001)`. For *P. ewaensis*, haplotype diversity was similar in the MHI and NWHI (MHI: h = 0.821; NWHI: h = 0.85) and nucleotide diversity was equal ($\mathrm{\uppi}$ = 0.004) ([@tbl:tbl_stats_coi_per]). For *P. rhinorhynchos*, haplotype and nucleotide diversity were highest in the CP (h = 0.909, $\mathrm{\uppi}$ = 0.004) and lowest in Red Sea (h = 0, $\mathrm{\uppi}$ = 0). Tajima's D was negative and significant only in the CP ([@tbl:tbl_stats_cytb_pgt]). Mean pairwise seqeunce divergence among provinces can be found in [@tbl:tbl_supp_dist_per_coi].
 
 Most *P. rhinorhynchos* individuals (n = `r r_hap$n`) shared a single haplotype across all biogeographic provinces (except Hawai&#x02BB;i, where the species does not occur) and all but one marine ecoregion. The remaining *P. rhinorhynchos* haplotypes were singletons. Most were separated from the most frequent haplotype by a single step, but there was divergence of up to 4 steps. Within *P. ewaensis*, three haplotypes represented `r format_list(e_hap$n[1:3])` individuals, with the rest having `r e_hap$n[4]` or fewer. All non-singleton *ewaensis* haplotypes spanned both the MHI and NWHI. No Hawai&#x02BB;i haplotype was diverged from another by more than 2 steps.
 
@@ -1165,7 +1169,7 @@ beast_info <- root_map %>%
 root_diff <- round(beast_info$root$origin_prob / beast_info$root$origin_set_prob[2],1)
 ```
 
-The maximum clade credibility tree produced by the `BEAST` analysis matched our Bayesian phylogeny, with the exception that trees output by `BEAST` necessarily produce bifurcating topologies and *Plagiotremus azaleus* was placed as sister to *P. tapeinosoma* and *P. goslinei* (which is likely to better reflect their true relationship). The Marquesan subgroup of *P. tapeinosoma* was also well-supported. In this analysis, *Plagiotremus azaleus* and *P. tapeinosoma*/*goslinei* shared a common ancestor ca `r beast_info$root$age` million years ago (Ma) (95% HPD: `r format_range(beast_info$root$hpd,rev=TRUE)` Ma), with a `r pc(beast_info$root$origin_prob,0.1)` likelihood of originating in the `r beast_info$root$origin`. The Marquesan subgroup of *P. tapeinosoma* diverged ca `r beast_info$pta_all$age` Ma (95% HPD: `r format_range(beast_info$pta_all$hpd,rev=TRUE)` Ma) in the `r beast_info$pta_all$origin` (`r pc(beast_info$pta_all$origin_prob,0.1)` likelihood), and the remaining individuals of *P. tapeinosoma* and *goslinei*  diverged ca `r beast_info$pta_pgo$age` Ma (95% HPD: `r format_range(beast_info$pta_pgo$hpd,rev=TRUE)` Ma) in the `r beast_info$pta_pgo$origin` (`r pc(beast_info$pta_pgo$origin_prob,0.1)` likelihood) ([@fig:fig_tree_ancestral_range]). *Plagiotremus tapeinosoma* from the Indo-Pacific had a `r pc(beast_info$pta$origin_prob,0.1)` likelihood of originating in the `r beast_info$pta$origin`, *P. goslinei* (and related *P. tapeinosoma* haplotypes) had a `r pc(beast_info$pgo$origin_prob,0.1)` likelihood of originating in the `r beast_info$pgo$origin`, and the Marquesan group had a `r pc(beast_info$pta_mq$origin_prob,0.1)` likelihood of originating in the `r beast_info$pta_mq$origin`. <!--Aside from the origin of the group as a whole-->In general, likelihoods of ancestral geographic origin were low and not strongly skewed toward a specific province. However, the `r beast_info$root$origin` origin of the *tapeinosoma* group as a whole (`r pc(beast_info$root$origin_prob,0.1)`) was found to be `r root_diff` times more likely than the next-most probable province (`r beast_info$root$origin_set[2]`, `r pc(beast_info$root$origin_set_prob[2],0.1)`) ([@fig:fig_supp_origin_prob]).
+The maximum clade credibility tree produced by the `BEAST` analysis matched our Bayesian phylogeny, with the exception that trees output by `BEAST` necessarily produce bifurcating topologies and *Plagiotremus azaleus* was placed as sister to *P. tapeinosoma* and *P. goslinei* (which is likely to better reflect their true relationship). The Marquesan subgroup of *P. tapeinosoma* was also well-supported ([@fig:fig_tree_ancestral_range]). In this analysis, *Plagiotremus azaleus* and *P. tapeinosoma*/*goslinei* shared a common ancestor ca `r beast_info$root$age` million years ago (Ma) (95% HPD: `r format_range(beast_info$root$hpd,rev=TRUE)` Ma), with a `r pc(beast_info$root$origin_prob,0.1)` likelihood of originating in the `r beast_info$root$origin`. The Marquesan subgroup of *P. tapeinosoma* diverged ca `r beast_info$pta_all$age` Ma (95% HPD: `r format_range(beast_info$pta_all$hpd,rev=TRUE)` Ma) in the `r beast_info$pta_all$origin` (`r pc(beast_info$pta_all$origin_prob,0.1)` likelihood), and the remaining individuals of *P. tapeinosoma* and *goslinei*  diverged ca `r beast_info$pta_pgo$age` Ma (95% HPD: `r format_range(beast_info$pta_pgo$hpd,rev=TRUE)` Ma) in the `r beast_info$pta_pgo$origin` (`r pc(beast_info$pta_pgo$origin_prob,0.1)` likelihood) ([@fig:fig_tree_ancestral_range]). *Plagiotremus tapeinosoma* from the Indo-Pacific had a `r pc(beast_info$pta$origin_prob,0.1)` likelihood of originating in the `r beast_info$pta$origin`, *P. goslinei* (and related *P. tapeinosoma* haplotypes) had a `r pc(beast_info$pgo$origin_prob,0.1)` likelihood of originating in the `r beast_info$pgo$origin`, and the Marquesan group had a `r pc(beast_info$pta_mq$origin_prob,0.1)` likelihood of originating in the `r beast_info$pta_mq$origin`. <!--Aside from the origin of the group as a whole-->In general, likelihoods of ancestral geographic origin were low and not strongly skewed toward a specific province. However, the `r beast_info$root$origin` origin of the *tapeinosoma* group as a whole (`r pc(beast_info$root$origin_prob,0.1)`) was found to be `r root_diff` times more likely than the next-most probable province (`r beast_info$root$origin_set[2]`, `r pc(beast_info$root$origin_set_prob[2],0.1)`) ([@fig:fig_supp_origin_prob]).
 
 
 # Discussion {-}
@@ -1174,7 +1178,7 @@ Our phylogenetic analysis of `r nrow(alignments$coi$c50)` COI sequences from the
 
 Only one previously-published phylogeny has supported *Meiacanthus* as the sister genus to *Plagiotremus* [@linPhylogenyBiogeographyShallow2013]. All subsequent phylogenies found *Xiphasia* to be the sister genus of *Plagiotremus* while the position of *Meiacanthus* has varied [@hundtMultilocusMolecularPhylogeny2014; @casewellEvolutionFangsVenom2017; @hundtExtremeDentitionDoes2018]. These later differences have been attributed by some authors to increased taxonomic coverage <!--within *Meiacanthus* and other Nemophini genera -->[@hundtMultilocusMolecularPhylogeny2014]. While our dataset was limited to a single marker, taxonomic coverage was greater than in previous studies, and this this may have resulted in the different relationships we observed. Relative to previous multi-locus phylogenies, we considered three times more *Plagiotremus* species and included considerable geographic variation by analyzing individuals from as many locations as possible across all genera and species. However, the genus-level relationships we recovered should be accepted with caution, given our reliance on a single mitochondrial marker. Increasing both the genetic and taxonomic resolution should help to further resolve these relationships in future studies.
 
-In attempting to resolve the phylogenetic relationships between species groups within *Plagiotremus*, Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976] remarked that "Rigid application of...cladistic..systematics dictates that the *laudandus* and *tapeinosoma* species groups be accorded a sister-group relationship because they share the greatest number of apomorphic characters...[but]...I believe their occurrence in both groups is a case of parallel evolution." Our molecular analyses support the "rigid cladistic" interpretation, with *laudandus* and *tapeinosoma* as sister groups. The deepest divergence within *Plagiotremus* was between the *rhinorhynchos* species group and all others, rendering the subgenus *Runula* (as defined by Smith-Vaniz) polyphyletic. Other studies have also supported this arrangement of species groups within *Plagiotremus*. Hundt et al. [-@hundtMultilocusMolecularPhylogeny2014] found *P. tapeinsoma* to be more closely-related to *P. laudandus* than *P. rhinorhynchos* (although these were the only three *Plagiotremus* species considered), and all analyses that have included *P. rhinorhynchos* have placed it on a long branch relative to other species within Nemophini [@linPhylogenyBiogeographyShallow2013; @hundtMultilocusMolecularPhylogeny2014; @hundtExtremeDentitionDoes2018]. These results suggest that the subgenus *Runula* is invalid as circumscribed. We were unable to obtain sequences from the *spilistius* species group, but their inclusion in future studies may provide a more complete picture of the relationships within *Plagiotremus*.
+In attempting to resolve the phylogenetic relationships between species groups within *Plagiotremus*, Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976] remarked that "Rigid application of...cladistic..systematics dictates that the *laudandus* and *tapeinosoma* species groups be accorded a sister-group relationship because they share the greatest number of apomorphic characters...[but]...I believe their occurrence in both groups is a case of parallel evolution." Our molecular analyses support the "rigid cladistic" interpretation, with *laudandus* and *tapeinosoma* as sister groups. The deepest divergence within *Plagiotremus* was between the *rhinorhynchos* species group and all others, rendering the subgenus *Runula* (as defined by Smith-Vaniz) polyphyletic. Other studies have also supported this arrangement. Hundt et al. [-@hundtMultilocusMolecularPhylogeny2014] found *P. tapeinsoma* to be more closely-related to *P. laudandus* than *P. rhinorhynchos* (although these were the only three *Plagiotremus* species considered), and all analyses that have included *P. rhinorhynchos* have placed it on a long branch relative to other species within Nemophini [@linPhylogenyBiogeographyShallow2013; @hundtMultilocusMolecularPhylogeny2014; @hundtExtremeDentitionDoes2018]. These results suggest that the subgenus *Runula* is invalid as circumscribed. We were unable to obtain sequences from the *spilistius* species group, but their inclusion in future studies may provide a more complete picture of the relationships within *Plagiotremus*.
 
 ```{r mq-diff, includ=FALSE}
 phi <- as.matrix(as.dist(amovas$pgt$coi$pairwise$PhiST))
@@ -1184,14 +1188,14 @@ mq <- mean(phi['MQ',],na.rm=T)
 
 phi_diff <- round(mq / hi,1)
 
-dd <- as.matrix(as.dist(dna_distances$pgt$coi))
+dd <- dna_distances$pgt$coi$matrix
 diag(dd) <- NA
 hid <- mean(dd[c('NWHI','MHI'),],na.rm=T)
 mqd <- mean(dd['MQ',],na.rm=T)
 
 dist_diff <- round(mqd / hid,1)
 ```
-Both endemic Hawaiian *Plagiotremus* species were considered by Smith-Vaniz to potentially warrant only subspecies recognition. Strong support for the monophyly of the Hawaiian endemic *P. ewaensis* and the widespread *P. rhinorhynchos* validates the status of the former. However, we were unable to resolve *P. goslinei* as phylogenetically distinct from *P. tapeinosoma*. Additionally, while there was genetic differentiation between the two putative species, they shared haplotypes in both COI and cytb and the degree to which *P. goslinei* was differentiated from other populations in the species pair was, on average, half that of the Marquesan population. While shared haplotypes alone may not be sufficient to synonymize the two species, the additional fact that two *P. goslinei* specimens were more closely related to *P. tapeinosoma* and two *P. tapeinsoma* specimens (from the Line Islands and Palau) were more closely related to the main *P. goslinei* haplotype is at least evidence of recent and/or ongoing migration between the two groups. Shared haplotypes and the potential for recent mixing suggest that they may be neither demographically nor evolutionarily distinct.
+Both Hawaiian endemic *Plagiotremus* species were considered by Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976] to potentially warrant only subspecies recognition. Strong support for the monophyly of the Hawaiian endemic *P. ewaensis* and the widespread *P. rhinorhynchos* validates the status of the former. However, we were unable to resolve *P. goslinei* as phylogenetically distinct from *P. tapeinosoma*. Additionally, while there was genetic differentiation between the two putative species, they shared haplotypes in both COI and cytb and the degree to which *P. goslinei* was differentiated from other populations in the species pair was, on average, half that of the Marquesan population. While shared haplotypes alone may not be sufficient to synonymize the two species, the additional fact that two *P. goslinei* specimens were more closely related to *P. tapeinosoma* and two *P. tapeinsoma* specimens (from the Line Islands and Palau) were more closely related to the main *P. goslinei* haplotype is at least evidence of recent and/or ongoing migration between the two groups. Shared haplotypes and the potential for recent mixing suggest that they may be neither demographically nor evolutionarily distinct.
 
 ```{r marquesas, include=FALSE, dependson='amovas'}
 coi_phi <- as.matrix(as.dist(amovas$pgt$coi$pairwise$PhiST))
@@ -1199,8 +1203,8 @@ cytb_phi <- as.matrix(as.dist(amovas$pgt$cytb$pairwise$PhiST))
 diag(coi_phi) <- NA
 diag(cytb_phi) <- NA
 
-coi_dist <- as.matrix(as.dist(dna_distances$pgt$coi))
-cytb_dist <- as.matrix(as.dist(dna_distances$pgt$cytb))
+coi_dist <- dna_distances$pgt$coi$matrix
+cytb_dist <- dna_distances$pgt$cytb$matrix
 diag(coi_dist) <- NA
 diag(cytb_dist) <- NA
 
@@ -1210,9 +1214,9 @@ dist_mq_coi <- mean(coi_dist['MQ',],na.rm=T)
 dist_mq_cytb <- mean(cytb_dist['MQ',],na.rm=T)
 ```
 
-In contrast to the apparent admixture between *P. goslinei* and *tapeinosoma*, Marquesan specimens were placed within a separate well-supported clade and were genetically diverged from all other populations (mean COI $\upPhi_\mathrm{st}$: `r round(phi_mq_coi,3)`, K2P: `r pc(dist_mq_coi,0.01)`, mean cytb $\upPhi_\mathrm{st}$: `r round(phi_mq_cytb,3)`, K2P: `r pc(dist_mq_cytb,0.01)`). In his monograph on the tribe Nemophini, Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976] recognized that *P. tapeinosoma* from the Marquesas had meristic values "at least as low as those of *goslinei*." Therefore, further study of how phenotypic and genetic variation is partitioned geographically within the *tapeinosoma* species group (wider Indo-Pacific, Hawai&#x02BB;i, and the Marquesas) should be carried out, with particular attention to the Marquesan population. Given its morphological and genetic divergence, it likely warrants elevation to species.
+In contrast to the apparent admixture between *P. goslinei* and *tapeinosoma*, Marquesan specimens of *P. tapeinosoma* were placed within a separate well-supported clade and were genetically diverged from all other populations (mean COI $\upPhi_\mathrm{st}$: `r round(phi_mq_coi,3)`, K2P: `r pc(dist_mq_coi,0.01)`, mean cytb $\upPhi_\mathrm{st}$: `r round(phi_mq_cytb,3)`, K2P: `r pc(dist_mq_cytb,0.01)`). In his monograph on the tribe Nemophini, Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976] recognized that *P. tapeinosoma* from the Marquesas had meristic values "at least as low as those of *goslinei*." Therefore, further study of how phenotypic and genetic variation is partitioned geographically within the *tapeinosoma* species group (wider Indo-Pacific, Hawai&#x02BB;i, and the Marquesas) should be carried out, with particular attention to the Marquesan population. Given its morphological and genetic divergence, it likely warrants elevation to species.
 
-*Plagiotremus azaleus* (in the Eastern Pacific) is considerably diverged from other *tapeinosoma* group lineages, but the initial description of *P. goslinei* [@strasburgNotesBlennioidFishes1956] suggested that it was intermediate between *P. azaleus* and *P. tapeinosoma*. The placement of *P. azaleus* as the sister group to *P. tapeinosoma* and *P. goslinei* in this study was not supported by the `MrBayes` tree, as it nested within mixed groups of *P. tapeinosoma* and *P. goslinei*. However, it occurred on a long internal branch (and was supported in the `BEAST` tree). Thus, its placement was likely an artifact of our limited dataset. It is doubtless that these three species form an evolutionary unit. Ancestral range reconstructions suggest they may have originated in the Tropical East Pacific, where *P. azaleus* is endemic. Previous studies have shown evidence for dispersal in both directions across the East Pacific barrier [cite,cite]
+*Plagiotremus azaleus* (in the Eastern Pacific) is diverged from other *tapeinosoma* group lineages, but the initial description of *P. goslinei* [@strasburgNotesBlennioidFishes1956] suggested that it was intermediate between *P. azaleus* and *P. tapeinosoma*. The placement of *P. azaleus* as the sister group to *P. tapeinosoma* and *P. goslinei* in this study was not supported by the `MrBayes` tree, as it nested within mixed groups of *P. tapeinosoma* and *P. goslinei*. However, it occurred on a long internal branch (and was supported in the `BEAST` tree). Thus, its placement was likely an artifact of our limited dataset. It is doubtless that these three species form an evolutionary unit. Ancestral range reconstructions suggest they may have originated in the Tropical East Pacific, where *P. azaleus* is endemic. Previous studies have shown evidence for dispersal in both directions across the East Pacific barrier [cite,cite]
 
 and further study of these lineages could determine whether *P. azaleus* originally colonized the Eastern Pacific through Hawai&#x02BB;i or merely shares a common ancestor.  and contribute to the growing literature about whether isolated islands with high levels of endemism export biodiversity to other regions [@bowenOriginsTropicalMarine2013]. On the other hand, both the *P. azaleus* and Marquesan *P. tapeinosoma* haplotypes were linked to the rest of *P. tapeinosoma* through Indian Ocean haplotypes (rather than those from the Pacific which are much closer). This may indicate that the divergence of these lineages dates back to the closure of the Tethys Sea (that divided the tropical Atlantic and Indo-Pacific realms) as observed in many other reef fish groups [@floeterAtlanticReefFish2008].
 
@@ -1785,20 +1789,29 @@ hap_stats <- hap$samples %>%
     h = hap.div(hap$alignment[id,]),
     `$\\mathrm{\\uppi}$` = nuc.div(hap$alignment[id,]),
     D = tajima.test(hap$alignment[id,])$D,
-    sig = tajima.test(hap$alignment[id,])$Pval.beta < 0.05,
+    pval = tajima.test(hap$alignment[id,])$Pval.beta,
+    sig = case_when(
+      pval < 0.001 ~ 3,
+      pval < 0.01 ~ 2,
+      pval < 0.05 ~ 1,
+      .default = 0
+    ),
     llon = mean(llon,na.rm=T)
   ) %>%
   ungroup() %>%
-  mutate(D = case_when(
-    sig ~ str_glue('**{round(D,3)}**'),
-    is.nan(D) ~ NA,
-    .default = as.character(round(D,3))
-  )) %>%
+  mutate( sig = map_chr(sig,\(s) str_c(rep('\\*',s),collapse="")) ) %>%
+  mutate(
+    D = case_when(
+      pval < 0.05 ~ str_glue('**{round(D,3)}^{sig}^**'),
+      is.nan(D) ~ NA,
+      .default = as.character(round(D,3))
+    )
+  ) %>%
   arrange(llon) %>%
-  select(-c(sig,llon)) %>%
+  select(-c(sig,pval,llon)) %>%
   dplyr::rename(Province=province)
 
-print_table(hap_stats,id="tbl_stats_coi_pgt","COI population genetic summary statistics for *P. goslinei*/*tapeinosoma* across marine biogeographic provinces (n = number of samples, S = number of segregating sites, H = number of unique haplotypes, h = haplotype diversity, $\\mathrm{\\uppi}$ = nucleotide diversity, D = Tajima's D; results in bold are statistically significant).",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
+print_table(hap_stats,id="tbl_stats_coi_pgt","COI population genetic summary statistics for *P. goslinei*/*tapeinosoma* across marine biogeographic provinces (n = number of samples, S = number of segregating sites, H = number of unique haplotypes, h = haplotype diversity, $\\mathrm{\\uppi}$ = nucleotide diversity, D = Tajima's D; results in bold are statistically significant, \\*: *p* &lt; 0.05, \\*\\*: *p* &lt; 0.01, \\*\\*\\*: *p* &lt; 0.001).",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
 ```
 
 \newpage
@@ -1815,17 +1828,26 @@ hap_stats <- hap$samples %>%
     h = hap.div(hap$alignment[id,]),
     `$\\mathrm{\\uppi}$` = nuc.div(hap$alignment[id,]),
     D = tajima.test(hap$alignment[id,])$D,
-    sig = tajima.test(hap$alignment[id,])$Pval.beta < 0.05,
+    pval = tajima.test(hap$alignment[id,])$Pval.beta,
+    sig = case_when(
+      pval < 0.001 ~ 3,
+      pval < 0.01 ~ 2,
+      pval < 0.05 ~ 1,
+      .default = 0
+    ),
     llon = mean(llon,na.rm=T)
   ) %>%
   ungroup() %>%
-  mutate(D = case_when(
-    sig ~ str_glue('**{round(D,3)}**'),
-    is.nan(D) ~ NA,
-    .default = as.character(round(D,3))
-  )) %>%
+  mutate( sig = map_chr(sig,\(s) str_c(rep('\\*',s),collapse="")) ) %>%
+  mutate(
+    D = case_when(
+      pval < 0.05 ~ str_glue('**{round(D,3)}^{sig}^**'),
+      is.nan(D) ~ NA,
+      .default = as.character(round(D,3))
+    )
+  ) %>%
   arrange(llon) %>%
-  select(-c(sig,llon)) %>%
+  select(-c(sig,pval,llon)) %>%
   dplyr::rename(Province=province)
 
 print_table(hap_stats,id="tbl_stats_cytb_pgt","cytb population genetic summary statistics for *P. goslinei*/*tapeinosoma* across marine biogeographic provinces. Column names as in [@tbl:tbl_stats_coi_pgt].",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
@@ -1845,17 +1867,26 @@ hap_stats <- hap$samples %>%
     h = hap.div(hap$alignment[id,]),
     `$\\mathrm{\\uppi}$` = nuc.div(hap$alignment[id,]),
     D = tajima.test(hap$alignment[id,])$D,
-    sig = tajima.test(hap$alignment[id,])$Pval.beta < 0.05,
+    pval = tajima.test(hap$alignment[id,])$Pval.beta,
+    sig = case_when(
+      pval < 0.001 ~ 3,
+      pval < 0.01 ~ 2,
+      pval < 0.05 ~ 1,
+      .default = 0
+    ),
     llon = mean(llon,na.rm=T)
   ) %>%
   ungroup() %>%
-  mutate(D = case_when(
-    sig ~ str_glue('**{round(D,3)}**'),
-    is.nan(D) ~ NA,
-    .default = as.character(round(D,3))
-  )) %>%
+  mutate( sig = map_chr(sig,\(s) str_c(rep('\\*',s),collapse="")) ) %>%
+  mutate(
+    D = case_when(
+      pval < 0.05 ~ str_glue('**{round(D,3)}^{sig}^**'),
+      is.nan(D) ~ NA,
+      .default = as.character(round(D,3))
+    )
+  ) %>%
   arrange(llon) %>%
-  select(-c(sig,llon)) %>%
+  select(-c(sig,pval,llon)) %>%
   dplyr::rename(Province=province)
 
 print_table(hap_stats,id="tbl_stats_coi_per","COI population genetic summary statistics for *P. ewaensis*/*rhinorhynchos* across marine biogeographic province. Column names as in [@tbl:tbl_stats_coi_pgt].",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
@@ -1877,10 +1908,18 @@ amova_tbl <- function(mova,roundr=3,adjust=FALSE, alpha=0.05, upper_p = FALSE) {
   }
 
   sig_idx <- !is.na(pval) & pval < alpha
+  sig_idx <- sig_idx * 1
+  sig_idx[pval < 0.01] <- 2
+  sig_idx[pval < 0.001] <- 3
+
   phi <- round(phi,roundr)
-  sig_phi <- phi[sig_idx]
+
+  sig_n <- sig_idx[sig_idx > 0]
+  sig_phi <- phi[sig_idx > 0]
+  sig_rep <- map_chr(sig_n,\(n) str_c(rep("\\*",n),collapse=""))
+
   mode(phi) <- 'character'
-  phi[sig_idx] <- str_glue('**{sig_phi}**')
+  phi[sig_idx > 0] <- str_glue('**{sig_phi}^{sig_rep}^**')
   as.data.frame(phi)
 }
 ```
@@ -1987,17 +2026,17 @@ print_table(here('data','tables','models.csv'),'tbl_supp_models','Summary of bes
 \newpage
 
 ```{r tbl-supp-dist-pgt-coi, results="asis", dependson="dna-distances"}
-print_table(dna_distances$pgt$coi,id="tbl_supp_dist_pgt_coi","Mean COI Kimura 2-parameter (K2P) distances among biogeographic provinces for *Plagiotremus goslinei*/*P. tapeinosoma*. Abbreviations: RS: Red Sea, WIO: Western Indian Ocean, CIP: Central Indo-Pacific, CP: Central Pacific, PL: Polynesian Province, MHI: Main Hawaiian Islands, NWHI: Northwestern Hawaiian Islands, MQ: Marquesas.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
+print_table(dna_distances$pgt$coi$tbl,id="tbl_supp_dist_pgt_coi","Mean COI Kimura 2-parameter (K2P) distances among biogeographic provinces for *Plagiotremus goslinei*/*P. tapeinosoma*. Abbreviations: RS: Red Sea, WIO: Western Indian Ocean, CIP: Central Indo-Pacific, CP: Central Pacific, PL: Polynesian Province, MHI: Main Hawaiian Islands, NWHI: Northwestern Hawaiian Islands, MQ: Marquesas.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
 ```
 
 \newpage
 
 ```{r tbl-supp-dist-pgt-cytb, results="asis", dependson="dna-distances"}
-print_table(dna_distances$pgt$cytb,id="tbl_supp_dist_pgt_cytb","Mean cytb Kimura 2-parameter (K2P) distances among biogeographic provinces for *Plagiotremus goslinei*/*P. tapeinosoma*.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
+print_table(dna_distances$pgt$cytb$tbl,id="tbl_supp_dist_pgt_cytb","Mean cytb Kimura 2-parameter (K2P) distances among biogeographic provinces for *Plagiotremus goslinei*/*P. tapeinosoma*.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
 ```
 
 \newpage
 
 ```{r tbl-supp-dist-per-coi, results="asis", dependson="dna-distances"}
-print_table(dna_distances$per$coi,id="tbl_supp_dist_per_coi","Mean COI Kimura 2-parameter (K2P) distances among biogeographic provinces for *Plagiotremus ewaensis*/*P. rhinorhynchos*.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
+print_table(dna_distances$per$coi$tbl,id="tbl_supp_dist_per_coi","Mean COI Kimura 2-parameter (K2P) distances among biogeographic provinces for *Plagiotremus ewaensis*/*P. rhinorhynchos*.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
 ```
