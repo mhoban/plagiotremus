@@ -56,7 +56,7 @@ fig_caption: true
 ---
 
 ### Keywords {-}
-<div custom-style="mono">blennies, endemism, Hawai&#x02BB;i, phylogeography, phylogenetics</div>
+[blennies, endemism, Hawai&#x02BB;i, phylogeography, phylogenetics]{custom-style="mono"}
 
 \newpage
 
@@ -790,7 +790,10 @@ We used `BEAST` v2.6.7 [@bouckaertBEAST2Software2014; @drummondBEASTBayesianEvol
 
 To examine intraspecific relationships within the *Plagiotremus goslinei/tapeinosoma* and *P. ewaensis/rhinorhynchos* species pairs, we constructed haplotype networks using all available sequences from each pair. Sequences were interpreted and aligned using the same procedures as for phylogenetic analyses and we used the longest alignment with data from all individuals (the 99% coverage dataset, as described above). Haplotype frequencies were calculated, arranged into maximum-parsimony networks [@templetonCladisticAnalysisPhenotypic1992], and plotted using the package `pegas` [@paradisPegasPackagePopulation2010]. Sampling locations were grouped by marine biogeographic provinces as defined for reef fishes by Kulbicki et al. [-@kulbickiGlobalBiogeographyReef2013], and further subdivided for visualization into marine ecoregions [@spaldingMarineEcoregionsWorld2007], with the Hawaiian province split into Main and Northwestern Hawaiian Islands and the Marquesas separated from the Polynesian province. We examined genetic differentiation and diversity among biogeographic provinces using the K2P distance [@kimuraSimpleMethodEstimating1980] and analysis of molecular variance (AMOVA), as well as calculating haplotype diversity (h), nucleotide diversity (&#x03C0;), and Tajima's D (as implemented in `pegas`). In addition to overall AMOVA, we calculated pairwise &#x03A6;~st~ using the package `haplotypes` [@aktasHaplotypesManipulatingDNA2025] to examine degree of differentiation among provinces. Statistical significance was calculated using permutation tests (with 9,999 permutations) and *p*-values were adjusted for multiple comparisons according to the modified false discovery rate [B-Y FDR, @benjaminiControlFalseDiscovery2001; @narumBonferroniLessConservative2006].
 
-We used `BEAST` v2.6.7 [@bouckaertBEAST2Software2014; @drummondBEASTBayesianEvolutionary2007] to investicate the geographic origins of the *tapeinosoma* species group. We set biogeographic province (*sensu* Kulbicki) as the factor to reconstruct (with all *P. azaleus* individuals assigned to the Tropical East Pacific province) and modeled potential geographic origins with a symmetric discrete-trait analysis model. We allowed `BEAST` to iterate over possible sequence evolution models and choose the one with the highest likelihood given the data, as implemented in the `bModelTest` package [@bouckaertBModelTestBayesianPhylogenetic2017]. We ran four independent searches for 50 million generations each, saving trees every 1,000 generations and discarding the first 10% as burn-in. We used a relaxed uncorrelated lognormal clock model with a rate prior of 1.2% sequence divergence per million years (between lineages) based on previous estimates for COI in marine bony fishes [@berminghamFishBiogeographyMolecular1997; @hunePhylogeographicAnalysisThyrsites2021; @fontesPhylogeographyWidelyDistributed2025], and a yule tree model with uniform birth rate priors. A monophyletic MRCA prior was set on *P. azaleus*. Logs and trees were combined using `LogCombiner` v2.6.7, MCMC convergence was verified with `Tracer` (as for `MrBayes` analyses, ESS &gt; 200), and final maximum clade credibility trees were generated using `TreeAnnotator` v2.6.3 [@heledLookingTreesForest2013].
+We used `BEAST` v2.6.7 [@bouckaertBEAST2Software2014; @drummondBEASTBayesianEvolutionary2007] to investicate the geographic origins of the *tapeinosoma* species group. We set biogeographic province (*sensu* Kulbicki) as the factor to reconstruct (with *P. azaleus* individuals assigned to the Tropical East Pacific province) and modeled potential geographic origins with a symmetric discrete-trait analysis model. We allowed `BEAST` to iterate over possible sequence evolution models and choose the one with the highest likelihood given the data, as implemented in the `bModelTest` package [@bouckaertBModelTestBayesianPhylogenetic2017]. We ran four independent searches for 50 million generations each, saving trees every 1,000 generations and discarding the first 10% as burn-in. We used a relaxed uncorrelated lognormal clock model with a rate prior of 1.2% sequence divergence per million years (between lineages) based on previous estimates for COI in marine bony fishes [@berminghamFishBiogeographyMolecular1997; @hunePhylogeographicAnalysisThyrsites2021; @fontesPhylogeographyWidelyDistributed2025], and a yule tree model with uniform birth rate priors. A monophyletic MRCA prior was set on *P. azaleus*. Logs and trees were combined using `LogCombiner` v2.6.7, MCMC convergence was verified with `Tracer` (as for `MrBayes` analyses, ESS &gt; 200), and final maximum clade credibility trees were generated using `TreeAnnotator` v2.6.3 [@heledLookingTreesForest2013].
+
+To further examine variation within the *tapeinosoma* species group, we assembled morphological data from the available literature [@smith-vanizSabertoothedBlenniesTribe1976; @smith-vanizSaberToothedBlenniesTribe1987] for *Plagiotremus azaleus*, *P. goslinei*, and *P. tapeinosoma* across their distributional ranges. We assessed distinctness of meristic character frequency distributions using chi-square tests.
+
 
 # Results {-}
 
@@ -1061,7 +1064,7 @@ pm <- rownames(amovas$pgt$coi$pairwise$PhiST) %>%
 
 There was no significant differentation within either *P. ewaensis* (&#x03A6;~st~ = `r round(phist(pew_model),3)`, `r amova_pval(pew_model)`) or *P. rhinorhynchos* (&#x03A6;~st~ = `r round(phist(prh_model),3)`, `r amova_pval(prh_model)`). No pairwise comparisons within *P. rhinorhynchos* were significant (&#x03A6;~st~: `r format_range(phi,3)`, `r format_range(pp,3,'*p*')`), although due to low sample sizes and/or sampling limitations, we did not include `r format_list(pm,word='or')` in our comparisons ([@tbl:tbl_amova_prh_coi]).
 
-### Ancestral range reconstruction for *tapeinosoma* species group {-}
+### Ancestral range reconstruction of *tapeinosoma* species group {-}
 
 ```{r beast-tree, include=FALSE, dependson='init'}
 # read the beast tree and do some tweaking
@@ -1183,8 +1186,50 @@ root_diff <- round(beast_info$root$origin_prob / beast_info$root$origin_set_prob
 
 The maximum clade credibility tree produced by the `BEAST` analysis matched our Bayesian phylogeny, with the exception that trees output by `BEAST` necessarily produce bifurcating topologies and *Plagiotremus azaleus* was placed as sister to *P. tapeinosoma* and *P. goslinei* (which given their degree of differentiation is likely to better reflect their true relationship). The Marquesan subgroup of *P. tapeinosoma* was also well-supported ([@fig:fig_tree_ancestral_range]). In this analysis, *Plagiotremus azaleus* and *P. tapeinosoma*/*goslinei* shared a common ancestor ca `r beast_info$root$age` million years ago (Ma) (95% HPD: `r format_range(beast_info$root$hpd,rev=TRUE)` Ma), with a `r pc(beast_info$root$origin_prob,0.1)` likelihood of originating in the `r beast_info$root$origin`. The Marquesan subgroup of *P. tapeinosoma* diverged ca `r beast_info$pta_all$age` Ma (95% HPD: `r format_range(beast_info$pta_all$hpd,rev=TRUE)` Ma) in the `r beast_info$pta_all$origin` (`r pc(beast_info$pta_all$origin_prob,0.1)` likelihood), and the remaining individuals of *P. tapeinosoma* and *goslinei*  diverged ca `r beast_info$pta_pgo$age` Ma (95% HPD: `r format_range(beast_info$pta_pgo$hpd,rev=TRUE)` Ma) in the `r beast_info$pta_pgo$origin` (`r pc(beast_info$pta_pgo$origin_prob,0.1)` likelihood) ([@fig:fig_tree_ancestral_range]). *Plagiotremus tapeinosoma* from the Indo-Pacific had a `r pc(beast_info$pta$origin_prob,0.1)` likelihood of originating in the `r beast_info$pta$origin`, *P. goslinei* (and related *P. tapeinosoma* haplotypes) had a `r pc(beast_info$pgo$origin_prob,0.1)` likelihood of originating in the `r beast_info$pgo$origin`, and the Marquesan group had a `r pc(beast_info$pta_mq$origin_prob,0.1)` likelihood of originating in the `r beast_info$pta_mq$origin`. <!--Aside from the origin of the group as a whole-->In general, likelihoods of ancestral geographic origin were low and not strongly skewed toward a specific province. However, the `r beast_info$root$origin` origin of the *tapeinosoma* group as a whole (`r pc(beast_info$root$origin_prob,0.1)`) was found to be `r root_diff` times more likely than the next-most probable province (`r beast_info$root$origin_set[2]`, `r pc(beast_info$root$origin_set_prob[2],0.1)`) ([@fig:fig_supp_origin_prob]).
 
+### Morphological variation of *tapeinosoma* species group {-}
+
+```{r meristics, include=FALSE, dependson='init'}
+meristics <- read_csv("data/meristics.csv") %>%
+  mutate(across(where(is.numeric),~replace_na(.x,0))) %>%
+  select(-ends_with('_mean'),-ends_with('_n')) %>%
+  pivot_longer(-c(species,location),names_to = 'measurement',values_to='count') %>%
+  separate_wider_delim(cols='measurement',delim='_',names = c('measurement','bin')) %>%
+  mutate(species = case_when(
+    location == 'Marquesas Is.' ~ 'tapeinosoma_mq',
+    .default = species
+  )) %>%
+  group_by(species,measurement,location,bin) %>%
+  group_map(\(data,grp) {
+    tibble(species=grp$species,measurement=grp$measurement,location=grp$location,size=as.numeric(rep(grp$bin,data$count)))
+  }) %>%
+  list_rbind()
+
+x2 <- meristics %>%
+  split(.$measurement) %>%
+  purrr::map(\(dd) {
+    chisq.test(table(dd$size,dd$species))
+  })
+
+csq <- function(test,roundr=2) {
+  x2 <- round(test$statistic,roundr)
+  str_glue("&#x03C7;^2^ = {x2}, {pval(test$p.value)}")
+}
+
+mcounts <- meristics %>%
+  count(species,measurement) %>%
+  group_by(species) %>%
+  slice_max(n) %>%
+  select(species,n) %>%
+  deframe() %>%
+  as.list()
+
+```
+
+We recorded morphological characters for `r mcounts$azaleus` *P. azaleus*, `r mcounts$goslinei` *P. goslinei*, `r mcounts$tapeinosoma` Indo-Pacific *P. tapeinosoma*, and `r mcounts$tapeinosoma_mq` Marquesan *P. tapeinosoma* specimens. While detailed counts/measurements for individual specimens could not be retrieved from the published literature, we were able to compile geographic variation in frequencies of meristic characters across the species' distributional ranges. We assembled frequency tables for three meristic characters: anal-fin rays ([@fig:fig_supp_meristics[]{}a]), total dorsal-fin elements ([@fig:fig_supp_meristics[]{}b]), and total vertebrae ([@fig:fig_supp_meristics[]{}c]). Frequencies were significantly different across species/groups for all characters (anal-fin rays: `r csq(x2$anal)`; dorsal-fin elements: `r csq(x2$dorsal)`; vertebrae: `r csq(x2$vert)`). Across all three characters, *P. azaleus* (in the Tropical East Pacific) consistently had the lowest mean counts and Indo-Pacific *P. tapeinosoma* the highest; *Plagiotremus goslinei* and Marquesan *P. tapeinosoma* had mean counts intermediate between the East Pacific and Indo-Pacific widespread species ([@fig:fig_supp_meristics; @fig:fig_supp_meristic_boxes]).
 
 # Discussion {-}
+
+## Phylogenetic relationships of *Plagiotremus*
 
 Our phylogenetic analysis of `r nrow(alignments$coi$c50)` COI sequences from the tribe Nemophini supported the monophyly of most genera and species considered. We found *Xiphasia* as the sister to *Plagiotremus* and *Meiacanthus* ([@fig:fig_tree_genera]). Almost all species within *Plagiotremus*, with the exception of the group comprising *P. azaleus*, *P. tapeinosoma*, and *P. goslinei* (the *tapeinosoma* group *sensu* Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976]), were monophyletic with strong node support.<!-- The remaining *P. tapeinosoma* and *goslinei* specimens, which share haplotypes in both COI and cytb, comprised a large polytomy with no distinct phylogenetic signal of species or geography. *Plagiotremus azaleus* branched from within this polytomy, but formed a deeply-diverged and well-supported clade ([@fig:fig_tree_plagiotremus]). *Plagiotremus tapeinosoma* specimens from the Marquesas formed a clade basal to the *tapeinosoma*/*goslinei* group.-->
 
@@ -1207,6 +1252,8 @@ mqd <- mean(dd['MQ',],na.rm=T)
 
 dist_diff <- round(mqd / hid,1)
 ```
+### Status of Hawaiian endemics {-}
+
 Both Hawaiian endemic *Plagiotremus* species were considered by Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976] to potentially warrant only subspecies recognition. Strong support for the monophyly of the Hawaiian endemic *P. ewaensis* and the widespread *P. rhinorhynchos* validates the status of the former. However, we were unable to resolve *P. goslinei* as phylogenetically distinct from *P. tapeinosoma*. Additionally, while there was genetic differentiation between the two putative species, they shared haplotypes in both COI and cytb and the degree to which *P. goslinei* was differentiated from other populations in the species pair was, on average, half that of the Marquesan population. While shared haplotypes alone may not be sufficient to synonymize the two species, the additional fact that two *P. goslinei* specimens were more closely related to *P. tapeinosoma* and two *P. tapeinsoma* specimens (from the Line Islands and Palau) were more closely related to the main *P. goslinei* haplotype is at least evidence of recent and/or ongoing migration between the two groups. Shared haplotypes and the potential for recent mixing suggest that they may be neither demographically nor evolutionarily distinct.
 
 ```{r marquesas, include=FALSE, dependson='amovas'}
@@ -1226,11 +1273,19 @@ dist_mq_coi <- mean(coi_dist['MQ',],na.rm=T)
 dist_mq_cytb <- mean(cytb_dist['MQ',],na.rm=T)
 ```
 
-In contrast to the apparent admixture between *P. goslinei* and *tapeinosoma*, Marquesan specimens of *P. tapeinosoma* were placed within a separate well-supported clade and were genetically diverged from all other populations (mean COI &#x03A6;~st~: `r round(phi_mq_coi,3)`, K2P: `r pc(dist_mq_coi,0.01)`, mean cytb &#x03A6;~st~: `r round(phi_mq_cytb,3)`, K2P: `r pc(dist_mq_cytb,0.01)`). In his monograph on the tribe Nemophini, Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976] recognized that *P. tapeinosoma* from the Marquesas had meristic values "at least as low as those of *goslinei*." Therefore, further study of how phenotypic and genetic variation is partitioned geographically within the *tapeinosoma* species group (wider Indo-Pacific, Hawai&#x02BB;i, and the Marquesas) should be carried out, with particular attention to the Marquesan population. Given its morphological and genetic divergence, it likely warrants elevation to species.
+## Origins and phylogeography of Hawaiian endemics {-}
 
-*Plagiotremus azaleus* (in the Eastern Pacific) is diverged from other *tapeinosoma* group lineages, but the initial description of *P. goslinei* [@strasburgNotesBlennioidFishes1956] suggested that it was intermediate between *P. azaleus* and *P. tapeinosoma*. The placement of *P. azaleus* as the sister group to *P. tapeinosoma* and *P. goslinei* in this study was not supported by the `MrBayes` tree, as it nested within mixed groups of *P. tapeinosoma* and *P. goslinei*. However, it occurred on a long internal branch (and was supported in the `BEAST` tree). Thus, its placement was likely an artifact of our limited dataset. It is doubtless that these three species form an evolutionary unit. Ancestral range reconstructions suggest they may have originated in the Tropical East Pacific, where *P. azaleus* is endemic. Previous studies have shown evidence for dispersal in both directions across the East Pacific barrier [cite,cite]
+### *tapeinosoma* species group {-}
+
+In contrast to the apparent admixture between *P. goslinei* and *tapeinosoma*, Marquesan specimens of *P. tapeinosoma* were placed within a separate and well-supported clade and were genetically diverged from all other populations (mean COI &#x03A6;~st~: `r round(phi_mq_coi,3)`, K2P: `r pc(dist_mq_coi,0.01)`, mean cytb &#x03A6;~st~: `r round(phi_mq_cytb,3)`, K2P: `r pc(dist_mq_cytb,0.01)`). Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976] noted that *P. tapeinosoma* from the Marquesas had meristic values "at least as low as those of *goslinei*," with three key characters (anal-fin rays, total dorsal-fin elements, and total vertebrae) showing disjunct frequency distributions across the four groups (*azaleus*, *goslinei*, Indo-Pacific *tapeinosoma*, Marquesan *tapeinosoma*). Therefore, further study of how phenotypic and genetic variation is partitioned geographically within the *tapeinosoma* species group (wider Indo-Pacific, Hawai&#x02BB;i, and the Marquesas) is warranted, with particular attention to the Marquesan population. Given its morphological and genetic divergence, it likely warrants elevation to species.
+
+*Plagiotremus azaleus* (in the Eastern Pacific) is diverged from other *tapeinosoma* group lineages<!--, but the initial description of *P. goslinei* [@strasburgNotesBlennioidFishes1956] suggested that it was intermediate between *P. azaleus* and *P. tapeinosoma*. The placement of *P. azaleus* as the sister group to *P. tapeinosoma* and *P. goslinei* in this study was not supported by the `MrBayes` tree, as it nested within mixed groups of *P. tapeinosoma* and *P. goslinei*. However, it occurred on a long internal branch (and was supported in the `BEAST` tree). Thus, its placement was likely an artifact of our limited dataset. It is doubtless that these three species form an evolutionary unit. Ancestral range reconstructions suggest they may have originated in the Tropical East Pacific, where *P. azaleus* is endemic. Previous studies have shown evidence for dispersal in both directions across the East Pacific barrier [cite,cite]
 
 and further study of these lineages could determine whether *P. azaleus* originally colonized the Eastern Pacific through Hawai&#x02BB;i or merely shares a common ancestor.  and contribute to the growing literature about whether isolated islands with high levels of endemism export biodiversity to other regions [@bowenOriginsTropicalMarine2013]. On the other hand, both the *P. azaleus* and Marquesan *P. tapeinosoma* haplotypes were linked to the rest of *P. tapeinosoma* through Indian Ocean haplotypes (rather than those from the Pacific which are much closer). This may indicate that the divergence of these lineages dates back to the closure of the Tethys Sea (that divided the tropical Atlantic and Indo-Pacific realms) as observed in many other reef fish groups [@floeterAtlanticReefFish2008].
+
+### *rhinorhynchos* species group {-}
+
+hello sailor
 
 <!--The taxonomy and phylogeography of fangblennies was elucidated in this study by including more species than ever before in a molecular phylogeny of *Plagiotremus*. Although only one of the Hawaiian lineages seems to merit full species status, further study of the phenotypic and genetic variation within the "*tapeinosoma*" sub-group could lead to the description of distinct species in other regions, as well as provide further insight into how endemic marine species evolve in some of the world's most isolated archipelagos.-->
 
@@ -1695,7 +1750,7 @@ cat("{#fig:fig_hap_coi_per}")
 
 \newpage
 
-```{r fig-tree-ancestral-range, fig.cap='Maximum clade credibility tree showing ancestral range reconstructions for the *tapeinosoma* species group. Node pies indicate likelihood of reconstructed origins. Select nodes annotated with most-likely origin and likelihood.', results='asis', fig.width=10, fig.height=8, dependson=c('beast-tree','haplotypes')}
+```{r fig-tree-ancestral-range, fig.cap='Maximum clade credibility tree showing ancestral range reconstructions for the *tapeinosoma* species group. Node pies indicate likelihood of reconstructed origins. Annotated nodes show most likely origin and likelihood.', results='asis', fig.width=10, fig.height=8, dependson=c('beast-tree','haplotypes')}
 # figure out our color palette
 origins <- tibble(
   a = provinces,
@@ -1778,7 +1833,7 @@ tbl_collection <- original_samples %>%
   group_by(species) %>%
   summarise(
     Range = ifelse(cur_group()$species %in% hawaii_species,'Hawai&#x02BB;i','Indo-Pacific'),
-    N = n(),
+    n = n(),
     `COI sequences` = sum(sequenced_coi),
     `cytb sequences` = sum(sequenced_cytb)
   ) %>%
@@ -1859,7 +1914,7 @@ amova_tbl <- function(mova,roundr=3,adjust=FALSE, alpha=0.05, upper_p = FALSE) {
 ```
 
 ```{r tbl-amova-pgt-coi, results="asis", dependson=c("amovas","amova-tbl")}
-print_table(amova_tbl(amovas$pgt$coi$pairwise,adjust="BY",upper_p=TRUE),id="tbl_amova_pgt_coi","Pairwise COI &#x03A6;~st~ (below diagonal) and associated *p*-values (above diagonal) among biogeographic provinces (where N &gt; 5) for *Plagiotremus goslinei*/*P. tapeinosoma*. Significant comparisons appear in bold. Abbreviations: RS: Red Sea, WIO: Western Indian Ocean, CIP: Central Indo-Pacific, CP: Central Pacific, PL: Polynesian Province, MHI: Main Hawaiian Islands, NWHI: Northwestern Hawaiian Islands, MQ: Marquesas.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
+print_table(amova_tbl(amovas$pgt$coi$pairwise,adjust="BY",upper_p=TRUE),id="tbl_amova_pgt_coi","Pairwise COI &#x03A6;~st~ (below diagonal) and associated *p*-values (above diagonal) among biogeographic provinces (where n &gt; 5) for *Plagiotremus goslinei*/*P. tapeinosoma*. Significant comparisons appear in bold. Abbreviations: RS: Red Sea, WIO: Western Indian Ocean, CIP: Central Indo-Pacific, CP: Central Pacific, PL: Polynesian Province, MHI: Main Hawaiian Islands, NWHI: Northwestern Hawaiian Islands, MQ: Marquesas.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
 ```
 
 \newpage
@@ -1904,7 +1959,7 @@ print_table(hap_stats,id="tbl_stats_cytb_pgt","cytb population genetic summary s
 \newpage
 
 ```{r tbl-amova-pgt-cytb, results="asis", dependson=c("amovas","amova-tbl")}
-print_table(amova_tbl(amovas$pgt$cytb$pairwise,adjust="BY",upper_p=TRUE),id="tbl_amova_pgt_cytb","Pairwise cytb &#x03A6;~st~ (below diagonal) and associated *p*-values (above diagonal) among biogeographic provinces (where N &gt; 5) for *Plagiotremus goslinei*/*P. tapeinosoma*. Significant comparisons appear in bold.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
+print_table(amova_tbl(amovas$pgt$cytb$pairwise,adjust="BY",upper_p=TRUE),id="tbl_amova_pgt_cytb","Pairwise cytb &#x03A6;~st~ (below diagonal) and associated *p*-values (above diagonal) among biogeographic provinces (where n &gt; 5) for *Plagiotremus goslinei*/*P. tapeinosoma*. Significant comparisons appear in bold.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
 ```
 
 \newpage
@@ -1949,7 +2004,7 @@ print_table(hap_stats,id="tbl_stats_coi_per","COI population genetic summary sta
 \newpage
 
 ```{r tbl-amova-prh-coi, results="asis", dependson=c("amovas","amova-tbl")}
-print_table(amova_tbl(amovas$prh$coi$pairwise,adjust="BY",upper_p=TRUE),id="tbl_amova_prh_coi","Pairwise COI &#x03A6;~st~ (below diagonal) and associated *p*-values (above diagonal) among biogeographic provinces (where N &gt; 5) for *Plagiotremus rhinorhynchos*. Significant comparisons appear in bold.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
+print_table(amova_tbl(amovas$prh$coi$pairwise,adjust="BY",upper_p=TRUE),id="tbl_amova_prh_coi","Pairwise COI &#x03A6;~st~ (below diagonal) and associated *p*-values (above diagonal) among biogeographic provinces (where n &gt; 5) for *Plagiotremus rhinorhynchos*. Significant comparisons appear in bold.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
 ```
 
 \newpage
@@ -2014,20 +2069,107 @@ cat("{#fig:fig_supp_origin_prob}")
 
 \newpage
 
+```{r fig-supp-meristics, fig.cap='Frequency distributions of select meristic characters in the *tapeinosoma* species group. (a) Anal-fin ray count. (b) Total dorsal-fin elements. (c) Total vertebrae.', results="asis", dependson="meristics", fig.height=4, fig.width=8}
+spp_map <- c(
+  'azaleus' = str_glue('italic(P.~azaleus)~(n=={mcounts$azaleus})'),
+  'goslinei' = str_glue('italic(P.~goslinei)~(n=={mcounts$goslinei})'),
+  'tapeinosoma' = str_glue('italic(P.~tapeinosoma)~(Indo-Pacific)~(n=={mcounts$tapeinosoma})'),
+  'tapeinosoma_mq' = str_glue('italic(P.~tapeinosoma)~(Marquesas)~(n=={mcounts$tapeinosoma_mq})')
+)
+
+meristics %>%
+  mutate(species = spp_map[species]) %>%
+  split(.$measurement) %>%
+  purrr::imap(\(vv,mm) {
+    x <- str_replace(csq(x2[[mm]]),', ','<br>')
+    ggplot(vv) +
+      geom_density(aes(x=size,color=species),adjust=2,key_glyph='rect',linewidth = 1) +
+      theme_bw() +
+      theme(panel.grid = element_blank()) +
+      annotation_custom(gridtext::richtext_grob(x,0.7,0.6,gp = gpar(fontsize=8),hjust = 0)) +
+      guides(color = guide_legend(nrow=2,byrow=TRUE))
+  }) %>%
+  purrr::reduce(`+`) +
+  plot_annotation(tag_levels = 'a') +
+  plot_layout(guides = 'collect',axis_titles = "collect") &
+  labs(x='Count',y='Frequency') &
+  # scale_color_paletteer_d('ltc::fernande', name='Species',labels=scales::label_parse())
+  scale_color_paletteer_d('wesanderson::Darjeeling1', name='Species',labels=scales::label_parse(),direction = -1) &
+  theme(legend.position = 'bottom')
+cat("{#fig:fig_supp_meristics}")
+```
+
+\newpage
+
+```{r fig-supp-meristic-boxes, fig.cap='Box plots of meristic values by species. (a) Anal-fin ray count. (b) Total dorsal-fin elements. (c) Total vertebrae.', results="asis", dependson="meristics", fig.height=4, fig.width=8}
+spp_map <- c(
+  'azaleus' = str_glue('italic(P.~azaleus)'),
+  'goslinei' = str_glue('italic(P.~goslinei)'),
+  'tapeinosoma' = str_glue('italic(P.~tapeinosoma)~(Indo~Pacific)'),
+  'tapeinosoma_mq' = str_glue('italic(P.~tapeinosoma)~(Marquesas)')
+)
+
+meristics %>%
+  mutate(species = spp_map[species]) %>%
+  split(.$measurement) %>%
+  purrr::map(\(mm) {
+    plotz <- ggplot(mm) +
+      geom_boxplot(aes(species,size,fill=species)) +
+      labs(x='',y='Count') +
+      theme_bw() +
+      theme(
+        # axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.text.x = element_blank(),
+        panel.grid = element_blank(),
+      ) +
+      guides(fill = guide_legend(nlabels=scales::label_parse(),col=2))
+    # get categories without visible boxes
+    pp <- ggplot_build(plotz)@data[[1]] %>%
+      filter(ymin == ymax)
+    if (nrow(pp) > 0) {
+      plotz <- plotz +
+        geom_segment(data=pp,aes(x=xmin,xend=xmax,y=middle,yend=middle, color=fill), size=1) +
+        guides(color = guide_none())
+    }
+    plotz
+  }) %>%
+  purrr::reduce(`+`) +
+  plot_annotation(tag_levels = 'a') +
+  plot_layout(guides = 'collect',axis_titles = "collect") &
+  scale_fill_paletteer_d('wesanderson::Darjeeling1', name='Species',labels=scales::label_parse(),direction = -1) &
+  theme(legend.position = 'bottom')
+cat("{#fig:fig_supp_meristic_boxes}")
+```
+
+\newpage
+
 ```{r tbl-supp-seqs,results="asis",dependson="haplotypes"}
-write_csv(plagiotremus_data,"output/pd.csv")
 seq_tbl <- plagiotremus_data %>%
   filter(source == 'sequenced') %>%
-  mutate(accession = "") %>%
-  group_by(species,kulbicki_province,ecoregion,country,locality) %>%
-  summarise(accession="",N = n()) %>%
-  ungroup() %>%
-  mutate(species = str_glue('***{species}***')) %>%
-  group_by(species) %>%
-  mutate(across(kulbicki_province:country,~if_else(duplicated(.x),"",.x))) %>%
-  ungroup() %>%
-  mutate(species = if_else(duplicated(species),"",species)) %>%
-  dplyr::rename(`Province ({Kulbicki})` = kulbicki_province, `{GenBank} Accession` = accession)
+  mutate(species = str_glue('*{species}*')) %>%
+  arrange(species,id) %>%
+  mutate(
+    across(
+      contains('accession'),
+      ~(\(a) str_glue("[{a}](https://www.ncbi.nlm.nih.gov/nuccore/{a})",.na=''))(.x)
+    )
+  ) %>%
+  select(
+    `Sequence ID`=id,species,`Province ({Kulbicki})` = kulbicki_province,ecoregion,country,
+    locality,`Accession ({COI})`=coi_accession,`Accession (cytb)`=cytb_accession
+  )
+# seq_tbl <- plagiotremus_data %>%
+#   filter(source == 'sequenced') %>%
+#   mutate(accession = "") %>%
+#   group_by(species,kulbicki_province,ecoregion,country,locality) %>%
+#   summarise(accession="",n = n()) %>%
+#   ungroup() %>%
+#   mutate(species = str_glue('***{species}***')) %>%
+#   group_by(species) %>%
+#   mutate(across(kulbicki_province:country,~if_else(duplicated(.x),"",.x))) %>%
+#   ungroup() %>%
+#   mutate(species = if_else(duplicated(species),"",species)) %>%
+#   dplyr::rename(`Province ({Kulbicki})` = kulbicki_province, `{GenBank} Accession` = accession)
 
 # TODO: get GenBank accessions
 print_table(seq_tbl,"tbl_supp_seqs","Detailed locality metadata for specimens collected in this study.",hdr_case = 'sentence')
