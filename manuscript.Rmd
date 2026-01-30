@@ -91,10 +91,12 @@ library(ggfun)
 library(phytools)
 library(ggtree)
 library(treeio)
+library(bold)
 source('spp.R')
 ```
 
 ```{r init, include=FALSE}
+debugr <- TRUE
 read_fasta <- function(x,aligned=FALSE) read.dna(x,"fasta",as.matrix=aligned)
 write_fasta <- function(x,file) write.dna(x,file,"fasta",nbcol = -1,colsep = "")
 
@@ -299,7 +301,6 @@ format_range <- function(vals,roundr=FALSE,middle='',rev=FALSE) {
 ```
 
 ```{r bold-seqs, dependson="init", include=FALSE}
-library(bold)
 # remove: Pbr-GBMTG324-16, Pbr-GBMNA15372-19
 # remove: Pbr-GBMTG324-16
 # bold_seqs_raw <- bold_seqspec(taxon=c("Plagiotremus","Xiphasia","Meiacanthus","Petroscirtes","Aspidontus"))
@@ -531,7 +532,7 @@ master_palette <- plagiotremus_data %>%
   ungroup()
 
 # add on cheeky rhinorhynchos/ewaensis-only "pairs" when calculating this bit
-hpairs <- c(species_pairs,list(prh='Plagiotremus rhinorhynchos'),list(pew='Plagiotremus ewaensis'))
+hpairs <- c(species_pairs,list(prh='Plagiotremus rhinorhynchos'),list(pew='Plagiotremus ewaensis'),list(pta='Plagiotremus tapeinosoma'))
 haplotypes <- hpairs %>%
   purrr::map(\(pair) {
     markers %>%
@@ -739,6 +740,12 @@ dna_distances <-
         }
       })
   })
+```
+
+```{r save-data, include=FALSE, results="asis", dependson=c('haplotypes','dna-distances','amovas','beast-tree','meristics','trees')}
+if (debugr) {
+  save.image(here('output','image.Rdata'))
+}
 ```
 
 # Abstract {-}
@@ -1273,23 +1280,43 @@ dist_mq_coi <- mean(coi_dist['MQ',],na.rm=T)
 dist_mq_cytb <- mean(cytb_dist['MQ',],na.rm=T)
 ```
 
-## Origins and phylogeography of Hawaiian endemics {-}
+## Origins and phylogeography of Hawaiian endemic/widespread sister pairs {-}
 
 ### *tapeinosoma* species group {-}
 
 Due to the uncertain phylogenetic status of *Plagiotremus goslinei* relative to *P. tapeinosoma*, the *tapeinosoma* species group warrants closer investigation. In contrast to the apparent admixture of most Pacific and Hawaiian members of this group, Marquesan *P. tapeinosoma* specimens occurred within a separate and well-supported clade and were genetically diverged from all other populations (mean COI &#x03A6;~st~: `r round(phi_mq_coi,3)`, K2P: `r pc(dist_mq_coi,0.01)`, mean cytb &#x03A6;~st~: `r round(phi_mq_cytb,3)`, K2P: `r pc(dist_mq_cytb,0.01)`). Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976] noted that *P. tapeinosoma* from the Marquesas had meristic values "at least as low as those of *goslinei*," and we found that three key characters (anal-fin rays, total dorsal-fin elements, and total vertebrae) showed disjunct frequency distributions across the four groups (*azaleus*, *goslinei*, Indo-Pacific *tapeinosoma*, Marquesan *tapeinosoma*). Therefore, further study of how phenotypic and genetic variation is partitioned geographically within the *tapeinosoma* species group (wider Indo-Pacific, Hawai&#x02BB;i, and the Marquesas) is warranted, with particular attention to the Marquesan population. Given its morphological and genetic divergence, it likely warrants elevation to species.
 
-*Plagiotremus azaleus* (in the Eastern Pacific) is deeply diverged from other *tapeinosoma* group lineages. Our `MrBayes` analysis recovered an ambiguous placement within the *goslinei/tapeinosoma* polytomy, but the `BEAST` tree was in agreement with the original assessment by Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976], placing it basal to *goslinei* and *tapeinosoma*. Given its degree of divergence and geographic distribution, the latter placement is more likely to be correct and the former an artifact of the analysis. Ancestral range reconstruction suggests an East Pacific origin for the *tapeinosoma* group as a whole, with *P. goslinei/tapeinosoma* originating in the Central Pacific. This is supported by both genetic and morphological analyses. While there was genetic structure among biogeographic provinces in *P. tapeinosoma*, the occurrence of a single haplotype across the entire range (except the East Pacific and Marquesas) indicates a highly dispersive life history with rare dispersals across barriers leading to divergence and/or speciation. With regard to morphology, *P. azaleus* had the lowest meristic counts, Indo-Pacific *P. tapeinosoma* the highest, and *P. goslinei* and Marquesan *P. tapeinosoma* intermediate. In combination with population genetic and ancestral range analyses, this presents the possibility of an ancient East Pacific origin, with rare dispersal to the Central Pacific giving rise to the Marquesan, Hawaiian, and Indo-Pacific clades/haplogroups. Due to the isolation of Hawai&#x02BB;i (by distance) and the Marquesas (primarily by the configuration of oceanographic currents), these groups underwent only slight morphological divergence from their ancestral population. In contrast, *P. tapeinosoma* dispersed throughout the rest of the Indo-Pacific and experienced significant increases in meristic character counts.
+*Plagiotremus azaleus* (in the Eastern Pacific) is deeply diverged from other *tapeinosoma* group lineages. Our `MrBayes` analysis recovered an ambiguous placement within the *goslinei/tapeinosoma* polytomy (although it was monophyletic and deeply diverged), but the `BEAST` tree was in agreement with the original assessment by Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976], placing it basal to *goslinei* and *tapeinosoma*. Given the degree of divergence and geographic distribution, we believe that the latter placement is more likely to be correct and the former an artifact of the analysis and/or limited dataset. Ancestral range reconstruction suggests an East Pacific origin for the *tapeinosoma* group as a whole, with *P. goslinei/tapeinosoma* originating in the Central Pacific. This is supported by both genetic and morphological analyses. While there was genetic structure among biogeographic provinces in *P. tapeinosoma*, the occurrence of a single haplotype across virtually the entire range indicates a dispersive life history with long-distance dispersals across biogeographic barriers leading to divergence and/or speciation.
 
-<!--, but the initial description of *P. goslinei* [@strasburgNotesBlennioidFishes1956] suggested that it was intermediate between *P. azaleus* and *P. tapeinosoma*. The placement of *P. azaleus* as the sister group to *P. tapeinosoma* and *P. goslinei* in this study was not supported by the `MrBayes` tree, as it nested within mixed groups of *P. tapeinosoma* and *P. goslinei*. However, it occurred on a long internal branch (and was supported in the `BEAST` tree). Thus, its placement was likely an artifact of our limited dataset. It is doubtless that these three species form an evolutionary unit. Ancestral range reconstructions suggest they may have originated in the Tropical East Pacific, where *P. azaleus* is endemic. Previous studies have shown evidence for dispersal in both directions across the East Pacific barrier [cite,cite]
-
-and further study of these lineages could determine whether *P. azaleus* originally colonized the Eastern Pacific through Hawai&#x02BB;i or merely shares a common ancestor.  and contribute to the growing literature about whether isolated islands with high levels of endemism export biodiversity to other regions [@bowenOriginsTropicalMarine2013]. On the other hand, both the *P. azaleus* and Marquesan *P. tapeinosoma* haplotypes were linked to the rest of *P. tapeinosoma* through Indian Ocean haplotypes (rather than those from the Pacific which are much closer). This may indicate that the divergence of these lineages dates back to the closure of the Tethys Sea (that divided the tropical Atlantic and Indo-Pacific realms) as observed in many other reef fish groups [@floeterAtlanticReefFish2008].
+Morphological examination of the *tapeinosoma* species group also provides potential insight into species' geographic origins. *P. azaleus* had the lowest meristic counts, Indo-Pacific *P. tapeinosoma* the highest, and *P. goslinei* and Marquesan *P. tapeinosoma* intermediate. In combination with population genetic and ancestral range analyses, this presents the possibility of an ancient dispersal to the East Pacific, follwed by speciation and remigration to the Central Pacific, giving rise to the Marquesan, Hawaiian, and Indo-Pacific clades/haplogroups. This pattern fits within the paradigm of biodiversity feedback [@bowenOriginsTropicalMarine2013], where peripheral environments with high endemisn export biodiversity back to more central regions. Additionally, studies have shown evidence of dispersal from east to west across the East Pacific Barrier [@lessiosCrossingImpassableGenetic2006]. Due to the isolation of Hawai&#x02BB;i [@friedlanderDominanceEndemicsReef2020; @bowenOriginsTropicalMarine2013] and the Marquesas [@randallFourNewCardinalfishes2001; @gaitherGeneticEvaluationMarine2010], these groups underwent only slight morphological divergence from their ancestral population, although selection and/or drift led to genetic divergence [@gaitherGenomicSignaturesGeographic2015]. *P. tapeinosoma*, on the other hand, was free to disperse throughout the rest of the Indo-Pacific, undergoing significant morphological change.
 
 ### *rhinorhynchos* species group {-}
 
-hello sailor
+```{r prh-diversity, include=FALSE, results="asis", dependson="haplotypes"}
+alignment <- haplotypes$per$coi$alignment
+samples <- haplotypes$per$coi$samples
 
-<!--The taxonomy and phylogeography of fangblennies was elucidated in this study by including more species than ever before in a molecular phylogeny of *Plagiotremus*. Although only one of the Hawaiian lineages seems to merit full species status, further study of the phenotypic and genetic variation within the "*tapeinosoma*" sub-group could lead to the description of distinct species in other regions, as well as provide further insight into how endemic marine species evolve in some of the world's most isolated archipelagos.-->
+r_sp <- samples %>%
+  filter(species == 'Plagiotremus rhinorhynchos') %>%
+  pull(id)
+e_sp <- samples %>%
+  filter(species == 'Plagiotremus ewaensis') %>%
+  pull(id)
+
+r_div <- hap.div(alignment[r_sp,])
+e_div <- hap.div(alignment[e_sp,])
+r_nuc <- nuc.div(alignment[r_sp,])
+e_nuc <- nuc.div(alignment[e_sp,])
+
+div_diffs <- unique(round(e_div/r_div,1),round(e_nuc/r_nuc,1))
+resp <- if(length(div_diffs) > 1) ', respectively' else ''
+```
+
+In contrast to *Plagiotremus goslinei* and *P. tapeinosoma*, *P. ewaensis* and *P. rhinorhynchos* were phylogenetically distinct and deeply diverged, with no significant population-level genetic differentiation within either species. A single *P. rhinorhynchos* haplotype was found across all sampled biogeographic provinces and the parsimony network was star-shaped, a pattern characteristic of recent population expansion [@grantShallowPopulationHistories1998]. Given these circumstances, we were unable to clearly derive the geographic origin of *P. ewaensis*. However, we do note that genetic diversity was `r format_list(div_diffs)` times greater in Hawai&#x02BB;i than the wider Indo-Pacific (for h and &#x03C0;`r resp`). Higher genetic diversity is often associated with older populations ([cite]{.mark}) and it may be that *P. ewaensis* gave rise to *P. rhinorhynchos* rather than the other way around. Thus, the *rhinorhynchos* species group presents another possible case of biodiversity feedback to the Indo-Pacific [@bowenOriginsTropicalMarine2013].
+
+## Conclusions {-}
+
+This investigation of the saber-toothed blenny genus *Plagiotremus* expanded our understanding of the relationships between both species and genera within the tribe Nemophini. We recovered *Meiacanthus* as the sister genus to *Plagiotremus*, although as our analyses were based on a single mtDNA marker, that relationship should be accepted with caution. We found strikingly different phylogeographic patterns in the two Hawaiian endemic/Indo-Pacific widespread sister pairs. *Plagiotremus goslinei* and *P. tapeinosoma* shared multiple haplotypes and showed signs of recent divergence and/or ongoing migration, whereas *P. ewaensis* and *P. rhinorhynchos* were clearly diverged and reciprocally monophyletic. *P. tapeinosoma* specimens from the Marquesas were genetically and morphologically distinct from all others in the *goslinei/tapeinosoma* pair, and likely warrant species-level recognition. Ancestral range analyses indicated a possible East Pacific origin for the *tapeinosoma* species group, with the Indo-Pacific clades (Hawai&#x02BB;i, Marquesas, widespread) originating in the Central Pacific province. Higher genetic diversity in *P. ewaensis* than *P. rhinorhynchos* suggested an older population and the possibility that the species pair originated in Hawai&#x02BB;i. Thus, both species pairs present possible evidence for biodiversity feedback in the Indo-Pacific.
 
 # Figures and Tables {-}
 
