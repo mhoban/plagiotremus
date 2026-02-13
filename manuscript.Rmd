@@ -7,6 +7,9 @@ author:
       equal_contributor: yes
       correspondence: yes
       email: "mhoban@hawaii.edu"
+      address:
+        46-007 Lilipuna Rd
+        K&#x101;ne&#x02BB;ohe, Hawai&#x02BB;i, 96744
   - Cameron A.J. Walsh:
       institute:
         - himb
@@ -1316,6 +1319,15 @@ In contrast to *Plagiotremus goslinei* and *P. tapeinosoma*, *P. ewaensis* and *
 ## Conclusions {-}
 
 This investigation of the saber-toothed blenny genus *Plagiotremus* expanded our understanding of the relationships between both species and genera within the tribe Nemophini. We recovered *Meiacanthus* as the sister genus to *Plagiotremus*, although as our analyses were based on a single mtDNA marker, that relationship should be accepted with caution. We found strikingly different phylogeographic patterns in the two Hawaiian endemic/Indo-Pacific widespread sister pairs. *Plagiotremus goslinei* and *P. tapeinosoma* shared multiple haplotypes and showed signs of recent divergence and/or ongoing migration, whereas *P. ewaensis* and *P. rhinorhynchos* were clearly diverged and reciprocally monophyletic. *P. tapeinosoma* specimens from the Marquesas were genetically and morphologically distinct from all others in the *goslinei/tapeinosoma* pair, and likely warrant species-level recognition. Ancestral range analyses indicated a possible East Pacific origin for the *tapeinosoma* species group, with the Indo-Pacific clades (Hawai&#x02BB;i, Marquesas, widespread) originating in the Central Pacific province. Higher genetic diversity in *P. ewaensis* than *P. rhinorhynchos* suggested an older population and the possibility that the species pair originated in Hawai&#x02BB;i. Thus, both species pairs present possible evidence for biodiversity feedback in the Indo-Pacific.
+
+# Acknowledgements {-}
+
+For field and collections help, we thank M. Gaither, M. Iacchei, L. Rocha, Z. Szabo, J. Eble, M. Craig, S. Karl, K. Tenggardjaja, J. DiBattista, J. Earle, B. Greene, D. Kraft, R. Coleman, C. Westbrook, C. Lewis, J. Reimer, R. Pyle, and J. Copus. We thank the UH M&#x101;noa Diving Safety Program (D. Pence and J. Jones) for logistic support. For enlightening conversations about blenny taxonomy and evolution, we thank J. Williams and W. Smith-Vaniz. We thank K. Stender for his excellent photos of endemic Hawaiian fish species and his ongoing commitment to documenting Hawaiian marine life. This is contribution #xxxx from the Hawai&#x02BB;i Institute of Marine Biology and #xxxx from the School of Ocean and Eart Science and Technology at the University of Hawai&#x02BB;i.
+
+# Contributions {-}
+
+Conceptualization: MLH, RKK, BWB; Data curation: MLH, CAW; Formal Analysis: MLH, CAW; Funding acquisition: MLH, BWB; Investigation: MLH, CAW, RKK; Methodology: MLH, RKK, BWB; Project administration: MLH, BWB; Resources: BWB; Software: MLH, CAW; Supervision: MLH, BWB; Validation: MLH; Visualization: MLH, CAW; Writing -- original draft: MLH, CAW, BWB; Writing -- review & editing: MLH, CAW, RKK, BWB
+
 
 # Figures and Tables {-}
 
