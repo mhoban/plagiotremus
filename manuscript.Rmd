@@ -316,6 +316,8 @@ format_range <- function(vals,roundr=FALSE,middle='',rev=FALSE) {
 
 ```{r bold-seqs, dependson="init", include=FALSE}
 bf <- here('data','bold_raw.csv')
+# bold seems to have updated their API and this call doesn't work like it did before
+# so we just use the saved data if it's present.
 bold_seqs_raw <- if (file_exists(bf)) read_csv(bf) else bold_seqspec(taxon=c("Plagiotremus","Xiphasia","Meiacanthus","Omobranchus anolius"))
 
 to_filter <- c('Pbr-GBMTG324-16')
@@ -1875,7 +1877,7 @@ print_table(hap_stats,id="tbl_stats_coi_pgt","COI population genetic summary sta
 \newpage
 
 ```{r amova-tbl, include=FALSE}
-amova_tbl <- function(mova,roundr=3,adjust=FALSE, alpha=0.05, upper_p = FALSE) {
+amova_tbl <- function(mova,roundr=3,adjust=FALSE, alpha=0.05, upper_p = FALSE, spp = FALSE) {
   phi <- mova$PhiST
   pval <- mova$p
 
@@ -1900,12 +1902,25 @@ amova_tbl <- function(mova,roundr=3,adjust=FALSE, alpha=0.05, upper_p = FALSE) {
 
   mode(phi) <- 'character'
   phi[sig_idx > 0] <- str_glue('**{sig_phi}^{sig_rep}^**')
+
+  if (spp) {
+    dimnames(phi) <- dimnames(phi) %>%
+      purrr::map(\(ff) {
+        hi <- ff %in% c('NWHI','MHI')
+        ip <- !ff %in% c('NWHI','MHI')
+        ff[hi] <- str_glue('{ff[hi]}^&dagger;^')
+        ff[ip] <- str_glue('{ff[ip]}^&Dagger;^')
+        ff
+      })
+  }
+
   as.data.frame(phi)
 }
 ```
 
 ```{r tbl-amova-pgt-coi, results="asis", dependson=c("amovas","amova-tbl")}
-print_table(amova_tbl(amovas$pgt$coi$pairwise,adjust="BY",upper_p=TRUE),id="tbl_amova_pgt_coi","Pairwise COI &#x03A6;~st~ (below diagonal) and associated *p*-values (above diagonal) among biogeographic provinces (where n &gt; 5) for *Plagiotremus goslinei*/*P. tapeinosoma*. Significant comparisons appear in bold. Abbreviations: RS: Red Sea, WIO: Western Indian Ocean, CIP: Central Indo-Pacific, CP: Central Pacific, PL: Polynesian Province, MHI: Main Hawaiian Islands, NWHI: Northwestern Hawaiian Islands, MQ: Marquesas.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
+print_table(amova_tbl(amovas$pgt$coi$pairwise,adjust="BY",upper_p=TRUE,spp=TRUE),id="tbl_amova_pgt_coi","Pairwise COI &#x03A6;~st~ (below diagonal) and associated *p*-values (above diagonal) among biogeographic provinces (where n &gt; 5) for *Plagiotremus goslinei*/*P. tapeinosoma*. Significant comparisons appear in bold. Abbreviations: RS: Red Sea, WIO: Western Indian Ocean, CIP: Central Indo-Pacific, CP: Central Pacific, PL: Polynesian Province, MHI: Main Hawaiian Islands, NWHI: Northwestern Hawaiian Islands, MQ: Marquesas.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
+cat('<div custom-style="tablefoot"><div>^&dagger;^*Plagiotremus goslinei*</div><div>^&Dagger;^*Plagiotremus tapeinosoma*</div></div>')
 ```
 
 \newpage
@@ -2260,5 +2275,6 @@ print_table(dna_distances$pgt$cytb$tbl,id="tbl_supp_dist_pgt_cytb","Mean cytb Ki
 \newpage
 
 ```{r tbl-supp-amova-pgt-cytb, results="asis", dependson=c("amovas","amova-tbl")}
-print_table(amova_tbl(amovas$pgt$cytb$pairwise,adjust="BY",upper_p=TRUE),id="tbl_supp_amova_pgt_cytb","Pairwise cytb &#x03A6;~st~ (below diagonal) and associated *p*-values (above diagonal) among biogeographic provinces (where n &gt; 5) for *Plagiotremus goslinei*/*P. tapeinosoma*. Significant comparisons appear in bold.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
+print_table(amova_tbl(amovas$pgt$cytb$pairwise,adjust="BY",upper_p=TRUE,spp=TRUE),id="tbl_supp_amova_pgt_cytb","Pairwise cytb &#x03A6;~st~ (below diagonal) and associated *p*-values (above diagonal) among biogeographic provinces (where n &gt; 5) for *Plagiotremus goslinei*/*P. tapeinosoma*. Significant comparisons appear in bold.",accuracy=0.001,hdr_case = 'none',roundr=3,na='---')
+cat('<div custom-style="tablefoot"><div>^&dagger;^*Plagiotremus goslinei*</div><div>^&Dagger;^*Plagiotremus tapeinosoma*</div></div>')
 ```
