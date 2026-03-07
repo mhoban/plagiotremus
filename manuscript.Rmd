@@ -1255,6 +1255,10 @@ For field and collections help, we thank M. Gaither, M. Iacchei, L. Rocha, Z. Sz
 
 Conceptualization: MLH, RKK, BWB; Data curation: MLH, CAJW; Formal Analysis: MLH, CAJW; Funding acquisition: MLH, BWB; Investigation: MLH, CAJW, RKK; Methodology: MLH, RKK, BWB; Project administration: MLH, BWB; Resources: BWB; Software: MLH, CAJW; Supervision: MLH, BWB; Validation: MLH; Visualization: MLH, CAJW; Writing -- original draft: MLH, CAJW, BWB; Writing -- review & editing: MLH, CAJW, RKK, BWB
 
+# Ethical Statement {-}
+
+The care and use of experimental animals complied with Hawai&#x02BB;i and United States animal welfare laws, guidelines and policies as approved by the University of Hawai&#x02BB;i at M&#257;noa Institutional Animal Care & Use Committee under approval nos. 09-753 and 15-2271.
+
 \newpage
 
 # Figures and Tables {-}
