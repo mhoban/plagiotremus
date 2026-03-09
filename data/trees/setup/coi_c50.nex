@@ -204,7 +204,7 @@ begin mrbayes;
   prset applyto=(all) ratepr=variable;
   unlink statefreq=(all) revmat=(all) shape=(all) pinvar=(all) tratio=(all);
 
-  mcmc append=yes ngen=20000000 samplefreq=1000 printfreq=1000 temp=0.2 nchains=12 nruns=3;
+  mcmc append=no ngen=20000000 samplefreq=1000 printfreq=1000 temp=0.2 nchains=12 nruns=3;
   sumt burnin=4000000;
   sump burnin=4000000;
 
