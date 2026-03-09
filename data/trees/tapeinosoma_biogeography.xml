@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><beast beautitemplate='Standard' beautistatus='' namespace="beast.core:beast.evolution.alignment:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.likelihood" required="" version="2.6">
+
+    <data
+id="plagiotremus-beast_biogeography_azaleus"
+spec="Alignment"
+name="alignment">
+                    <sequence id="seq_Paz-ANGBF32306-19_TropicalEastPacific" spec="Sequence" taxon="Paz-ANGBF32306-19_TropicalEastPacific" totalcount="4" value="tgcctatcatgattggaggatttggaaactgacttgtacccctaatgattggtgcccccgacatggcgttccctcgaataaataatataagcttttggcttctgcccccctctttcctgttacttctagcttcttctggggttgaggctggtgcaggaactggctgaacggtttatccccctctgtctggaaatttagcacatgcaggggcttccgttgacctcacaattttttccctccacctagcagggatttcctcaatcctaggagccattaattttattacaactattattaacatgaaaccccctgctatttcacaatatcagacccctctatttgtctgagccgttctaattacagccgtcttgctgttattatctctgccagttc"/>
+                    <sequence id="seq_Paz-BLPAA17146-20_TropicalEastPacific" spec="Sequence" taxon="Paz-BLPAA17146-20_TropicalEastPacific" totalcount="4" value="tgcctatcatgattggaggatttggaaactgacttgtacccctaatgattggtgcccccgacatggcgttccctcgaataaataatataagcttttggcttctgcccccctctttcctgttacttctagcttcttctggggttgaggctggtgcaggaactggctgaacggtttatccccctctgtctggaaatttagcacatgcaggggcttccgttgacctcacaattttttccctccacctagcagggatttcctcaatcctaggagccattaattttattacaactattattaacatgaaaccccctgctatttcacaatatcagacccctctatttgtctgagccgttctaattacagccgtcttgctcttattatccctgccagttc"/>
+                    <sequence id="seq_Paz-BMAR3098-22_TropicalEastPacific" spec="Sequence" taxon="Paz-BMAR3098-22_TropicalEastPacific" totalcount="4" value="tgcctatcatgattggaggatttggaaactgacttgtacccctaatgattggtgcccccgacatggcgttccctcgaataaataatataagcttttggcttctgcccccctctttcctgttacttctagcttcttctggggttgaggctggtgcaggaactggctgaacggtttatccccctctatctggaaatttagcacatgcaggggcttccgttgacctcacaattttttccctccacctagcagggatttcctcaatcctaggagccattaattttattacaactattattaacatgaaaccccctgctatttcacaatatcagacccctctatttgtctgagccgttctaattacagccgtcttgctgttattatctctgccagttc"/>
+                    <sequence id="seq_Paz-BMAR3103-22_TropicalEastPacific" spec="Sequence" taxon="Paz-BMAR3103-22_TropicalEastPacific" totalcount="4" value="tgcctatcatgattggaggttttggaaactgacttgtacccctaatgattggtgcccccgacatggcgttccctcgaataaataatataagcttttggcttctgcccccctctttcctattacttctagcttcttctggggttgaggctggtgcaggaactggctgaacggtttatccccctctgtctggaaatttagcacatgcaggggcttccgttgacctcacaattttttccctccacctagcagggatttcctcaatcctaggagccattaattttattacaactattattaacatgaaaccccctgctatttcacaatatcagacccctctatttgtctgagccgttctaattacagccgtcttgctcttattatccctgccagttc"/>
+                    <sequence id="seq_Pgo-004_NorthwesternHawaiianIslands" spec="Sequence" taxon="Pgo-004_NorthwesternHawaiianIslands" totalcount="4" value="tgccaattatgattggaggattcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctactcttattatccctacctgttc"/>
+                    <sequence id="seq_Pgo-009_NorthwesternHawaiianIslands" spec="Sequence" taxon="Pgo-009_NorthwesternHawaiianIslands" totalcount="4" value="tgccaattatgattggaggattcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgaccttacaattttctcccttcatttagcgggggtttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pgo-016_NorthwesternHawaiianIslands" spec="Sequence" taxon="Pgo-016_NorthwesternHawaiianIslands" totalcount="4" value="tgccaattatgattggaggattcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgccgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pgo-018_MainHawaiianIslands" spec="Sequence" taxon="Pgo-018_MainHawaiianIslands" totalcount="4" value="tgccaattatgattggaggattcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgatctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pgo-021_MainHawaiianIslands" spec="Sequence" taxon="Pgo-021_MainHawaiianIslands" totalcount="4" value="tgccaattatgattggaggattcgggaactgactcgtacccctaatgattggcgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pgo-025_MainHawaiianIslands" spec="Sequence" taxon="Pgo-025_MainHawaiianIslands" totalcount="4" value="tgccaattatgattggaggattcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggatgaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pgo-029_MainHawaiianIslands" spec="Sequence" taxon="Pgo-029_MainHawaiianIslands" totalcount="4" value="tgccaattatgattggaggattcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgaccttacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pgo-033_NorthwesternHawaiianIslands" spec="Sequence" taxon="Pgo-033_NorthwesternHawaiianIslands" totalcount="4" value="tgccaattatgattggaggattcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacgattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pgo-046_NorthwesternHawaiianIslands" spec="Sequence" taxon="Pgo-046_NorthwesternHawaiianIslands" totalcount="4" value="tgccaattatgattggaggattcgggaactgacttgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattatcaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pgo-057_NorthwesternHawaiianIslands" spec="Sequence" taxon="Pgo-057_NorthwesternHawaiianIslands" totalcount="4" value="tgccaattatgattggaggattcgggaactgactcgtacccctaatgattggtgcccccgatatagctttccctcggatgaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pgo-084_MainHawaiianIslands" spec="Sequence" taxon="Pgo-084_MainHawaiianIslands" totalcount="4" value="tgccaattatgattggaggattcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaattttattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pgo-094_NorthwesternHawaiianIslands" spec="Sequence" taxon="Pgo-094_NorthwesternHawaiianIslands" totalcount="4" value="tgccaattatgattggaggattcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctgaactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-002_CentralPacific" spec="Sequence" taxon="Pta-002_CentralPacific" totalcount="4" value="tgccaattatgattggaggattcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-005_CentralPacific" spec="Sequence" taxon="Pta-005_CentralPacific" totalcount="4" value="tgccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-011_CentralPacific" spec="Sequence" taxon="Pta-011_CentralPacific" totalcount="4" value="tgccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggtcgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcagggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccttatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-014_CentralIndoPacific" spec="Sequence" taxon="Pta-014_CentralIndoPacific" totalcount="4" value="tgccaatcatgattggaggattcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggtcgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgatccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-019_PolynesianProvince" spec="Sequence" taxon="Pta-019_PolynesianProvince" totalcount="4" value="tgccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccccgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-020_PolynesianProvince" spec="Sequence" taxon="Pta-020_PolynesianProvince" totalcount="4" value="tgccaattataattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-024_PolynesianProvince" spec="Sequence" taxon="Pta-024_PolynesianProvince" totalcount="4" value="tgccaattatgattggagggttcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatttcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-025_PolynesianProvince" spec="Sequence" taxon="Pta-025_PolynesianProvince" totalcount="4" value="tgccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttttcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-026_PolynesianProvince" spec="Sequence" taxon="Pta-026_PolynesianProvince" totalcount="4" value="tgccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcgcaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-027_PolynesianProvince" spec="Sequence" taxon="Pta-027_PolynesianProvince" totalcount="4" value="tgccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcgaataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtattaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-031_PolynesianProvince" spec="Sequence" taxon="Pta-031_PolynesianProvince" totalcount="4" value="tgccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaactattattaatatgaaaccccctgctatctcacaatatcagacccccttatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-035_WesternIndianOcean" spec="Sequence" taxon="Pta-035_WesternIndianOcean" totalcount="4" value="tgccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctagcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-038_WesternIndianOcean" spec="Sequence" taxon="Pta-038_WesternIndianOcean" totalcount="4" value="taccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccttatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-045_WesternIndianOcean" spec="Sequence" taxon="Pta-045_WesternIndianOcean" totalcount="4" value="tgccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccttatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-051_WesternIndianOcean" spec="Sequence" taxon="Pta-051_WesternIndianOcean" totalcount="4" value="tgccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagctttccctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccatcattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-054_WesternIndianOcean" spec="Sequence" taxon="Pta-054_WesternIndianOcean" totalcount="4" value="taccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccctctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-060_CentralPacific" spec="Sequence" taxon="Pta-060_CentralPacific" totalcount="4" value="tgccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggggcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-083_RedSea" spec="Sequence" taxon="Pta-083_RedSea" totalcount="4" value="tgccaattatgattggaggatttgggaactgacttgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-086_Marquesas" spec="Sequence" taxon="Pta-086_Marquesas" totalcount="4" value="tgccaattatgattggagggttcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcgaataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggagccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcaaacccccctatttgtctgagccgtactaattaccgctgttctgctcttactatccctacctgttc"/>
+                    <sequence id="seq_Pta-087_Marquesas" spec="Sequence" taxon="Pta-087_Marquesas" totalcount="4" value="tgccaattatgattggagggttcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcgaataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggagccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcaaacccccctatttgtctgagccgtactaattaccgctgtcctgctcttactatccctacctgttc"/>
+                    <sequence id="seq_Pta-093_Marquesas" spec="Sequence" taxon="Pta-093_Marquesas" totalcount="4" value="tgccaatcatgattggagggttcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcgaataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggagccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcaaacccccctatttgtctgagccgtactaattaccgctgttctgctcttactatccctacctgttc"/>
+                    <sequence id="seq_Pta-095_Marquesas" spec="Sequence" taxon="Pta-095_Marquesas" totalcount="4" value="tgccaattatgattggagggttcggaaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcgaataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggagccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcaaacccccctatttgtctgagccgtactaattaccgctgttctgctcttactatccctacctgttc"/>
+                    <sequence id="seq_Pta-122_WesternIndianOcean" spec="Sequence" taxon="Pta-122_WesternIndianOcean" totalcount="4" value="tgccaattatgattggagggtttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-123_WesternIndianOcean" spec="Sequence" taxon="Pta-123_WesternIndianOcean" totalcount="4" value="taccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccctctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttt"/>
+                    <sequence id="seq_Pta-128_RedSea" spec="Sequence" taxon="Pta-128_RedSea" totalcount="4" value="tgccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgctacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-131_CentralPacific" spec="Sequence" taxon="Pta-131_CentralPacific" totalcount="4" value="tgccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggtcgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcagggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-138_CentralPacific" spec="Sequence" taxon="Pta-138_CentralPacific" totalcount="4" value="tgccaattatgattggaggattcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtttacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-140_CentralPacific" spec="Sequence" taxon="Pta-140_CentralPacific" totalcount="4" value="tgccaatcatgattggaggattcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggtcgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-143_CentralPacific" spec="Sequence" taxon="Pta-143_CentralPacific" totalcount="4" value="tgccaattatgattggagggtttgggaactgactcgtacccctaatgattggtgcccccgatatggcttttcctcggataaataatataagcttttgacttctgcccccctctttcctattacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-AUSTR269-13_PolynesianProvince" spec="Sequence" taxon="Pta-AUSTR269-13_PolynesianProvince" totalcount="4" value="tgccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggtcgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-BLN0771_CentralIndoPacific" spec="Sequence" taxon="Pta-BLN0771_CentralIndoPacific" totalcount="4" value="tgccaattatgattgggggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccttatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-BLN0875_CentralIndoPacific" spec="Sequence" taxon="Pta-BLN0875_CentralIndoPacific" totalcount="4" value="tgccaattatgattgggggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcgaataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccttatttgtgtgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-FUT441-18_CentralPacific" spec="Sequence" taxon="Pta-FUT441-18_CentralPacific" totalcount="4" value="tgccaattatgattggaggatttgggaactgactcgtacccctaatgattggcgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccccctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaattctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-IFBIO1176-18_WesternIndianOcean" spec="Sequence" taxon="Pta-IFBIO1176-18_WesternIndianOcean" totalcount="4" value="taccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcctctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccctctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-LIFS347-08_CentralIndoPacific" spec="Sequence" taxon="Pta-LIFS347-08_CentralIndoPacific" totalcount="4" value="tgccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtttacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcagacccccctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                    <sequence id="seq_Pta-MARQ057-12_Marquesas" spec="Sequence" taxon="Pta-MARQ057-12_Marquesas" totalcount="4" value="tgccaattatgattggagggttcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcgaataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggagccattaatttcattacaaccattattaatatgaaaccccctgctatctcacaatatcaaacccccctatttgtctgagccgtactaattaccgctgttctgctcttactatccctacctgtcc"/>
+                    <sequence id="seq_Pta-MARQ200-12_Marquesas" spec="Sequence" taxon="Pta-MARQ200-12_Marquesas" totalcount="4" value="tgccaattatgattggagggttcgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcgaataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggagccattaatttcattacaaccattattaatatgaaacctcctgctatctcacaatatcaaacccccctatttgtctgagccgtactaattaccgcagttctgctcttactatccctacctgttc"/>
+                    <sequence id="seq_Pta-SBF378-11_WesternIndianOcean" spec="Sequence" taxon="Pta-SBF378-11_WesternIndianOcean" totalcount="4" value="taccaattatgattggaggatttgggaactgactcgtacccctaatgattggtgcccccgatatagcttttcctcggataaataatataagcttttgacttctgcccccctctttcctgttacttctggcttcttctggggttgaggctggtgcagggactggctggactgtctacccccctctgtccggaaacctagcacatgccggggcttccgttgacctcacaattttctcccttcatttagcggggatttcctcaatcctgggggccattaatttcattacaactattattaatatgaaaccccctgctatctcacaatatcagacccctctatttgtctgagccgtactaattaccgctgttctgctcttattatccctacctgttc"/>
+                </data>
+
+
+    
+
+<map name="Uniform" >beast.math.distributions.Uniform</map>
+<map name="Exponential" >beast.math.distributions.Exponential</map>
+<map name="LogNormal" >beast.math.distributions.LogNormalDistributionModel</map>
+<map name="Normal" >beast.math.distributions.Normal</map>
+<map name="Beta" >beast.math.distributions.Beta</map>
+<map name="Gamma" >beast.math.distributions.Gamma</map>
+<map name="LaplaceDistribution" >beast.math.distributions.LaplaceDistribution</map>
+<map name="prior" >beast.math.distributions.Prior</map>
+<map name="InverseGamma" >beast.math.distributions.InverseGamma</map>
+<map name="OneOnX" >beast.math.distributions.OneOnX</map>
+
+<run id="mcmc" spec="MCMC" chainLength="50000000">
+    <state id="state" spec="State" storeEvery="5000">
+        <tree id="Tree.t:plagiotremus-beast_biogeography_azaleus" spec="beast.evolution.tree.Tree" name="stateNode">
+            <taxonset id="TaxonSet.plagiotremus-beast_biogeography_azaleus" spec="TaxonSet">
+                <alignment idref="plagiotremus-beast_biogeography_azaleus"/>
+            </taxonset>
+        </tree>
+        <parameter id="birthRate.t:plagiotremus-beast_biogeography_azaleus" spec="parameter.RealParameter" name="stateNode">1.0</parameter>
+        <stateNode id="rateIndicator.s:location" spec="parameter.BooleanParameter" dimension="36">true</stateNode>
+        <parameter id="relativeGeoRates.s:location" spec="parameter.RealParameter" dimension="36" name="stateNode">1.0</parameter>
+        <parameter id="traitClockRate.c:location" spec="parameter.RealParameter" name="stateNode">1.0</parameter>
+        <stateNode id="BMT_ModelIndicator.s:plagiotremus-beast_biogeography_azaleus" spec="parameter.IntegerParameter" lower="0" upper="5">5</stateNode>
+        <parameter id="BMT_Rates.s:plagiotremus-beast_biogeography_azaleus" spec="parameter.RealParameter" dimension="6" lower="0.01" name="stateNode" upper="100.0">1.0</parameter>
+        <parameter id="BMT_gammaShape.s:plagiotremus-beast_biogeography_azaleus" spec="parameter.RealParameter" name="stateNode">1.0</parameter>
+        <parameter id="BMT_ProportionInvariable.s:plagiotremus-beast_biogeography_azaleus" spec="parameter.RealParameter" lower="0.0" name="stateNode" upper="1.0">0.1</parameter>
+        <stateNode id="hasInvariableSites.s:plagiotremus-beast_biogeography_azaleus" spec="parameter.IntegerParameter">1</stateNode>
+        <stateNode id="hasGammaRates.s:plagiotremus-beast_biogeography_azaleus" spec="parameter.IntegerParameter">1</stateNode>
+        <stateNode id="hasEqualFreqs.s:plagiotremus-beast_biogeography_azaleus" spec="parameter.BooleanParameter">false</stateNode>
+        <parameter id="BMT_frequencies.s:plagiotremus-beast_biogeography_azaleus" spec="parameter.RealParameter" dimension="4" name="stateNode">0.25 0.25 0.25 0.25</parameter>
+        <parameter id="ucldStdev.c:plagiotremus-beast_biogeography_azaleus" spec="parameter.RealParameter" lower="0.0" name="stateNode">0.1</parameter>
+        <stateNode id="rateCategories.c:plagiotremus-beast_biogeography_azaleus" spec="parameter.IntegerParameter" dimension="106">1</stateNode>
+    </state>
+    <init id="RandomTree.t:plagiotremus-beast_biogeography_azaleus" spec="beast.evolution.tree.RandomTree" estimate="false" initial="@Tree.t:plagiotremus-beast_biogeography_azaleus" taxa="@plagiotremus-beast_biogeography_azaleus">
+        <populationModel id="ConstantPopulation0.t:plagiotremus-beast_biogeography_azaleus" spec="ConstantPopulation">
+            <parameter id="randomPopSize.t:plagiotremus-beast_biogeography_azaleus" spec="parameter.RealParameter" name="popSize">1.0</parameter>
+        </populationModel>
+    </init>
+    <distribution id="posterior" spec="util.CompoundDistribution">
+        <distribution id="prior" spec="util.CompoundDistribution">
+            <distribution id="YuleModel.t:plagiotremus-beast_biogeography_azaleus" spec="beast.evolution.speciation.YuleModel" birthDiffRate="@birthRate.t:plagiotremus-beast_biogeography_azaleus" tree="@Tree.t:plagiotremus-beast_biogeography_azaleus"/>
+            <distribution id="BMT_PropInvariablePrior.s:plagiotremus-beast_biogeography_azaleus" spec="beast.math.distributions.BMTPrior" count="@hasInvariableSites.s:plagiotremus-beast_biogeography_azaleus" x="@BMT_ProportionInvariable.s:plagiotremus-beast_biogeography_azaleus">
+                <Beta id="Beta.0" name="distr">
+                    <parameter id="RealParameter.7" spec="parameter.RealParameter" lower="0.0" name="alpha" upper="0.0">1.0</parameter>
+                    <parameter id="RealParameter.8" spec="parameter.RealParameter" lower="0.0" name="beta" upper="0.0">4.0</parameter>
+                </Beta>
+            </distribution>
+            <distribution id="BMT_RatesPrior.s:plagiotremus-beast_biogeography_azaleus" spec="beast.math.distributions.NucleotideRevJumpSubstModelRatePrior" modelIndicator="@BMT_ModelIndicator.s:plagiotremus-beast_biogeography_azaleus" x="@BMT_Rates.s:plagiotremus-beast_biogeography_azaleus">
+                <substModel id="RevJump.s:plagiotremus-beast_biogeography_azaleus" spec="NucleotideRevJumpSubstModel" modelIndicator="@BMT_ModelIndicator.s:plagiotremus-beast_biogeography_azaleus" rates="@BMT_Rates.s:plagiotremus-beast_biogeography_azaleus">
+                    <frequencies id="BMTfreqs.s:plagiotremus-beast_biogeography_azaleus" spec="ModelFrequencies" empirical="false" frequencies="@BMT_frequencies.s:plagiotremus-beast_biogeography_azaleus" hasEqualFreqs="@hasEqualFreqs.s:plagiotremus-beast_biogeography_azaleus"/>
+                </substModel>
+                <Exponential id="BMT_RatesPrior.s:plagiotremus-beast_biogeography_azaleusx" name="distr"/>
+            </distribution>
+            <prior id="BMT_freqsPrior.s:plagiotremus-beast_biogeography_azaleus" name="distribution" x="@BMT_frequencies.s:plagiotremus-beast_biogeography_azaleus">
+                <distr id="Dirichlet.0" spec="beast.math.distributions.Dirichlet">
+                    <parameter id="RealParameter.9" spec="parameter.RealParameter" dimension="4" lower="0.0" name="alpha" upper="0.0">1.0 1.0 1.0 1.0</parameter>
+                </distr>
+            </prior>
+            <distribution id="BMT_GammaShapePrior.s:plagiotremus-beast_biogeography_azaleus" spec="beast.math.distributions.BMTPrior" count="@hasGammaRates.s:plagiotremus-beast_biogeography_azaleus" x="@BMT_gammaShape.s:plagiotremus-beast_biogeography_azaleus">
+                <Exponential id="Exponential.1" name="distr">
+                    <parameter id="RealParameter.6" spec="parameter.RealParameter" estimate="false" lower="0.0" name="mean" upper="0.0">1.0</parameter>
+                </Exponential>
+            </distribution>
+            <prior id="YuleBirthRatePrior.t:plagiotremus-beast_biogeography_azaleus" name="distribution" x="@birthRate.t:plagiotremus-beast_biogeography_azaleus">
+                <Uniform id="Uniform.1" name="distr" upper="Infinity"/>
+            </prior>
+            <prior id="nonZeroRatePrior.s:location" name="distribution">
+                <x id="nonZeroRates.s:location" spec="util.Sum">
+                    <arg idref="rateIndicator.s:location"/>
+                </x>
+                <distr id="Poisson.0" spec="beast.math.distributions.Poisson" offset="8.0">
+                    <parameter id="RealParameter.5" spec="parameter.RealParameter" estimate="false" name="lambda">0.693</parameter>
+                </distr>
+            </prior>
+            <prior id="relativeGeoRatesPrior.s:location" name="distribution" x="@relativeGeoRates.s:location">
+                <Gamma id="Gamma.1" name="distr">
+                    <parameter id="RealParameter.3" spec="parameter.RealParameter" estimate="false" name="alpha">1.0</parameter>
+                    <parameter id="RealParameter.4" spec="parameter.RealParameter" estimate="false" name="beta">1.0</parameter>
+                </Gamma>
+            </prior>
+            <prior id="geoclockPrior.c:location" name="distribution" x="@traitClockRate.c:location">
+                <Gamma id="Gamma.0" name="distr">
+                    <parameter id="RealParameter.1" spec="parameter.RealParameter" estimate="false" name="alpha">0.001</parameter>
+                    <parameter id="RealParameter.2" spec="parameter.RealParameter" estimate="false" name="beta">1000.0</parameter>
+                </Gamma>
+            </prior>
+            <prior id="ucldStdevPrior.c:plagiotremus-beast_biogeography_azaleus" name="distribution" x="@ucldStdev.c:plagiotremus-beast_biogeography_azaleus">
+                <Gamma id="Gamma.2" name="distr">
+                    <parameter id="RealParameter.11" spec="parameter.RealParameter" estimate="false" name="alpha">0.5396</parameter>
+                    <parameter id="RealParameter.12" spec="parameter.RealParameter" estimate="false" name="beta">0.3819</parameter>
+                </Gamma>
+            </prior>
+            <distribution id="azaleus.prior" spec="beast.math.distributions.MRCAPrior" monophyletic="true" tree="@Tree.t:plagiotremus-beast_biogeography_azaleus">
+                <taxonset id="azaleus" spec="TaxonSet">
+                    <taxon id="Paz-ANGBF32306-19_TropicalEastPacific" spec="Taxon"/>
+                    <taxon id="Paz-BLPAA17146-20_TropicalEastPacific" spec="Taxon"/>
+                    <taxon id="Paz-BMAR3098-22_TropicalEastPacific" spec="Taxon"/>
+                    <taxon id="Paz-BMAR3103-22_TropicalEastPacific" spec="Taxon"/>
+                </taxonset>
+            </distribution>
+            <distribution id="gostap.prior" spec="beast.math.distributions.MRCAPrior" monophyletic="true" tree="@Tree.t:plagiotremus-beast_biogeography_azaleus">
+                <taxonset id="gostap" spec="TaxonSet">
+                    <taxon id="Pgo-004_NorthwesternHawaiianIslands" spec="Taxon"/>
+                    <taxon id="Pgo-009_NorthwesternHawaiianIslands" spec="Taxon"/>
+                    <taxon id="Pgo-016_NorthwesternHawaiianIslands" spec="Taxon"/>
+                    <taxon id="Pgo-018_MainHawaiianIslands" spec="Taxon"/>
+                    <taxon id="Pgo-021_MainHawaiianIslands" spec="Taxon"/>
+                    <taxon id="Pgo-025_MainHawaiianIslands" spec="Taxon"/>
+                    <taxon id="Pgo-029_MainHawaiianIslands" spec="Taxon"/>
+                    <taxon id="Pgo-033_NorthwesternHawaiianIslands" spec="Taxon"/>
+                    <taxon id="Pgo-046_NorthwesternHawaiianIslands" spec="Taxon"/>
+                    <taxon id="Pgo-057_NorthwesternHawaiianIslands" spec="Taxon"/>
+                    <taxon id="Pgo-084_MainHawaiianIslands" spec="Taxon"/>
+                    <taxon id="Pgo-094_NorthwesternHawaiianIslands" spec="Taxon"/>
+                    <taxon id="Pta-002_CentralPacific" spec="Taxon"/>
+                    <taxon id="Pta-005_CentralPacific" spec="Taxon"/>
+                    <taxon id="Pta-011_CentralPacific" spec="Taxon"/>
+                    <taxon id="Pta-014_CentralIndoPacific" spec="Taxon"/>
+                    <taxon id="Pta-019_PolynesianProvince" spec="Taxon"/>
+                    <taxon id="Pta-020_PolynesianProvince" spec="Taxon"/>
+                    <taxon id="Pta-024_PolynesianProvince" spec="Taxon"/>
+                    <taxon id="Pta-025_PolynesianProvince" spec="Taxon"/>
+                    <taxon id="Pta-026_PolynesianProvince" spec="Taxon"/>
+                    <taxon id="Pta-027_PolynesianProvince" spec="Taxon"/>
+                    <taxon id="Pta-031_PolynesianProvince" spec="Taxon"/>
+                    <taxon id="Pta-035_WesternIndianOcean" spec="Taxon"/>
+                    <taxon id="Pta-038_WesternIndianOcean" spec="Taxon"/>
+                    <taxon id="Pta-045_WesternIndianOcean" spec="Taxon"/>
+                    <taxon id="Pta-051_WesternIndianOcean" spec="Taxon"/>
+                    <taxon id="Pta-054_WesternIndianOcean" spec="Taxon"/>
+                    <taxon id="Pta-060_CentralPacific" spec="Taxon"/>
+                    <taxon id="Pta-083_RedSea" spec="Taxon"/>
+                    <taxon id="Pta-086_Marquesas" spec="Taxon"/>
+                    <taxon id="Pta-087_Marquesas" spec="Taxon"/>
+                    <taxon id="Pta-093_Marquesas" spec="Taxon"/>
+                    <taxon id="Pta-095_Marquesas" spec="Taxon"/>
+                    <taxon id="Pta-122_WesternIndianOcean" spec="Taxon"/>
+                    <taxon id="Pta-123_WesternIndianOcean" spec="Taxon"/>
+                    <taxon id="Pta-128_RedSea" spec="Taxon"/>
+                    <taxon id="Pta-131_CentralPacific" spec="Taxon"/>
+                    <taxon id="Pta-138_CentralPacific" spec="Taxon"/>
+                    <taxon id="Pta-140_CentralPacific" spec="Taxon"/>
+                    <taxon id="Pta-143_CentralPacific" spec="Taxon"/>
+                    <taxon id="Pta-AUSTR269-13_PolynesianProvince" spec="Taxon"/>
+                    <taxon id="Pta-BLN0771_CentralIndoPacific" spec="Taxon"/>
+                    <taxon id="Pta-BLN0875_CentralIndoPacific" spec="Taxon"/>
+                    <taxon id="Pta-FUT441-18_CentralPacific" spec="Taxon"/>
+                    <taxon id="Pta-IFBIO1176-18_WesternIndianOcean" spec="Taxon"/>
+                    <taxon id="Pta-LIFS347-08_CentralIndoPacific" spec="Taxon"/>
+                    <taxon id="Pta-MARQ057-12_Marquesas" spec="Taxon"/>
+                    <taxon id="Pta-MARQ200-12_Marquesas" spec="Taxon"/>
+                    <taxon id="Pta-SBF378-11_WesternIndianOcean" spec="Taxon"/>
+                </taxonset>
+            </distribution>
+        </distribution>
+        <distribution id="likelihood" spec="util.CompoundDistribution" useThreads="true">
+            <distribution id="treeLikelihood.plagiotremus-beast_biogeography_azaleus" spec="ThreadedTreeLikelihood" data="@plagiotremus-beast_biogeography_azaleus" tree="@Tree.t:plagiotremus-beast_biogeography_azaleus">
+                <siteModel id="BEASTModelTest.s:plagiotremus-beast_biogeography_azaleus" spec="BEASTModelTestSiteModel" gammaCategoryCount="4" hasGammaRates="@hasGammaRates.s:plagiotremus-beast_biogeography_azaleus" hasInvariantSites="@hasInvariableSites.s:plagiotremus-beast_biogeography_azaleus" proportionInvariant="@BMT_ProportionInvariable.s:plagiotremus-beast_biogeography_azaleus" shape="@BMT_gammaShape.s:plagiotremus-beast_biogeography_azaleus" substModel="@RevJump.s:plagiotremus-beast_biogeography_azaleus">
+                    <parameter id="BMT_mutationRate.s:plagiotremus-beast_biogeography_azaleus" spec="parameter.RealParameter" estimate="false" name="mutationRate">1.0</parameter>
+                </siteModel>
+                <branchRateModel id="RelaxedClock.c:plagiotremus-beast_biogeography_azaleus" spec="beast.evolution.branchratemodel.UCRelaxedClockModel" rateCategories="@rateCategories.c:plagiotremus-beast_biogeography_azaleus" tree="@Tree.t:plagiotremus-beast_biogeography_azaleus">
+                    <LogNormal id="LogNormalDistributionModel.c:plagiotremus-beast_biogeography_azaleus" S="@ucldStdev.c:plagiotremus-beast_biogeography_azaleus" meanInRealSpace="true" name="distr">
+                        <parameter id="RealParameter.10" spec="parameter.RealParameter" estimate="false" lower="0.0" name="M" upper="1.0">1.0</parameter>
+                    </LogNormal>
+                    <parameter id="ucldMean.c:plagiotremus-beast_biogeography_azaleus" spec="parameter.RealParameter" estimate="false" name="clock.rate">0.006</parameter>
+                </branchRateModel>
+            </distribution>
+            <distribution id="traitedtreeLikelihood.location" spec="AncestralStateTreeLikelihood" tag="location" tree="@Tree.t:plagiotremus-beast_biogeography_azaleus">
+                <data
+id="location"
+spec="AlignmentFromTrait">
+                    <traitSet id="traitSet.location" spec="beast.evolution.tree.TraitSet" taxa="@TaxonSet.plagiotremus-beast_biogeography_azaleus" traitname="discrete">Pta-045_WesternIndianOcean=WesternIndianOcean,
+Pta-051_WesternIndianOcean=WesternIndianOcean,
+Pta-054_WesternIndianOcean=WesternIndianOcean,
+Pta-122_WesternIndianOcean=WesternIndianOcean,
+Pta-123_WesternIndianOcean=WesternIndianOcean,
+Pta-002_CentralPacific=CentralPacific,
+Pta-005_CentralPacific=CentralPacific,
+Pta-011_CentralPacific=CentralPacific,
+Pta-131_CentralPacific=CentralPacific,
+Pta-138_CentralPacific=CentralPacific,
+Pta-140_CentralPacific=CentralPacific,
+Pta-143_CentralPacific=CentralPacific,
+Pgo-018_MainHawaiianIslands=MainHawaiianIslands,
+Pgo-021_MainHawaiianIslands=MainHawaiianIslands,
+Pgo-025_MainHawaiianIslands=MainHawaiianIslands,
+Pgo-029_MainHawaiianIslands=MainHawaiianIslands,
+Pgo-084_MainHawaiianIslands=MainHawaiianIslands,
+Pta-086_Marquesas=Marquesas,
+Pta-087_Marquesas=Marquesas,
+Pta-093_Marquesas=Marquesas,
+Pta-095_Marquesas=Marquesas,
+Pgo-004_NorthwesternHawaiianIslands=NorthwesternHawaiianIslands,
+Pgo-009_NorthwesternHawaiianIslands=NorthwesternHawaiianIslands,
+Pgo-016_NorthwesternHawaiianIslands=NorthwesternHawaiianIslands,
+Pgo-033_NorthwesternHawaiianIslands=NorthwesternHawaiianIslands,
+Pgo-046_NorthwesternHawaiianIslands=NorthwesternHawaiianIslands,
+Pgo-057_NorthwesternHawaiianIslands=NorthwesternHawaiianIslands,
+Pgo-094_NorthwesternHawaiianIslands=NorthwesternHawaiianIslands,
+Pta-083_RedSea=RedSea,
+Pta-128_RedSea=RedSea,
+Pta-019_PolynesianProvince=PolynesianProvince,
+Pta-020_PolynesianProvince=PolynesianProvince,
+Pta-024_PolynesianProvince=PolynesianProvince,
+Pta-025_PolynesianProvince=PolynesianProvince,
+Pta-026_PolynesianProvince=PolynesianProvince,
+Pta-027_PolynesianProvince=PolynesianProvince,
+Pta-031_PolynesianProvince=PolynesianProvince,
+Pta-BLN0771_CentralIndoPacific=CentralIndoPacific,
+Pta-BLN0875_CentralIndoPacific=CentralIndoPacific,
+Pta-014_CentralIndoPacific=CentralIndoPacific,
+Pta-060_CentralPacific=CentralPacific,
+Pta-035_WesternIndianOcean=WesternIndianOcean,
+Pta-038_WesternIndianOcean=WesternIndianOcean,
+Paz-ANGBF32306-19_TropicalEastPacific=TropicalEastPacific,
+Paz-BLPAA17146-20_TropicalEastPacific=TropicalEastPacific,
+Paz-BMAR3098-22_TropicalEastPacific=TropicalEastPacific,
+Pta-FUT441-18_CentralPacific=CentralPacific,
+Pta-IFBIO1176-18_WesternIndianOcean=WesternIndianOcean,
+Pta-SBF378-11_WesternIndianOcean=WesternIndianOcean,
+Paz-BMAR3103-22_TropicalEastPacific=TropicalEastPacific,
+Pta-LIFS347-08_CentralIndoPacific=CentralIndoPacific,
+Pta-MARQ057-12_Marquesas=Marquesas,
+Pta-MARQ200-12_Marquesas=Marquesas,
+Pta-AUSTR269-13_PolynesianProvince=PolynesianProvince</traitSet>
+                    <userDataType id="traitDataType.location" spec="beast.evolution.datatype.UserDataType" codeMap="CentralIndoPacific=0,CentralPacific=1,MainHawaiianIslands=2,Marquesas=3,NorthwesternHawaiianIslands=4,PolynesianProvince=5,RedSea=6,TropicalEastPacific=7,WesternIndianOcean=8,? = 0 1 2 3 4 5 6 7 8 " codelength="-1" states="9"/>
+                </data>
+                <siteModel id="geoSiteModel.s:location" spec="SiteModel" gammaCategoryCount="1">
+                    <parameter id="mutationRate.s:location" spec="parameter.RealParameter" estimate="false" name="mutationRate">1.0</parameter>
+                    <parameter id="gammaShape.s:location" spec="parameter.RealParameter" estimate="false" name="shape">1.0</parameter>
+                    <parameter id="proportionInvariant.s:location" spec="parameter.RealParameter" estimate="false" lower="0.0" name="proportionInvariant" upper="1.0">0.0</parameter>
+                    <substModel id="svs.s:location" spec="SVSGeneralSubstitutionModel" rateIndicator="@rateIndicator.s:location" rates="@relativeGeoRates.s:location">
+                        <frequencies id="traitfreqs.s:location" spec="Frequencies">
+                            <parameter id="traitfrequencies.s:location" spec="parameter.RealParameter" dimension="9" name="frequencies">0.1111111111111111</parameter>
+                        </frequencies>
+                    </substModel>
+                </siteModel>
+                <branchRateModel id="StrictClockModel.c:location" spec="beast.evolution.branchratemodel.StrictClockModel" clock.rate="@traitClockRate.c:location"/>
+            </distribution>
+        </distribution>
+    </distribution>
+    <operator id="YuleBirthRateScaler.t:plagiotremus-beast_biogeography_azaleus" spec="ScaleOperator" parameter="@birthRate.t:plagiotremus-beast_biogeography_azaleus" weight="3.0"/>
+    <operator id="YuleModelTreeScaler.t:plagiotremus-beast_biogeography_azaleus" spec="ScaleOperator" scaleFactor="0.5" tree="@Tree.t:plagiotremus-beast_biogeography_azaleus" weight="3.0"/>
+    <operator id="YuleModelTreeRootScaler.t:plagiotremus-beast_biogeography_azaleus" spec="ScaleOperator" rootOnly="true" scaleFactor="0.5" tree="@Tree.t:plagiotremus-beast_biogeography_azaleus" weight="3.0"/>
+    <operator id="YuleModelUniformOperator.t:plagiotremus-beast_biogeography_azaleus" spec="Uniform" tree="@Tree.t:plagiotremus-beast_biogeography_azaleus" weight="30.0"/>
+    <operator id="YuleModelSubtreeSlide.t:plagiotremus-beast_biogeography_azaleus" spec="SubtreeSlide" tree="@Tree.t:plagiotremus-beast_biogeography_azaleus" weight="15.0"/>
+    <operator id="YuleModelNarrow.t:plagiotremus-beast_biogeography_azaleus" spec="Exchange" tree="@Tree.t:plagiotremus-beast_biogeography_azaleus" weight="15.0"/>
+    <operator id="YuleModelWide.t:plagiotremus-beast_biogeography_azaleus" spec="Exchange" isNarrow="false" tree="@Tree.t:plagiotremus-beast_biogeography_azaleus" weight="3.0"/>
+    <operator id="YuleModelWilsonBalding.t:plagiotremus-beast_biogeography_azaleus" spec="WilsonBalding" tree="@Tree.t:plagiotremus-beast_biogeography_azaleus" weight="3.0"/>
+    <operator id="georateScaler.s:location" spec="ScaleOperator" parameter="@relativeGeoRates.s:location" scaleAllIndependently="true" scaleFactor="0.99" weight="30.0"/>
+    <operator id="indicatorFlip.s:location" spec="BitFlipOperator" parameter="@rateIndicator.s:location" weight="30.0"/>
+    <operator id="geoMuScaler.c:location" spec="ScaleOperator" parameter="@traitClockRate.c:location" scaleFactor="0.9" weight="3.0"/>
+    <operator id="BSSVSoperator.c:location" spec="BitFlipBSSVSOperator" indicator="@rateIndicator.s:location" mu="@traitClockRate.c:location" weight="30.0"/>
+    <operator id="BMT_ModelTestOperator.s:plagiotremus-beast_biogeography_azaleus" spec="BMTMergeSplitOperator" modelIndicator="@BMT_ModelIndicator.s:plagiotremus-beast_biogeography_azaleus" rates="@BMT_Rates.s:plagiotremus-beast_biogeography_azaleus" substModel="@RevJump.s:plagiotremus-beast_biogeography_azaleus" weight="1.0"/>
+    <operator id="BMT_Ratescaler.s:plagiotremus-beast_biogeography_azaleus" spec="BMTExchangeOperator" delta="0.15" modelIndicator="@BMT_ModelIndicator.s:plagiotremus-beast_biogeography_azaleus" rates="@BMT_Rates.s:plagiotremus-beast_biogeography_azaleus" substModel="@RevJump.s:plagiotremus-beast_biogeography_azaleus" weight="1.0"/>
+    <operator id="BMT_gammaShapeScaler.s:plagiotremus-beast_biogeography_azaleus" spec="BMTScaleOperator" count="@hasGammaRates.s:plagiotremus-beast_biogeography_azaleus" parameter="@BMT_gammaShape.s:plagiotremus-beast_biogeography_azaleus" scaleFactor="0.5" weight="0.5"/>
+    <operator id="BMT_ProportionInvariableScaler.s:plagiotremus-beast_biogeography_azaleus" spec="BMTScaleOperator" count="@hasInvariableSites.s:plagiotremus-beast_biogeography_azaleus" parameter="@BMT_ProportionInvariable.s:plagiotremus-beast_biogeography_azaleus" scaleFactor="0.5" weight="0.5"/>
+    <operator id="BMT_hasGammaRatesFlipper.s:plagiotremus-beast_biogeography_azaleus" spec="BMTBirthDeathOperator" count="@hasGammaRates.s:plagiotremus-beast_biogeography_azaleus" rates="@BMT_gammaShape.s:plagiotremus-beast_biogeography_azaleus" weight="0.1"/>
+    <operator id="BMT_hasInvariableSitesFlipper.s:plagiotremus-beast_biogeography_azaleus" spec="BMTBirthDeathOperator" count="@hasInvariableSites.s:plagiotremus-beast_biogeography_azaleus" rates="@BMT_ProportionInvariable.s:plagiotremus-beast_biogeography_azaleus" weight="0.1"/>
+    <operator id="BMT_FreqsFlipOperator.s:plagiotremus-beast_biogeography_azaleus" spec="BitFlipOperator" parameter="@hasEqualFreqs.s:plagiotremus-beast_biogeography_azaleus" weight="0.1"/>
+    <operator id="BMT_FrequenciesExchanger.s:plagiotremus-beast_biogeography_azaleus" spec="DeltaExchangeOperator" delta="0.01" weight="0.2">
+        <parameter idref="BMT_frequencies.s:plagiotremus-beast_biogeography_azaleus"/>
+    </operator>
+    <operator id="ucldStdevScaler.c:plagiotremus-beast_biogeography_azaleus" spec="ScaleOperator" parameter="@ucldStdev.c:plagiotremus-beast_biogeography_azaleus" scaleFactor="0.5" weight="3.0"/>
+    <operator id="CategoriesRandomWalk.c:plagiotremus-beast_biogeography_azaleus" spec="IntRandomWalkOperator" parameter="@rateCategories.c:plagiotremus-beast_biogeography_azaleus" weight="10.0" windowSize="1"/>
+    <operator id="CategoriesSwapOperator.c:plagiotremus-beast_biogeography_azaleus" spec="SwapOperator" intparameter="@rateCategories.c:plagiotremus-beast_biogeography_azaleus" weight="10.0"/>
+    <operator id="CategoriesUniform.c:plagiotremus-beast_biogeography_azaleus" spec="UniformOperator" parameter="@rateCategories.c:plagiotremus-beast_biogeography_azaleus" weight="10.0"/>
+    <logger id="tracelog" spec="Logger" fileName="plagiotremus-beast_biogeography_azaleus.log" logEvery="1000" model="@posterior" sanitiseHeaders="true" sort="smart">
+        <log idref="posterior"/>
+        <log idref="likelihood"/>
+        <log idref="prior"/>
+        <log idref="treeLikelihood.plagiotremus-beast_biogeography_azaleus"/>
+        <log id="TreeHeight.t:plagiotremus-beast_biogeography_azaleus" spec="beast.evolution.tree.TreeHeightLogger" tree="@Tree.t:plagiotremus-beast_biogeography_azaleus"/>
+        <log idref="YuleModel.t:plagiotremus-beast_biogeography_azaleus"/>
+        <log idref="birthRate.t:plagiotremus-beast_biogeography_azaleus"/>
+        <log idref="rateIndicator.s:location"/>
+        <log idref="relativeGeoRates.s:location"/>
+        <log idref="traitClockRate.c:location"/>
+        <log id="geoSubstModelLogger.s:location" spec="SVSGeneralSubstitutionModelLogger" dataType="@traitDataType.location" model="@svs.s:location"/>
+        <log idref="RevJump.s:plagiotremus-beast_biogeography_azaleus"/>
+        <log idref="BMT_ModelIndicator.s:plagiotremus-beast_biogeography_azaleus"/>
+        <log idref="BMT_gammaShape.s:plagiotremus-beast_biogeography_azaleus"/>
+        <log idref="BMT_ProportionInvariable.s:plagiotremus-beast_biogeography_azaleus"/>
+        <log idref="hasGammaRates.s:plagiotremus-beast_biogeography_azaleus"/>
+        <log idref="hasInvariableSites.s:plagiotremus-beast_biogeography_azaleus"/>
+        <log id="ActivePropInvariable.s:plagiotremus-beast_biogeography_azaleus" spec="beast.util.Script" argnames="BMT_ProportionInvariable hasInvariableSites" expression="BMT_ProportionInvariable * hasInvariableSites">
+            <x idref="BMT_ProportionInvariable.s:plagiotremus-beast_biogeography_azaleus"/>
+            <x idref="hasInvariableSites.s:plagiotremus-beast_biogeography_azaleus"/>
+        </log>
+        <log id="ActiveGammaShape.s:plagiotremus-beast_biogeography_azaleus" spec="beast.util.Script" argnames="BMT_gammaShape hasGammaRates" expression="BMT_gammaShape * hasGammaRates">
+            <x idref="BMT_gammaShape.s:plagiotremus-beast_biogeography_azaleus"/>
+            <x idref="hasGammaRates.s:plagiotremus-beast_biogeography_azaleus"/>
+        </log>
+        <log idref="hasEqualFreqs.s:plagiotremus-beast_biogeography_azaleus"/>
+        <log idref="BMT_frequencies.s:plagiotremus-beast_biogeography_azaleus"/>
+        <log idref="ucldStdev.c:plagiotremus-beast_biogeography_azaleus"/>
+        <log id="rate.c:plagiotremus-beast_biogeography_azaleus" spec="beast.evolution.branchratemodel.RateStatistic" branchratemodel="@RelaxedClock.c:plagiotremus-beast_biogeography_azaleus" tree="@Tree.t:plagiotremus-beast_biogeography_azaleus"/>
+        <log idref="azaleus.prior"/>
+        <log idref="gostap.prior"/>
+    </logger>
+    <logger id="screenlog" spec="Logger" logEvery="1000">
+        <log idref="posterior"/>
+        <log idref="likelihood"/>
+        <log idref="prior"/>
+    </logger>
+    <logger id="treelog.t:plagiotremus-beast_biogeography_azaleus" spec="Logger" fileName="$(tree).trees" logEvery="1000" mode="tree">
+        <log id="TreeWithMetaDataLogger.t:plagiotremus-beast_biogeography_azaleus" spec="beast.evolution.tree.TreeWithMetaDataLogger" branchratemodel="@RelaxedClock.c:plagiotremus-beast_biogeography_azaleus" tree="@Tree.t:plagiotremus-beast_biogeography_azaleus"/>
+    </logger>
+    <logger id="treeWithTraitLogger.location" spec="Logger" fileName="location_tree_with_trait.trees" logEvery="1000" mode="tree">
+        <log id="TreeWithTraitLogger.0" spec="beast.evolution.tree.TreeWithTraitLogger" tree="@Tree.t:plagiotremus-beast_biogeography_azaleus">
+            <metadata idref="posterior"/>
+            <metadata idref="traitedtreeLikelihood.location"/>
+        </log>
+    </logger>
+    <operatorschedule id="OperatorSchedule" spec="OperatorSchedule"/>
+</run>
+</beast>
