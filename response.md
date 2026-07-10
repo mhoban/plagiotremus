@@ -2,6 +2,12 @@ We thank both reviewers for thoughtful and constructive comments. Responses to i
 
 # Reviewer 1
 
+> The authors of Origins and relationships of endemic Hawaiian saber-toothed blennies in the genus Plagiotremus (Blennioidei: Blenniidae) do a great job at describing the study and discussing the implications of the results.
+
+Thank you.
+
+> Comments:
+>
 > Line 39: Consider species-rich?
 
 done
@@ -32,3 +38,30 @@ We agree, and no longer include comparisons among the different datasets. We now
 
 The only real difference among the trees was node support. As mentioned, we now include only the 50% coverage dataset.
 
+# Reviewer 2
+
+> This is a comprehensive analysis of the phylogenetics of the groups containing the two endemic hawaiian species focused on in the study. The concept, data, analysis and conclusions are sound and it shoukd be accepted almost as is.
+
+Thank you for the kind remarks.
+
+> My only suggestion is to be more clear on the wording regarding the application of molecular data to taxonomic decisions: in several places the narrative reinforces the incorrect assumption that genetic differences mean a species level taxonomy is justified or not justified. However, the definition of species does not include degrees of genetic divergence- indeed, if one looks closely enough at any isolated population one would likely find some degree of divergence in DNA sequences and, of course, many clearly distinct species can share sequences in many genes.
+
+This is a good point. We've tried to be careful not to distinctly say that genetic divergence explicitly indicates species-level differences, rather that it warrants further investigation, but we've tried to tone down the language in some places. e.g., rather than saying elevation to species is "likely warranted", we now say it "may be warranted". That said, we still think it is valid and useful to suggest that cryptic species may exist (viz. between Indo-Pacific and Marquesan *P. tapeinosoma*) and/or that lineages may be incompletely sorted (viz. between Indo-Pacific *P. tapeinosoma* and *P. goslinei*).
+
+> There is clearly no "threshold" and I am relieved the word threshhold is not in the ms- the concept of a percentage threshold for species is an erroneous meme by workers who do not understand taxonomy, unfortunately metastasizing widely.. The important point to be clarified is that genetics is just one of the features to be weighed in the essentially subjective decision on subspecies vs species status: a fundamental assumption of taxonomy is that species should be visibly/countably different (one can argue about the degree of difference), different DNA lineages should be called OTUs and not species until a morphological/meristic/marking diagnostic difference is documented. The authors dont expressly violate this, but I recommend the wording be rephrased to emphasize the point, otherwise the artcile will be cited as "look at the genetic difference, it is therefore a species".
+
+It's not clear to me that there's a suggestion here, but the point is taken (and mostly agreed with). We intentionally avoided using any sort of hard percentage cutoff to say whether or not lineages constitute distinct species. And it's why we also included discussion of meristic variation. That was touched upon by Smith-Vaniz in the original monograph, but our discovery of genetic differentiation supports the likelihood of the Marquesan population's species status.
+
+> Monophyly definitely does not "validate the taxonomic status"- i can find you a thousand subpopulations of Indo-Pacific reef fishes that have "strong support for monophyly" that cannot be species or we would have a meaningless species concept- hundreds of species would look the same but be assigned species names that could not be confirmed without a DNA sequence, worse, if one accepted lower and lower thresholds for the divergence between "strongly monophyletic" lineages, one could have many thousands more species that would be created and disappear as one added a few more sequneces to the databases
+
+We've changed the text to say "Strong node support and distinct reciprocal monophyly between the Hawaiian endemic *P. ewaensis* and the widespread *P. rhinorhynchos* bolsters the taxonomic validity of the former." Our use of the word 'validates' wasn't meant to say that the phylogeny supercedes the taxonomic description, but rather that it helps show it to be correct.
+
+>Another sentence:
+>While shared haplotypes alone may not be sufficient to synonymize the two species
+>technically correct but actually "definitely not sufficient".. phrasing implies shared haplotypes have a direct bearing on taxonomic decisions to synonymize, it should be softened or it will be interpreted that "usually" shared haplotypes do invalidate a species level taxonomy. Genetic analyses can support a decision, be part of the evaluation, but are not even the primary factor; there are numerous good (and obvious and traditional) species that share haplotypes- for many reasons quite familiar to the authors.
+
+The text now reads "While shared haplotypes alone are insufficient to synonymize the two species..."
+
+> A separate point that may need more explanation in the discussion is why low fin counts means that a species is older? that is elided a bit too quickly..
+
+We don't relate morphology to population age anywhere in the discussion. We do briefly mention the possibility that higher genetic diversity could indicate an older lineage in reference to the *ewaensis*/*rhinorhynchos* species pair. However, that possibility is based on *genetic* diversity and at any rate we did not examine morphological characters for that group.
