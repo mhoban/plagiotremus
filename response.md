@@ -1,5 +1,7 @@
 We thank both reviewers for thoughtful and constructive comments. Responses to individual comments follow below.
 
+Note: in the tracked-changes version of the manuscript, reviewers may notice some differences in AMOVA &#x03A6;~st~ and *p*-values. This is due to the permutational/randomized nature of these analyses. The values will vary slightly among runs but the patterns remain the same. Since the manuscript was regenerated from its source, these analyses were rerun.
+
 # Reviewer 1
 
 > The authors of Origins and relationships of endemic Hawaiian saber-toothed blennies in the genus Plagiotremus (Blennioidei: Blenniidae) do a great job at describing the study and discussing the implications of the results.
