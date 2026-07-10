@@ -799,13 +799,13 @@ We downloaded all available COI sequence data in the Barcode of Life Database (B
 
 ### Phylogenetic analyses {-}
 
-All data analyses were performed using `R` 4.4.1 [@rcoreteamLanguageEnvironmentStatistical2024]. Sequence data was read using the `R` packages `Biostrings` [@aboyounBiostringsEfficientManipulation2017] and `ape` [@paradisApeEnvironmentModern2019] and aligned using the Clustal Omega algorithm [@sieversFastScalableGeneration2011] implemented in the package `msa` [@bodenhoferMsaPackageMultiple2015]. Since we used sequences from various sources, their lengths varied and not all loci were present in the final alignment. To compare the effects of missing data on tree node support, three versions of the sequence alignment were generated: one that excluded sites missing in more than one individual (hereafter referred to as the 99% coverage dataset), one that only included sites sequenced in >50% of individuals (>50% coverage dataset), and one with all sites in the alignment (the full dataset). After filtering, identical sequences were merged.
+All data analyses were performed using `R` 4.6.0 [@rcoreteamLanguageEnvironmentStatistical2024]. Sequence data was read using the `R` packages `Biostrings` [@aboyounBiostringsEfficientManipulation2017] and `ape` [@paradisApeEnvironmentModern2019], aligned using the Clustal Omega algorithm [@sieversFastScalableGeneration2011] as implemented in `msa` [@bodenhoferMsaPackageMultiple2015], and trimmed to include loci sequenced in &ge;50% of individuals. After filtering, identical sequences were merged.
 
-We conducted a Bayesian phylogenetic reconstruction using `MrBayes` v3.2.7 [@ronquistMrBayes32Efficient2012], running three independent searches for 20 million generations each, saving trees every 1,000 generations and discarding the first 10% as burn-in. Since COI is a protein-coding gene, we used `PartitionFinder` 2 with greedy algorithm to select the best model(s) of nucleotide substitution partitioned by codon position, based on corrected Akaike Information Criterion (AICc) [@lanfearPartitionFinder2New2017; @lanfearPartitionFinderCombinedSelection2012; @guindonNewAlgorithmsMethods2010]. We verified model parameter and Markov-chain convergence using `Tracer` v1.7.2 [@rambautPosteriorSummarizationBayesian2018], assuring effective sample sizes &gt;200 for all parameters. Consensus trees were interpreted and plotted in R using the package `ggtree` [@yuGgtreePackageVisualization2017]. As a compromise between potential under- and over-filtering, we used the &gt;50% coverage dataset to examine phylogenetic relationships within *Plagiotremus*.
+We conducted a Bayesian phylogenetic reconstruction using `MrBayes` v3.2.7 [@ronquistMrBayes32Efficient2012], running three independent searches for 20 million generations each, saving trees every 1,000 generations and discarding the first 10% as burn-in. Since COI is a protein-coding gene, we used `PartitionFinder` 2 with greedy algorithm to select the best model(s) of nucleotide substitution partitioned by codon position, based on corrected Akaike Information Criterion (AICc) [@lanfearPartitionFinder2New2017; @lanfearPartitionFinderCombinedSelection2012; @guindonNewAlgorithmsMethods2010]. We verified model parameter and Markov-chain convergence using `Tracer` v1.7.2 [@rambautPosteriorSummarizationBayesian2018], assuring effective sample sizes &gt;200 for all parameters. Consensus trees were interpreted and plotted in R using the package `ggtree` [@yuGgtreePackageVisualization2017]. <!--As a compromise between potential under- and over-filtering, we used the &gt;50% coverage dataset to examine phylogenetic relationships within *Plagiotremus*.-->
 
 ### Intraspecific phylogeography {-}
 
-To examine intraspecific relationships within the *Plagiotremus goslinei/tapeinosoma* and *P. ewaensis/rhinorhynchos* species pairs, we constructed haplotype networks using all available sequences from each pair. Sequences were interpreted and aligned using the same procedures as for phylogenetic analyses and we used the longest alignment with data from all individuals (the 99% coverage dataset, as described above). Haplotype frequencies were calculated, arranged into maximum-parsimony networks [@templetonCladisticAnalysisPhenotypic1992], and plotted using the package `pegas` [@paradisPegasPackagePopulation2010]. Sampling locations were grouped by marine biogeographic provinces as defined for reef fishes by Kulbicki et al. [-@kulbickiGlobalBiogeographyReef2013], and further subdivided for visualization into marine ecoregions [@spaldingMarineEcoregionsWorld2007], with the Hawaiian province split into Main and Northwestern Hawaiian Islands and the Marquesas separated from the Polynesian province. We examined genetic differentiation and diversity among biogeographic provinces using the K2P distance [@kimuraSimpleMethodEstimating1980] and analysis of molecular variance (AMOVA), as well as calculating haplotype diversity (h), nucleotide diversity (&#x03C0;), and Tajima's D (as implemented in `pegas`). In addition to overall AMOVA, we calculated pairwise &#x03A6;~st~ using the package `haplotypes` [@aktasHaplotypesManipulatingDNA2025] to examine degree of differentiation among provinces. Statistical significance was calculated using permutation tests (with 9,999 permutations) and *p*-values were adjusted for multiple comparisons according to the modified false discovery rate [B-Y FDR, @benjaminiControlFalseDiscovery2001; @narumBonferroniLessConservative2006].
+To examine intraspecific relationships within the *Plagiotremus goslinei/tapeinosoma* and *P. ewaensis/rhinorhynchos* species pairs, we constructed haplotype networks using all available sequences from each pair. Sequences were interpreted and aligned using the same procedures as for phylogenetic analyses and we used the longest alignment with data from all individuals. Haplotype frequencies were calculated, arranged into maximum-parsimony networks [@templetonCladisticAnalysisPhenotypic1992], and plotted using the package `pegas` [@paradisPegasPackagePopulation2010]. Sampling locations were grouped by marine biogeographic provinces as defined for reef fishes by Kulbicki et al. [-@kulbickiGlobalBiogeographyReef2013], and further subdivided for visualization into marine ecoregions [@spaldingMarineEcoregionsWorld2007], with the Hawaiian province split into Main and Northwestern Hawaiian Islands and the Marquesas separated from the Polynesian province. We examined genetic differentiation and diversity among biogeographic provinces using the K2P distance [@kimuraSimpleMethodEstimating1980] and analysis of molecular variance (AMOVA), as well as calculating haplotype diversity (h), nucleotide diversity (&#x03C0;), and Tajima's D (as implemented in `pegas`). In addition to overall AMOVA, we calculated pairwise &#x03A6;~st~ using the package `haplotypes` [@aktasHaplotypesManipulatingDNA2025] to examine degree of differentiation among provinces. Statistical significance was calculated using permutation tests (with 9,999 permutations) and *p*-values were adjusted for multiple comparisons according to the modified false discovery rate [B-Y FDR, @benjaminiControlFalseDiscovery2001; @narumBonferroniLessConservative2006].
 
 We used `BEAST` v2.6.7 [@bouckaertBEAST2Software2014; @drummondBEASTBayesianEvolutionary2007] to investigate the geographic origins of the *tapeinosoma* species group. We set biogeographic province (*sensu* Kulbicki et al. [-@kulbickiGlobalBiogeographyReef2013]) as the factor to reconstruct (with *P. azaleus* individuals assigned to the Tropical East Pacific province) and modeled potential geographic origins with a symmetric discrete-trait analysis model. We allowed `BEAST` to iterate over possible sequence evolution models and choose the one with the highest likelihood given the data, as implemented in the `bModelTest` package [@bouckaertBModelTestBayesianPhylogenetic2017]. We ran four independent searches for 50 million generations each, saving trees every 1,000 generations and discarding the first 10% as burn-in. We used a relaxed uncorrelated lognormal clock model with a rate prior of 1.2% sequence divergence per million years (between lineages) based on previous estimates for COI in marine bony fishes [@berminghamFishBiogeographyMolecular1997; @hunePhylogeographicAnalysisThyrsites2021; @fontesPhylogeographyWidelyDistributed2025], and a yule tree model with uniform birth rate priors. A monophyletic MRCA prior was set on *P. azaleus*. Logs and trees were combined using `LogCombiner` v2.6.7, MCMC convergence was verified with `Tracer` (as for `MrBayes` analyses, ESS &gt;200), and final maximum clade credibility trees were generated using `TreeAnnotator` v2.6.3 [@heledLookingTreesForest2013].
 
@@ -827,7 +827,7 @@ sample_seqs <- sample_data %>%
 
 ## Overall sequencing results {-}
 
-We generated `r sample_seqs$coi$sequenced` new COI sequences and retrieved `r sample_seqs$coi$bold` sequences from BOLD ([@tbl:tbl_collection;@tbl:tbl_supp_bold_seqs]). The final full COI alignment was `r coi_len$c00` base pairs long (50% coverage: `r coi_len$c50` bp, 99% coverage: `r coi_len$c99` bp) ([@fig:fig_supp_covg]). Despite several iterations of primer design and troubleshooting, we were only able to successfully amplify cytb for Hawaiian endemic *Plagiotremus goslinei* and widespread *P. tapeinosoma*. We generated `r sample_seqs$cytb$sequenced` new cytb sequences, retaining the longest alignment with sites present in all samples (`r cytb_len$c00` bp). New sequences generated for this study have been deposited in GenBank under accession numbers [PX905124](https://www.ncbi.nlm.nih.gov/nuccore/PX905124)--[PX905357](https://www.ncbi.nlm.nih.gov/nuccore/PX905357) (COI) and [PX907028](https://www.ncbi.nlm.nih.gov/nuccore/PX907028)--[PX907188](https://www.ncbi.nlm.nih.gov/nuccore/PX907188) (cytb). We present results for COI analyses here, which cover both species pairs. Detailed cytb results for *P. goslinei* and *P. tapeinosoma* are provided in Supporting Information.
+We generated `r sample_seqs$coi$sequenced` new COI sequences and retrieved `r sample_seqs$coi$bold` sequences from BOLD ([@tbl:tbl_collection;@tbl:tbl_supp_bold_seqs]). The final full COI alignment was `r coi_len$c00` base pairs long (50% coverage: `r coi_len$c50` bp, full coverage: `r coi_len$c99` bp) ([@fig:fig_supp_covg]). Despite several iterations of primer design and troubleshooting, we were only able to successfully amplify cytb for Hawaiian endemic *Plagiotremus goslinei* and widespread *P. tapeinosoma*. We generated `r sample_seqs$cytb$sequenced` new cytb sequences, retaining the longest alignment with sites present in all samples (`r cytb_len$c00` bp). New sequences generated for this study have been deposited in GenBank under accession numbers [PX905124](https://www.ncbi.nlm.nih.gov/nuccore/PX905124)--[PX905357](https://www.ncbi.nlm.nih.gov/nuccore/PX905357) (COI) and [PX907028](https://www.ncbi.nlm.nih.gov/nuccore/PX907028)--[PX907188](https://www.ncbi.nlm.nih.gov/nuccore/PX907188) (cytb). We present results for COI analyses here, which cover both species pairs. Detailed cytb results for *P. goslinei* and *P. tapeinosoma* are provided in Supporting Information.
 
 ## Phylogenetic reconstruction {-}
 
@@ -848,9 +848,9 @@ gt_sp <- samples %>%
 paz_div <- mean(dd[az_sp,gt_sp])
 ```
 
-According to `PartitionFinder` 2, the best-fit partitioning scheme for the 50%-coverage COI alignment was GTR+I+&#x0393;, HKY+I, and GTR+&#x0393; for codons 1--3 respectively. Best-fit models for other filtering levels can be found in [@tbl:tbl_supp_models]. All genus-level nodes (*Xiphasia*, *Meiacanthus*, and *Plagiotremus*) in the Bayesian consensus tree had &ge;99% posterior probability based on the 50% coverage and full datasets ([@fig:fig_tree_genera[]{}a; @fig:fig_tree_genera[]{}b]). In the 99% coverage dataset, the split between *Xiphasia* and *Meiacanthus/Plagiotremus* had posterior support of ~90% ([@fig:fig_tree_genera[]{}c]). All three trees placed *Meiacanthus* as sister to *Plagiotremus*.
+According to `PartitionFinder` 2, the best-fit partitioning scheme for our 50%-coverage COI alignment was GTR+I+&#x0393;, HKY+I, and GTR+&#x0393; for codons 1--3 respectively. Best-fit models for other filtering levels can be found in [@tbl:tbl_supp_models]. All genus-level nodes (*Xiphasia*, *Meiacanthus*, and *Plagiotremus*) in the Bayesian consensus trees had strong posterior node support ([@fig:fig_tree_plagiotremus (inset)]), with *Meiacanthus* placed as sister to *Plagiotremus*.
 
-All *Plagiotremus* species currently recognized as valid (with the exception of the *tapeinosoma* group) resolved as monophyletic with high (&ge;99%) node support ([@fig:fig_tree_plagiotremus]). *Plagiotremus ewaensis* and *P. rhinorhynchos* comprised the sister group to all other species. *Plagiotremus townsendi* and *phenax* fell within distinct clades but *P. laudandus* and *flavus*, their sister group, formed an unresolved polytomy (*P. flavus* is considered a junior synonym of *P. laudandus*, [@smith-vanizAggressiveMimicryAspidontus2020; @frickeEschmeyersCatalogFishes2025]). The *tapeinosoma* group, containing East Pacific *P. azaleus*, Indo-Pacific *P. tapeinosoma*, and Hawaiian *P. goslinei*, was less clearly resolved. *Plagiotremus tapeinosoma* was polyphyletic, with samples from the Marquesas forming a clade basal to the group and the remaining samples comprising a polytomy of mixed *P. goslinei* and *tapeinosoma* sequences. East Pacific *Plagiotremus azaleus* occurred on a long branch within the polytomy, but made up a well-supported monophyletic group diverged by an average of `r pc(paz_div,0.01)` (K2P).
+All *Plagiotremus* species currently recognized as valid (with the exception of the *tapeinosoma* group) resolved as monophyletic with high (&ge;99%) node support ([@fig:fig_tree_plagiotremus (main figure)]). *Plagiotremus ewaensis* and *P. rhinorhynchos* comprised the sister group to all other species. *Plagiotremus townsendi* and *phenax* fell within distinct clades but *P. laudandus* and *flavus*, their sister group, formed an unresolved polytomy (*P. flavus* is considered a junior synonym of *P. laudandus*, [@smith-vanizAggressiveMimicryAspidontus2020; @frickeEschmeyersCatalogFishes2025]). The *tapeinosoma* group, containing East Pacific *P. azaleus*, Indo-Pacific *P. tapeinosoma*, and Hawaiian *P. goslinei*, was less clearly resolved. *Plagiotremus tapeinosoma* was polyphyletic, with samples from the Marquesas forming a clade basal to the group and the remaining samples comprising a polytomy of mixed *P. goslinei* and *tapeinosoma* sequences. East Pacific *Plagiotremus azaleus* occurred on a long branch within the polytomy, but made up a well-supported monophyletic group diverged by an average of `r pc(paz_div,0.01)` (K2P).
 
 ## Phylogeography {-}
 
@@ -1167,7 +1167,7 @@ The saber-toothed blennies, also known as fangblennies, exhibit a territorial bi
 
 ## Phylogenetic relationships of *Plagiotremus* {-}
 
-Our phylogenetic analysis of `r nrow(alignments$coi$c50)` COI sequences from the tribe Nemophini supported the monophyly of all genera and most species considered. We found *Xiphasia* as the sister to *Plagiotremus* and *Meiacanthus* ([@fig:fig_tree_genera]). All species within *Plagiotremus*, with the exception of the group comprising East Pacific *P. azaleus*, Indo-Pacific *P. tapeinosoma*, and Hawaiian *P. goslinei* (the *tapeinosoma* group *sensu* Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976]), were monophyletic with strong node support.
+Our phylogenetic analysis of `r nrow(alignments$coi$c50)` COI sequences from the tribe Nemophini supported the monophyly of all genera and most species considered. We found *Xiphasia* as the sister to *Plagiotremus* and *Meiacanthus* ([@fig:fig_tree_plagiotremus (inset)]). All species within *Plagiotremus*, with the exception of the group comprising East Pacific *P. azaleus*, Indo-Pacific *P. tapeinosoma*, and Hawaiian *P. goslinei* (the *tapeinosoma* group *sensu* Smith-Vaniz [-@smith-vanizSabertoothedBlenniesTribe1976]), were monophyletic with strong node support.
 
 Only one previously-published phylogeny has supported *Meiacanthus* as the sister genus to *Plagiotremus* [@linPhylogenyBiogeographyShallow2013]. All subsequent phylogenies found *Xiphasia* to be the sister genus of *Plagiotremus* while the position of *Meiacanthus* has varied [@hundtMultilocusMolecularPhylogeny2014; @casewellEvolutionFangsVenom2017; @hundtExtremeDentitionDoes2018]. These later differences have been attributed by some authors to increased taxonomic coverage [@hundtMultilocusMolecularPhylogeny2014]. While our dataset was limited to a single genetic marker, taxonomic coverage was greater than in previous studies, and this may have resulted in the different relationships we observed. Relative to previous multi-locus phylogenies, we considered three times more *Plagiotremus* species and included range-wide geographic variation in four species. However, the genus-level relationships we recovered should be interpreted with caution, given our reliance on a single mitochondrial marker. Increasing both the genetic and taxonomic resolution should help to further resolve these relationships.
 
@@ -1461,12 +1461,10 @@ trees <- tree_covg %>%
   })
 ```
 
-```{r fig-tree-genera, fig.cap='COI Bayesian consensus trees for *Plagiotremus* and closely-related genera. (a) Full tree based on 50% coverage alignment. (b) Genus-level tree based on full alignment (all sequences). (c) Genus-level tree based on 99% coverage alignment.', results="asis", fig.width=8, fig.height=5, dependson="trees"}
-# full tree
-ft <- 'c50'
-# subtrees
-st <- grep('c50',names(trees),invert = TRUE,value = TRUE)
+\newpage
 
+```{r fig-tree-plagiotremus, fig.cap='COI Bayesian consensus trees for *Plagiotremus* and closely-related genera (inset) and relationships within genus *Plagiotremus* based on 50% coverage alignment (main figure). Dashed magenta edges indicate individuals collected in Hawai&#x02BB;i. Node labels indicate Bayesian posterior probability.', results="asis", fig.width=9, fig.height=7, dependson="trees"}
+covg <- 'c50'
 # calculate MRCA of genera for clade labeling, excluding Omobranchus
 genera <- trees %>%
   purrr::map(\(tree) {
@@ -1493,83 +1491,33 @@ onodes <- trees %>%
       pull(node)
   })
 
-# gcol <- c(paletteer_d('lisa::MaxErnst',3),'#000000')
-# gcol <- c(paletteer_d('lisa::M_C_Escher',3),'#000000')
-gcol <- c(set_names(paletteer_d('lisa::WassilyKandinsky_1',3),genera$c00$text),'0'='#000000')
 
-gnodes <- genera[[ft]] %>%
+gg <- genera %>%
+  pluck(covg)
+
+gnodes <- gg %>%
   pull(id) %>%
   combn(2) %>%
   apply(MARGIN=2,FUN=\(nodes) {
-    getMRCA(trees[[ft]]@phylo,nodes)
+    getMRCA(trees[[covg]]@phylo,nodes)
   }) %>%
   unique()
 
-pointcol <- c('≥0.99' = 'black','≥0.9' = 'darkgrey')
+gcol <- c(set_names(paletteer_d('lisa::WassilyKandinsky_1',3),genera$c00$text),'0'='#000000')
 
-# plot the tree
-full_tree <- ggtree(trees %>% pluck(ft),aes(color=Genus),size=0.7) +
-  geom_cladelab(mapping=aes(node=id,label=text,color=Genus),data=genera %>% pluck(ft), align=FALSE, fontface = "bold.italic", offset = 0.005)  +
-  geom_cladelabel(onodes %>% pluck(ft),'bolditalic(Omobranchus)', offset = 0.005, parse=TRUE, size=3) +
-  geom_point2(aes(fill=prob_cut,subset = node %in% gnodes),shape=21,size=2,show.legend = TRUE) +
-  scale_y_reverse() +
+subtree <- gg$id %>%
+  purrr::reduce(\(g,node) g %>% collapse(node=node),.init=ggtree(trees[[covg]],aes(color=Genus))) +
+  geom_cladelab(mapping=aes(node=id,label=text,color=Genus),data=gg, align=FALSE, fontface = "bold.italic", offset = 0.001)  +
+  # geom_point2(aes(fill=prob_cut,subset = node %in% gnodes),shape=21,size=2) +
+  geom_nodelab(aes(subset = node %in% gnodes,label=round(as.numeric(prob),2)),hjust=0,geom='text',fontface='bold',size=3, nudge_x = 0.005) +#nudge_x = -0.003, nudge_y=1.1) +
+  geom_cladelabel(onodes %>% pluck(covg),expression(bolditalic(Omobranchus)), parse=TRUE) +
+  geom_point2(aes(subset = (node %in% gg$id)),shape=18,size=3) +
   geom_rootedge(0.005) +
-  scale_color_manual(values=gcol,guide='none') +
-  scale_fill_manual(values=pointcol,drop=FALSE,name='Node support\n(posterior probability)') +
-  theme(
-    legend.position = 'inside',
-    legend.justification = 'left',
-    legend.position.inside = c(0,0.1),
-    legend.background = element_blank()
-  ) +
-  xlim(0,0.55)
+  xlim(NA,0.3) +
+  scale_color_manual(values=gcol,guide='none')  +
+  scale_y_reverse() +
+  xlim(0,0.28)
 
-
-subtrees <- trees[st] %>%
-  imap(\(tree,covg) {
-    gg <- genera %>%
-      pluck(covg)
-
-    gnodes <- gg %>%
-      pull(id) %>%
-      combn(2) %>%
-      apply(MARGIN=2,FUN=\(nodes) {
-        getMRCA(tree@phylo,nodes)
-      }) %>%
-      unique()
-
-    gg$id %>%
-      purrr::reduce(\(g,node) g %>% collapse(node=node),.init=ggtree(tree,aes(color=Genus))) +
-      geom_cladelab(mapping=aes(node=id,label=text,color=Genus),data=gg, align=FALSE, fontface = "bold.italic", offset = 0.001)  +
-      geom_point2(aes(fill=prob_cut,subset = node %in% gnodes),shape=21,size=2) +
-      geom_cladelabel(onodes %>% pluck(covg),'bolditalic(Omobranchus)', parse=TRUE) +
-      geom_point2(aes(subset = (node %in% gg$id)),shape=18,size=3) +
-      geom_rootedge(0.005) +
-      xlim(NA,0.3) +
-      scale_color_manual(values=gcol,guide='none')  +
-      scale_fill_manual(values=pointcol,guide='none') +
-      scale_y_reverse() +
-      xlim(0,0.28)
-  })
-
-# plot layout
-layout <- '
-  11122
-  11133
-'
-# build the plot
-c(full_tree,subtrees) %>%
-  purrr::reduce(`+`) +
-  plot_layout(design=layout) &
-  plot_annotation(tag_levels = 'a') &
-  theme(plot.tag = element_text(face='bold'))
-
-cat("{#fig:fig_tree_genera}")
-```
-
-\newpage
-
-```{r fig-tree-plagiotremus, fig.cap='COI Bayesian consensus tree of relationships within genus *Plagiotremus* based on 50% coverage alignment. Dashed magenta edges indicate individuals collected in Hawai&#x02BB;i. Node labels indicate Bayesian posterior probability.', results="asis", fig.width=9, fig.height=7, dependson="trees"}
 # drop non-Plagiotremus tips
 to_drop <- trees$c50 %>%
   as_tibble() %>%
@@ -1664,11 +1612,6 @@ tree <- tree %>%
     prob = case_when(
       node == rootnode ~ 1,
       .default = as.numeric(prob)
-    ),
-    posterior = cut(
-      prob,
-      c(-Inf,0.60,0.75,0.999,Inf),
-      labels=c("<0.60","0.60-0.75","0.75-0.95","1")
     )
   )
 
@@ -1681,21 +1624,21 @@ nodepoints <- clades %>%
   }) %>%
   unique()
 
-# make colors for our node points
-clr_map <- c("<0.60"="white","0.60-0.75"="gray75","0.75-0.95"="gray40","1"="black")
-
 tree <- groupOTU(tree, tree@phylo$tip.label[grep("Pew|Pgo", tree@phylo$tip.label, invert = TRUE)])
 
-ggtree(tree,aes(color=group,linetype=group)) +
-  scale_y_reverse() +
+ptree <- ggtree(tree,aes(color=group,linetype=group)) +
+  # scale_y_reverse() +
   scale_color_manual(values = c('#C82B84','black'),guide='none') +
   scale_linetype_manual(values=c(2,1), guide='none') +
   geom_cladelab(mapping=aes(node=id,label=text,offset=offset),data=clades, parse=TRUE,fontface='bold.italic', barsize=1) +
   geom_rootedge(0.005) +
   geom_nodelab(aes(subset=(node %in% nodepoints),label=round(prob,2)),hjust=0,geom='text',fontface='bold',size=3) +#nudge_x = -0.003, nudge_y=1.1) +
-  theme(legend.position = c(0.1,0.25)) +
   xlim(NA,0.25) +
-  geom_treescale(y=-135,x=0,offset=1)
+  geom_treescale(y=0,x=0,offset=1)
+
+
+ptree +
+  inset_element(subtree + theme(plot.background = element_rect(color = '#cccccc')),left=0.05,top=1,right=0.4,bottom=0.55)
 cat("{#fig:fig_tree_plagiotremus}")
 ```
 
@@ -1837,7 +1780,7 @@ tbl_collection <- original_samples %>%
   ) %>%
   mutate(species = str_glue("*{species}*")) %>%
   dplyr::rename(Species = species)
-print_table(tbl_collection,"tbl_collection","Specimen collection summary.",hdr_case=NA,accuracy=1)
+print_table(tbl_collection,"tbl_collection","Summary by species of specimens collected for this study and the number of successfully-amplified COI and cytb sequences. Note: does not include sequences retrieved from BoLD.",hdr_case=NA,accuracy=1)
 ```
 
 \newpage
@@ -2094,8 +2037,8 @@ ggplot(covg_data) +
   ) +
   guides(color='none',fill = guide_legend(override.aes = list(alpha=1))) +
   scale_y_continuous(labels = scales::percent) +
-  scale_fill_paletteer_d('tvthemes::Pearl',direction = -1,labels=c('99%','50%','Full dataset'),name='Filtering') +
-  scale_color_paletteer_d('tvthemes::Pearl',direction = -1,labels=c('99%','50%','Full dataset'))
+  scale_fill_paletteer_d('tvthemes::Pearl',direction = -1,labels=c('Loci in all individuals','Loci in 50% of individuals','Full dataset'),name='Filtering') +
+  scale_color_paletteer_d('tvthemes::Pearl',direction = -1,labels=c('Loci in all individuals','Loci in 50% of individuals','Full dataset'))
 cat("{#fig:fig_supp_covg}")
 ```
 
