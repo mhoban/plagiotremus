@@ -1,6 +1,6 @@
 We thank both reviewers for thoughtful and constructive comments. Responses to individual comments follow below.
 
-Note: in the tracked-changes version of the manuscript, reviewers may notice some differences in AMOVA &#x03A6;~st~ and *p*-values. This is due to the permutational/randomized nature of these analyses. The values will vary slightly among runs but the patterns remain the same. Since the manuscript was regenerated from its source, these analyses were rerun.
+Note: in the tracked-changes version of the manuscript, reviewers may notice some differences in AMOVA *p*-values. This is due to the permutational/randomized nature of the analyses. The values will vary slightly among runs but the significance levels remain the same. Since the manuscript was regenerated from its source, these analyses were rerun.
 
 # Reviewer 1
 
@@ -25,7 +25,7 @@ This is a good point. We've combined figures 3 and 4, with the genus tree inset.
 
 > Are there meristic differences within Indo-Pacific tapeinosoma? Since this is such a big region compared to other tapeinosoma species group and it is further broken down for genetic data it might be useful to look at mesmeric that way was well
 
-There were none that we were able to discern. The caveat is that we only had access to the data published in Smith-Vaniz, which included meristic frequencies rather than counts for individual specimens. With individual specimen data we could plotted a PCA ordination, which would allow us to explore this sort of variation much more easily. Given the data that we had access to, there are apparent differences in meristic frequencies across the groups we've shown, with no obvious anomalies within the distribution for the Indo-Pacific specimens.
+There were none that we were able to discern. The caveat is that we only had access to the data published in Smith-Vaniz, which included meristic frequencies rather than counts for individual specimens. With individual specimen data we could have plotted a PCA ordination, which would allow us to explore this sort of variation much more easily. Given the data that we had access to, there are apparent differences in meristic frequencies across the groups we've shown, with no obvious anomalies within the distribution for the Indo-Pacific specimens.
 
 > Overall, I am having a hard time determining how many sequences were used for each analysis and wonder if choosing one dataset would make it easier. For example, should Table 1 and Table 2 match... the number of sequences do not match. Should these be the
 same? If not, why and how are they different?
@@ -52,7 +52,7 @@ This is a good point. We've tried to be careful not to distinctly say that genet
 
 > There is clearly no "threshold" and I am relieved the word threshhold is not in the ms- the concept of a percentage threshold for species is an erroneous meme by workers who do not understand taxonomy, unfortunately metastasizing widely.. The important point to be clarified is that genetics is just one of the features to be weighed in the essentially subjective decision on subspecies vs species status: a fundamental assumption of taxonomy is that species should be visibly/countably different (one can argue about the degree of difference), different DNA lineages should be called OTUs and not species until a morphological/meristic/marking diagnostic difference is documented. The authors dont expressly violate this, but I recommend the wording be rephrased to emphasize the point, otherwise the artcile will be cited as "look at the genetic difference, it is therefore a species".
 
-It's not clear to me that there's a suggestion here, but the point is taken (and mostly agreed with). We intentionally avoided using any sort of hard percentage cutoff to say whether or not lineages constitute distinct species. And it's why we also included discussion of meristic variation. That was touched upon by Smith-Vaniz in the original monograph, but our discovery of genetic differentiation supports the likelihood of the Marquesan population's species status.
+It's not clear whether there's a suggestion here, but the point is taken (and mostly agreed with). We intentionally avoided using any sort of hard percentage cutoff to say whether or not lineages constitute distinct species. And it's why we also included discussion of meristic variation. That was touched upon by Smith-Vaniz in the original monograph, but our discovery of genetic differentiation adds credence to the Marquesan population's species status.
 
 > Monophyly definitely does not "validate the taxonomic status"- i can find you a thousand subpopulations of Indo-Pacific reef fishes that have "strong support for monophyly" that cannot be species or we would have a meaningless species concept- hundreds of species would look the same but be assigned species names that could not be confirmed without a DNA sequence, worse, if one accepted lower and lower thresholds for the divergence between "strongly monophyletic" lineages, one could have many thousands more species that would be created and disappear as one added a few more sequneces to the databases
 
@@ -66,4 +66,4 @@ The text now reads "While shared haplotypes alone are insufficient to synonymize
 
 > A separate point that may need more explanation in the discussion is why low fin counts means that a species is older? that is elided a bit too quickly..
 
-We don't relate morphology to population age anywhere in the discussion. We do briefly mention the possibility that higher genetic diversity could indicate an older lineage in reference to the *ewaensis*/*rhinorhynchos* species pair. However, that possibility is based on *genetic* diversity and at any rate we did not examine morphological characters for that group.
+We don't actually relate morphology to population age anywhere in the discussion. We do briefly mention the possibility that higher genetic diversity could indicate an older lineage in reference to the *ewaensis*/*rhinorhynchos* species pair. However, that possibility is based on *genetic* diversity and at any rate we did not examine morphological characters for that group.
